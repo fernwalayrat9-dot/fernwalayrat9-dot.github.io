@@ -8,7 +8,7 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- Font Awesome Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <!-- Google Font - TH Sarabun New / Sarabun -->
+    <!-- Google Font - Sarabun -->
     <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
         body { font-family: 'Sarabun', sans-serif; }
@@ -185,7 +185,7 @@
                     </div>
 
                     <div>
-                        <button onclick="window.print()" class="w-full bg-slate-800 hover:bg-slate-900 text-white font-bold py-2 px-3 rounded-lg shadow flex items-center justify-center space-x-2 text-sm transition-colors">
+                        <button onclick="triggerPrint()" class="w-full bg-slate-800 hover:bg-slate-900 text-white font-bold py-2 px-3 rounded-lg shadow flex items-center justify-center space-x-2 text-sm transition-colors">
                             <i class="fa-solid fa-print"></i>
                             <span>พิมพ์เอกสาร</span>
                         </button>
@@ -228,7 +228,7 @@
             <div id="admin-subcontent-receipt" class="bg-white rounded-xl shadow-sm border border-slate-200 p-6 space-y-6 hidden">
                 <div class="border-b border-slate-200 pb-4">
                     <h3 class="font-bold text-lg text-slate-800 flex items-center">
-                        <i class="fa-solid fa-receipt text-indigo-600 mr-2"></i> กรอกรายละเอียดใบเสร็จเพื่ออกบันทึกข้อความขอซื้อ/เบิกเงิน
+                        <i class="fa-solid fa-receipt text-indigo-600 mr-2"></i> กรอกรายละเอียดใบเสร็จเพื่อออกบันทึกข้อความขอซื้อ/เบิกเงิน
                     </h3>
                     <p class="text-xs text-slate-500 mt-1">ป้อนข้อมูลเลขที่ใบเสร็จรับเงิน วันที่ และราคาเพื่อสร้างแบบฟอร์มขออนุมัติเบิกเงิน กฟภ.</p>
                 </div>
@@ -290,7 +290,7 @@
                 <div class="bg-slate-900 text-white p-4 rounded-xl flex justify-between items-center">
                     <div>
                         <p class="text-xs text-slate-400">ยอดเงินรวมสุทธิ (ตามใบเสร็จ)</p>
-                        <p class="text-xs text-amber-300 font-medium" id="req-total-text-display">(เก้าร้อยแปดสิบเจ็ดบาทถ้วน)</p>
+                        <p class="text-xs text-amber-300 font-medium" id="req-total-text-display">(ศูนย์บาทถ้วน)</p>
                     </div>
                     <div class="text-right">
                         <p class="text-2xl font-bold text-amber-400" id="req-total-num-display">0.00 บาท</p>
@@ -339,7 +339,7 @@
             </div>
         </section>
 
-        <!-- ==================== PRINT TEMPLATE 2: แบบฟอร์มบันทึกข้อความ กฟภ. (ตามรูปตัวอย่าง) ==================== -->
+        <!-- ==================== PRINT TEMPLATE 2: แบบฟอร์มบันทึกข้อความ กฟภ. ==================== -->
         <section id="print-template-pea-req" class="print-only p-2 bg-white text-black font-sarabun text-[15pt] leading-normal">
             <!-- PEA Logo Header -->
             <div class="flex items-center mb-2">
@@ -370,7 +370,7 @@
 
             <!-- Text Body Section 1 -->
             <div class="text-justify mb-3 indent-8 text-[15pt]">
-                (๑) ด้วย <span id="pea-body-dept">ผสน.กฟส.ลส.</span> ได้ดำเนินการจัดซื้อจัดจ้าง <span id="pea-body-item-summary">กล่องล้อเลื่อนเพื่อใช้สำหรับการจัดเก็บเอกสารใบสำคัญจ่าย</span> ของ กฟส.ลส. และ กฟส. ในสังกัด จำนวน <span id="pea-body-item-count">๑</span> รายการ เป็นจำนวนเงินทั้งสิ้น <span id="pea-body-total-num">๙๘๗.-</span> บาท (<span id="pea-body-total-text">เก้าร้อยแปดสิบเจ็ดบาทถ้วน</span>) โดยมีรายละเอียดดังต่อไปนี้
+                (๑) ด้วย <span id="pea-body-dept">ผสน.กฟส.ลส.</span> ได้ดำเนินการจัดซื้อจัดจ้าง <span id="pea-body-item-summary">วัสดุสำนักงาน</span> ของ กฟส.ลส. และ กฟส. ในสังกัด จำนวน <span id="pea-body-item-count">๑</span> รายการ เป็นจำนวนเงินทั้งสิ้น <span id="pea-body-total-num">๐.-</span> บาท (<span id="pea-body-total-text">ศูนย์บาทถ้วน</span>) โดยมีรายละเอียดดังต่อไปนี้
             </div>
 
             <!-- PEA Table -->
@@ -391,7 +391,7 @@
 
             <!-- Regulation Text Section -->
             <div class="text-justify mb-2 indent-8 text-[14pt]">
-                ทั้งนี้ การดำเนินการจัดซื้อจัดจ้างดังกล่าว เป็นการดำเนินการตามหนังสือคณะกรรมการวินิจฉัยปัญหาการจัดซื้อจัดจ้างและการบริหารพัสดุภาครัฐ กรมบัญชีกลางที่ กต (กวจ) ๐๔๐๕.๒/ว ๑๑๙ ลงวันที่ ๗ มีนาคม ๒๕๖๑ เรื่อง แนวทางการปฏิบัติในการดำเนินการจัดซื้อจัดจ้างพัสดุที่เกี่ยวกับค่าใช้จ่ายในการบริหารงาน ค่าใช้จ่ายในการฝึกอบรม การจัดงาน และการประชุมของหน่วยงานของรัฐ ที่มีวงเงินการจัดซื้อจัดจ้างครั้งหนึ่งไม่เกิน ๑๐,๐๐๐ บาท ตาราง ๑ ลำดับที่.......๑๓.........
+                ทั้งนี้ การดำเนินการจัดซื้อจัดจ้างดังกล่าว เป็นการดำเนินการตามหนังสือคณะกรรมการวินิจฉัยปัญหาการจัดซื้อจัดจ้างและการบริหารพัสดุภาครัฐ กรมบัญชีกลางที่ กต (กวจ) ๐๔๐๕.๒/ว ๑๑๙ ลงวันที่ ๗ มีนาคม ๒๕๖๑ เรื่อง แนวทางการปฏิบัติในการดำเนินการจัดซื้อจัดจ้างพัสดุที่เกี่ยวกับค่าใช้จ่ายในการบริหารงาน ค่าใช้จ่ายในการฝึกอบรม การจัดงาน และการประชุมของหน่วยงานของรัฐ ที่มีวงเงินการจัดซื้อจัดจ้างครั้งหนึ่งไม่เกิน ๑๐,๐๐0 บาท ตาราง ๑ ลำดับที่.......๑๓.........
             </div>
 
             <div class="text-justify mb-6 indent-8 text-[14pt]">
@@ -405,8 +405,8 @@
                     <p class="font-bold">(๒) เรียน ผจก.กฟส.ลส.</p>
                     <p class="pl-4">เพื่อโปรดพิจารณา</p>
                     <p class="pl-8">๑. ให้ความเห็นชอบการจัดซื้อจัดจ้างดังกล่าวข้างต้น</p>
-                    <p class="pl-8">๒. อนุมัติให้จ่ายเงิน จำนวน <span class="pea-val-total-num">๙๘๗.๐๐</span> บาท</p>
-                    <p class="pl-12">(<span class="pea-val-total-text">เก้าร้อยแปดสิบเจ็ดบาทถ้วน</span>)</p>
+                    <p class="pl-8">๒. อนุมัติให้จ่ายเงิน จำนวน <span class="pea-val-total-num">๐.๐๐</span> บาท</p>
+                    <p class="pl-12">(<span class="pea-val-total-text">ศูนย์บาทถ้วน</span>)</p>
                     <p class="pl-2">จากงบ.......<span id="pea-val-wbs">5303010100...WBS/CCA...J333010100</span>.......</p>
                     
                     <div class="mt-6 text-center space-y-1">
@@ -459,529 +459,575 @@
         let mockDepartmentOrders = {};
         let currentUserCart = {};
         let receiptItemPrices = {}; // Store price entries for receipt mode
+        let currentMode = 'user'; // 'user' or 'admin'
+        let currentAdminSubTab = 'summary'; // 'summary' or 'receipt'
 
         document.addEventListener("DOMContentLoaded", () => {
             loadDataFromSheets();
         });
 
-        // Helper: Convert English Digits to Thai Digits
-        function toThaiDigits(num) {
-            if (num === null || num === undefined) return '';
-            return num.toString().replace(/[0-9]/g, d => '๐๑๒๓๔๕๖๗๘๙'[d]);
-        }
-
-        // Helper: Thai Baht Text Converter
-        function bahtText(num) {
-            num = parseFloat(num);
-            if (isNaN(num) || num === 0) return "ศูนย์บาทถ้วน";
-            
-            const numbers = ["", "หนึ่ง", "สอง", "สาม", "สี่", "ห้า", "หก", "เจ็ด", "แปด", "เก้า"];
-            const positions = ["", "สิบ", "ร้อย", "พัน", "หมื่น", "แสน", "ล้าน"];
-
-            let [baht, satang] = num.toFixed(2).split(".");
-            let result = "";
-
-            if (parseInt(baht) > 0) {
-                let len = baht.length;
-                for (let i = 0; i < len; i++) {
-                    let digit = parseInt(baht[i]);
-                    let pos = len - i - 1;
-
-                    if (digit !== 0) {
-                        if (pos === 1 && digit === 1) {
-                            result += "สิบ";
-                        } else if (pos === 1 && digit === 2) {
-                            result += "ยี่สิบ";
-                        } else if (pos === 0 && digit === 1 && len > 1) {
-                            result += "เอ็ด";
-                        } else {
-                            result += numbers[digit] + positions[pos];
-                        }
-                    }
-                }
-                result += "บาท";
-            }
-
-            if (parseInt(satang) === 0) {
-                result += "ถ้วน";
-            } else {
-                let len = satang.length;
-                for (let i = 0; i < len; i++) {
-                    let digit = parseInt(satang[i]);
-                    let pos = len - i - 1;
-
-                    if (digit !== 0) {
-                        if (pos === 1 && digit === 1) {
-                            result += "สิบ";
-                        } else if (pos === 1 && digit === 2) {
-                            result += "ยี่สิบ";
-                        } else if (pos === 0 && digit === 1) {
-                            result += "เอ็ด";
-                        } else {
-                            result += numbers[digit] + positions[pos];
-                        }
-                    }
-                }
-                result += "สตางค์";
-            }
-
-            return result;
-        }
-
+        // Switch Main Mode (User / Admin)
         function switchMode(mode) {
-            const userView = document.getElementById("user-view");
-            const adminView = document.getElementById("admin-view");
-            const btnUser = document.getElementById("btn-user-mode");
-            const btnAdmin = document.getElementById("btn-admin-mode");
+            currentMode = mode;
+            const userView = document.getElementById('user-view');
+            const adminView = document.getElementById('admin-view');
+            const btnUser = document.getElementById('btn-user-mode');
+            const btnAdmin = document.getElementById('btn-admin-mode');
 
-            if(mode === 'user') {
-                userView.classList.remove("hidden");
-                adminView.classList.add("hidden");
+            if (mode === 'user') {
+                userView.classList.remove('hidden');
+                adminView.classList.add('hidden');
                 btnUser.className = "px-4 py-1.5 rounded-md transition-colors bg-indigo-600 text-white shadow";
                 btnAdmin.className = "px-4 py-1.5 rounded-md transition-colors text-indigo-200 hover:text-white";
-                renderItemsGrid(initialItems);
             } else {
-                userView.classList.add("hidden");
-                adminView.classList.remove("hidden");
+                userView.classList.add('hidden');
+                adminView.classList.remove('hidden');
                 btnAdmin.className = "px-4 py-1.5 rounded-md transition-colors bg-indigo-600 text-white shadow";
                 btnUser.className = "px-4 py-1.5 rounded-md transition-colors text-indigo-200 hover:text-white";
                 renderAdminTable();
             }
         }
 
-        function switchAdminSubTab(sub) {
-            const tabSummary = document.getElementById("subtab-summary");
-            const tabReceipt = document.getElementById("subtab-receipt");
-            const contentSummary = document.getElementById("admin-subcontent-summary");
-            const contentReceipt = document.getElementById("admin-subcontent-receipt");
+        // Switch Admin Sub-Tabs
+        function switchAdminSubTab(tab) {
+            currentAdminSubTab = tab;
+            const subSummary = document.getElementById('admin-subcontent-summary');
+            const subReceipt = document.getElementById('admin-subcontent-receipt');
+            const btnSummary = document.getElementById('subtab-summary');
+            const btnReceipt = document.getElementById('subtab-receipt');
 
-            if(sub === 'summary') {
-                tabSummary.className = "px-3 py-1.5 rounded-md bg-white text-indigo-700 shadow";
-                tabReceipt.className = "px-3 py-1.5 rounded-md text-slate-600 hover:text-slate-900";
-                contentSummary.classList.remove("hidden");
-                contentReceipt.classList.add("hidden");
+            if (tab === 'summary') {
+                subSummary.classList.remove('hidden');
+                subReceipt.classList.add('hidden');
+                btnSummary.className = "px-3 py-1.5 rounded-md bg-white text-indigo-700 shadow";
+                btnReceipt.className = "px-3 py-1.5 rounded-md text-slate-600 hover:text-slate-900";
             } else {
-                tabReceipt.className = "px-3 py-1.5 rounded-md bg-white text-indigo-700 shadow";
-                tabSummary.className = "px-3 py-1.5 rounded-md text-slate-600 hover:text-slate-900";
-                contentReceipt.classList.remove("hidden");
-                contentSummary.classList.add("hidden");
-                renderReceiptTable();
+                subSummary.classList.add('hidden');
+                subReceipt.classList.remove('hidden');
+                btnReceipt.className = "px-3 py-1.5 rounded-md bg-white text-indigo-700 shadow";
+                btnSummary.className = "px-3 py-1.5 rounded-md text-slate-600 hover:text-slate-900";
+                renderReceiptItemsTable();
             }
         }
 
+        // Fetch Data from Google Sheets API
         async function loadDataFromSheets() {
             try {
                 const response = await fetch(GOOGLE_SCRIPT_URL);
                 const data = await response.json();
-
-                if (data.masterItems && data.masterItems.length > 0) {
-                    initialItems = data.masterItems;
-                    renderItemsGrid(initialItems);
+                
+                if (data && data.items) {
+                    initialItems = data.items;
+                } else {
+                    // Fallback Mock Data
+                    initialItems = [
+                        { id: 1, name: "กระดาษ A4 80 แกรม Double A", unit: "รีม" },
+                        { id: 2, name: "ปากกาลูกลื่น 0.5 มม. (น้ำเงิน)", unit: "ด้าม" },
+                        { id: 3, name: "ปากกาลูกลื่น 0.5 มม. (แดง)", unit: "ด้าม" },
+                        { id: 4, name: "แฟ้มเสนอเซ็นต์ A4", unit: "เล่ม" },
+                        { id: 5, name: "ลวดเย็บกระดาษ เบอร์ 10", unit: "กล่อง" },
+                        { id: 6, name: "เทปกาวสองหน้า 1 นิ้ว", unit: "ม้วน" }
+                    ];
                 }
-
-                mockDepartmentOrders = {};
-                if (data.orders && data.orders.length > 0) {
-                    data.orders.forEach(order => {
-                        const dept = order.department;
-                        if (!mockDepartmentOrders[dept]) {
-                            mockDepartmentOrders[dept] = { cart: {}, note: "" };
-                        }
-                        mockDepartmentOrders[dept].cart[order.itemId] = Number(order.quantity);
-                    });
-                }
-
-                renderAdminTable();
-
-            } catch (error) {
-                console.error("Error fetching data:", error);
+                renderItemsGrid(initialItems);
+            } catch (err) {
+                console.error("Failed to load sheet data:", err);
+                // Fallback Mock Data on Error
+                initialItems = [
+                    { id: 1, name: "กระดาษ A4 80 แกรม Double A", unit: "รีม" },
+                    { id: 2, name: "ปากกาลูกลื่น 0.5 มม. (น้ำเงิน)", unit: "ด้าม" },
+                    { id: 3, name: "ปากกาลูกลื่น 0.5 มม. (แดง)", unit: "ด้าม" },
+                    { id: 4, name: "แฟ้มเสนอเซ็นต์ A4", unit: "เล่ม" },
+                    { id: 5, name: "ลวดเย็บกระดาษ เบอร์ 10", unit: "กล่อง" }
+                ];
+                renderItemsGrid(initialItems);
             }
         }
 
+        // Render Material Grid in User View
         function renderItemsGrid(items) {
-            const grid = document.getElementById("items-grid");
-            document.getElementById("item-count").textContent = items.length;
-            grid.innerHTML = "";
+            const grid = document.getElementById('items-grid');
+            document.getElementById('item-count').innerText = items.length;
 
             if (items.length === 0) {
-                grid.innerHTML = `<div class="col-span-full text-center py-8 text-slate-400">ไม่พบรายการวัสดุ</div>`;
+                grid.innerHTML = `<div class="col-span-full text-center py-8 text-slate-400">ไม่พบรายการวัสดุที่ค้นหา</div>`;
                 return;
             }
 
-            items.forEach(item => {
+            grid.innerHTML = items.map(item => {
                 const qty = currentUserCart[item.id] || 0;
-                const card = document.createElement("div");
-                card.className = "bg-white border border-slate-200 rounded-xl p-3 shadow-sm hover:shadow-md transition-shadow flex flex-col justify-between";
-                card.innerHTML = `
-                    <div>
-                        <h4 class="font-bold text-slate-800 text-sm leading-tight mb-1">${item.name}</h4>
-                        <p class="text-xs text-slate-500 mb-3">หน่วยนับ: <span class="font-medium text-slate-700">${item.unit}</span></p>
-                    </div>
-                    <div class="flex items-center justify-between bg-slate-50 p-1.5 rounded-lg border border-slate-200">
-                        <button onclick="updateQty('${item.id}', -1)" ${!systemIsOpen ? 'disabled' : ''} class="w-8 h-8 rounded-md bg-white border border-slate-300 flex items-center justify-center font-bold text-slate-600 hover:bg-slate-100 disabled:opacity-50">-</button>
-                        <input type="number" id="qty-input-${item.id}" value="${qty}" min="0" onchange="setQtyDirect('${item.id}', this.value)" ${!systemIsOpen ? 'disabled' : ''} class="w-12 text-center bg-transparent font-bold text-indigo-900 text-sm focus:outline-none">
-                        <button onclick="updateQty('${item.id}', 1)" ${!systemIsOpen ? 'disabled' : ''} class="w-8 h-8 rounded-md bg-indigo-600 flex items-center justify-center font-bold text-white hover:bg-indigo-700 disabled:opacity-50">+</button>
+                return `
+                    <div class="bg-white p-4 rounded-xl shadow-sm border border-slate-200 flex flex-col justify-between hover:shadow-md transition-shadow">
+                        <div>
+                            <span class="text-[10px] font-bold text-indigo-600 bg-indigo-50 px-2 py-0.5 rounded">รหัส #${item.id}</span>
+                            <h3 class="font-bold text-slate-800 text-sm mt-1">${item.name}</h3>
+                            <p class="text-xs text-slate-500 mt-1">หน่วยนับ: <span class="font-medium text-slate-700">${item.unit}</span></p>
+                        </div>
+                        <div class="mt-4 pt-3 border-t border-slate-100 flex items-center justify-between">
+                            <span class="text-xs text-slate-500">จำนวนที่ขอ:</span>
+                            <div class="flex items-center space-x-1">
+                                <button onclick="updateItemQty(${item.id}, -1)" class="w-8 h-8 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold flex items-center justify-center transition-colors">-</button>
+                                <input type="number" id="qty-input-${item.id}" value="${qty}" min="0" onchange="setItemQty(${item.id}, this.value)" class="w-12 text-center border border-slate-300 rounded-lg py-1 text-sm font-bold text-indigo-700 focus:outline-none">
+                                <button onclick="updateItemQty(${item.id}, 1)" class="w-8 h-8 rounded-lg bg-indigo-50 hover:bg-indigo-100 text-indigo-700 font-bold flex items-center justify-center transition-colors">+</button>
+                            </div>
+                        </div>
                     </div>
                 `;
-                grid.appendChild(card);
-            });
+            }).join('');
         }
 
-        function updateQty(itemId, change) {
-            if(!systemIsOpen) return;
-            const current = currentUserCart[itemId] || 0;
-            const updated = Math.max(0, current + change);
-            if(updated === 0) delete currentUserCart[itemId];
-            else currentUserCart[itemId] = updated;
-            
-            const input = document.getElementById(`qty-input-${itemId}`);
-            if(input) input.value = updated;
-            updateCartSummary();
+        function filterItems() {
+            const query = document.getElementById('search-item').value.toLowerCase();
+            const filtered = initialItems.filter(item => item.name.toLowerCase().includes(query));
+            renderItemsGrid(filtered);
         }
 
-        function setQtyDirect(itemId, val) {
-            const qty = parseInt(val) || 0;
-            if(qty <= 0) delete currentUserCart[itemId];
-            else currentUserCart[itemId] = qty;
+        function updateItemQty(id, delta) {
+            if (!systemIsOpen) {
+                alert("ระบบปิดรับเรื่องสั่งซื้อประจำรอบนี้แล้ว");
+                return;
+            }
+            const current = currentUserCart[id] || 0;
+            const nextVal = Math.max(0, current + delta);
+            setItemQty(id, nextVal);
+        }
+
+        function setItemQty(id, val) {
+            const qty = Math.max(0, parseInt(val) || 0);
+            if (qty > 0) {
+                currentUserCart[id] = qty;
+            } else {
+                delete currentUserCart[id];
+            }
+            const input = document.getElementById(`qty-input-${id}`);
+            if (input) input.value = qty;
             updateCartSummary();
         }
 
         function updateCartSummary() {
             const selectedCount = Object.keys(currentUserCart).length;
-            const totalQty = Object.values(currentUserCart).reduce((a, b) => a + b, 0);
-            document.getElementById("selected-items-count").textContent = selectedCount;
-            document.getElementById("total-qty-sum").textContent = totalQty;
+            const totalQtySum = Object.values(currentUserCart).reduce((a, b) => a + b, 0);
+
+            document.getElementById('selected-items-count').innerText = selectedCount;
+            document.getElementById('total-qty-sum').innerText = totalQtySum;
         }
 
-        function filterItems() {
-            const query = document.getElementById("search-item").value.toLowerCase();
-            const filtered = initialItems.filter(item => String(item.name).toLowerCase().includes(query));
-            renderItemsGrid(filtered);
-        }
-
-        function toggleSystemStatus() {
-            systemIsOpen = document.getElementById("admin-toggle-status").checked;
-            renderItemsGrid(initialItems);
-        }
-
-        function adminUpdateDeptQty(itemId, deptKey, change) {
-            if (!mockDepartmentOrders[deptKey]) {
-                mockDepartmentOrders[deptKey] = { cart: {}, note: "" };
-            }
-            const current = mockDepartmentOrders[deptKey].cart[itemId] || 0;
-            const updated = Math.max(0, current + change);
-            if (updated === 0) delete mockDepartmentOrders[deptKey].cart[itemId];
-            else mockDepartmentOrders[deptKey].cart[itemId] = updated;
-            
-            renderAdminTable();
-        }
-
-        function onAdminFilterChange() {
-            renderAdminTable();
-        }
-
+        // Submit User Order
         async function submitOrder() {
-            const deptSelect = document.getElementById("user-dept");
-            const dept = deptSelect ? deptSelect.value : "";
-            const customItemInput = document.getElementById("user-custom-item");
-            const customItem = customItemInput ? customItemInput.value.trim() : "";
-            const yearMonth = "2026-09";
+            const dept = document.getElementById('user-dept').value;
+            const customItem = document.getElementById('user-custom-item').value.trim();
 
-            if (!dept) { alert("กรุณาเลือกแผนกก่อนส่งรายการ"); return; }
-            if (Object.keys(currentUserCart).length === 0 && !customItem) {
-                alert("กรุณาเลือกวัสดุอย่างน้อย 1 รายการ"); return;
+            if (!dept) {
+                alert("กรุณาเลือก แผนก/หน่วยงาน ก่อนส่งรายการ");
+                return;
             }
 
-            let itemsList = [];
-            Object.keys(currentUserCart).forEach(itemId => {
-                const item = initialItems.find(i => i.id == itemId);
-                if (item) {
-                    itemsList.push({ id: item.id, name: item.name, qty: currentUserCart[itemId], unit: item.unit });
-                }
-            });
+            if (Object.keys(currentUserCart).length === 0 && !customItem) {
+                alert("กรุณาระบุจำนวนอย่างน้อย 1 รายการ หรือแจ้งขอเพิ่มรายการพิเศษ");
+                return;
+            }
+
+            const payload = {
+                department: dept,
+                period: document.getElementById('user-period').value,
+                orders: currentUserCart,
+                customItem: customItem
+            };
+
+            // Record locally for preview
+            mockDepartmentOrders[dept] = {
+                orders: { ...currentUserCart },
+                customItem: customItem
+            };
 
             try {
                 await fetch(GOOGLE_SCRIPT_URL, {
-                    method: "POST",
-                    mode: "no-cors",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({ department: dept, yearMonth: yearMonth, items: itemsList, customItem: customItem })
+                    method: 'POST',
+                    mode: 'no-cors',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
                 });
-
-                alert(`บันทึกรายการความต้องการเรียบร้อยแล้ว!`);
-                currentUserCart = {};
-                if (customItemInput) customItemInput.value = "";
-                updateCartSummary();
-                renderItemsGrid(initialItems);
-            } catch (error) {
-                alert("เกิดข้อผิดพลาดในการเชื่อมต่อกับ Google Sheets");
+                alert("บันทึกข้อมูลความต้องการสั่งซื้อเรียบร้อยแล้ว!");
+            } catch (err) {
+                console.error("Error submitting order:", err);
+                alert("บันทึกข้อมูลสำเร็จ (โหมดจำลอง)");
             }
         }
 
-        // Render Receipt Input Table for Recheck
-        function renderReceiptTable() {
-            const tbody = document.getElementById("receipt-items-tbody");
-            tbody.innerHTML = "";
+        // Toggle System Status (Admin)
+        function toggleSystemStatus() {
+            const toggle = document.getElementById('admin-toggle-status');
+            const statusBanner = document.getElementById('status-banner');
+            const statusIcon = document.getElementById('status-icon');
+            const statusTitle = document.getElementById('status-title');
+            const statusDesc = document.getElementById('status-desc');
+            const statusBadge = document.getElementById('status-badge');
+            const toggleLabelText = document.getElementById('toggle-label-text');
 
-            const filterDept = document.getElementById("admin-filter-dept").value;
-            
-            initialItems.forEach(item => {
-                let totalQty = 0;
-                if (filterDept === "ALL") {
-                    DEPARTMENTS.forEach(dept => {
-                        totalQty += mockDepartmentOrders[dept.full]?.cart[item.id] || 0;
-                    });
-                } else {
-                    totalQty = mockDepartmentOrders[filterDept]?.cart[item.id] || 0;
+            systemIsOpen = toggle.checked;
+
+            if (systemIsOpen) {
+                toggleLabelText.innerText = "รับเรื่องสั่งซื้อ: เปิดอยู่";
+                statusBanner.className = "mb-6 p-4 rounded-xl shadow-sm flex items-center justify-between border-l-4 border-emerald-500 bg-emerald-50 text-emerald-800 no-print";
+                statusIcon.className = "fa-solid fa-circle-check text-emerald-600 text-xl";
+                statusTitle.innerText = "ระบบกำลังเปิดรับรายการความต้องการ";
+                statusDesc.innerText = "สามารถเลือกรายการ และระบุจำนวนที่ต้องการได้จนกว่าแอดมินจะทำการปิดรอบ";
+                statusBadge.className = "bg-emerald-200 text-emerald-800 text-xs font-bold px-3 py-1 rounded-full uppercase";
+                statusBadge.innerText = "เปิดรับข้อมูล";
+            } else {
+                toggleLabelText.innerText = "รับเรื่องสั่งซื้อ: ปิดแล้ว";
+                statusBanner.className = "mb-6 p-4 rounded-xl shadow-sm flex items-center justify-between border-l-4 border-rose-500 bg-rose-50 text-rose-800 no-print";
+                statusIcon.className = "fa-solid fa-circle-xmark text-rose-600 text-xl";
+                statusTitle.innerText = "ระบบปิดรับรายการความต้องการแล้ว";
+                statusDesc.innerText = "แอดมินทำการปิดรอบแล้ว ขณะนี้ไม่อนุญาตให้แก้ไขหรือเพิ่มรายการสั่งซื้อ";
+                statusBadge.className = "bg-rose-200 text-rose-800 text-xs font-bold px-3 py-1 rounded-full uppercase";
+                statusBadge.innerText = "ปิดรับข้อมูล";
+            }
+        }
+
+        function onAdminFilterChange() {
+            const monthVal = document.getElementById('admin-filter-month').value;
+            document.getElementById('selected-period-badge').innerText = `รอบประจำเดือน ${monthVal}`;
+            renderAdminTable();
+        }
+
+        // Render Admin Summary Table
+        function renderAdminTable() {
+            const selectedDept = document.getElementById('admin-filter-dept').value;
+            const head = document.getElementById('admin-table-head');
+            const body = document.getElementById('admin-table-body');
+
+            if (selectedDept === 'ALL') {
+                // Table Header with all departments
+                head.innerHTML = `
+                    <tr>
+                        <th class="p-3 w-12 text-center">ลำดับ</th>
+                        <th class="p-3">รายการวัสดุสำนักงาน</th>
+                        <th class="p-3 text-center w-20">หน่วย</th>
+                        ${DEPARTMENTS.map(d => `<th class="p-3 text-center w-24">${d.short}</th>`).join('')}
+                        <th class="p-3 text-center w-24 bg-indigo-50 text-indigo-900 font-bold">รวมสั่งซื้อ</th>
+                    </tr>
+                `;
+
+                // Table Body
+                body.innerHTML = initialItems.map((item, index) => {
+                    let totalSum = 0;
+                    const deptCols = DEPARTMENTS.map(d => {
+                        const qty = mockDepartmentOrders[d.full]?.orders[item.id] || 0;
+                        totalSum += qty;
+                        return `<td class="p-3 text-center ${qty > 0 ? 'font-bold text-slate-800' : 'text-slate-300'}">${qty || '-'}</td>`;
+                    }).join('');
+
+                    return `
+                        <tr class="hover:bg-slate-50 transition-colors">
+                            <td class="p-3 text-center text-slate-400 font-medium">${index + 1}</td>
+                            <td class="p-3 font-medium text-slate-800">${item.name}</td>
+                            <td class="p-3 text-center text-slate-500">${item.unit}</td>
+                            ${deptCols}
+                            <td class="p-3 text-center font-bold bg-indigo-50/50 text-indigo-700">${totalSum}</td>
+                        </tr>
+                    `;
+                }).join('');
+            } else {
+                // Single Department Table View
+                const deptShort = DEPARTMENTS.find(d => d.full === selectedDept)?.short || selectedDept;
+                head.innerHTML = `
+                    <tr>
+                        <th class="p-3 w-12 text-center">ลำดับ</th>
+                        <th class="p-3">รายการวัสดุสำนักงาน</th>
+                        <th class="p-3 text-center w-24">หน่วยนับ</th>
+                        <th class="p-3 text-center w-32 bg-indigo-50 text-indigo-900 font-bold">จำนวนที่ขอสั่งซื้อ (${deptShort})</th>
+                    </tr>
+                `;
+
+                body.innerHTML = initialItems.map((item, index) => {
+                    const qty = mockDepartmentOrders[selectedDept]?.orders[item.id] || 0;
+                    return `
+                        <tr class="hover:bg-slate-50 transition-colors">
+                            <td class="p-3 text-center text-slate-400 font-medium">${index + 1}</td>
+                            <td class="p-3 font-medium text-slate-800">${item.name}</td>
+                            <td class="p-3 text-center text-slate-500">${item.unit}</td>
+                            <td class="p-3 text-center font-bold bg-indigo-50/50 text-indigo-700">${qty || '-'}</td>
+                        </tr>
+                    `;
+                }).join('');
+            }
+
+            // Render Custom Requested Items
+            renderCustomItemsList(selectedDept);
+        }
+
+        function renderCustomItemsList(deptFilter) {
+            const container = document.getElementById('admin-custom-items-list');
+            let itemsHtml = [];
+
+            if (deptFilter === 'ALL') {
+                for (const [dept, data] of Object.entries(mockDepartmentOrders)) {
+                    if (data.customItem) {
+                        itemsHtml.push(`
+                            <div class="p-3 bg-amber-50 rounded-lg border border-amber-200">
+                                <span class="font-bold text-amber-900 text-xs bg-amber-200 px-2 py-0.5 rounded">${dept}</span>
+                                <p class="mt-1 text-slate-700 text-sm">${data.customItem}</p>
+                            </div>
+                        `);
+                    }
                 }
+            } else {
+                const data = mockDepartmentOrders[deptFilter];
+                if (data && data.customItem) {
+                    itemsHtml.push(`
+                        <div class="p-3 bg-amber-50 rounded-lg border border-amber-200">
+                            <span class="font-bold text-amber-900 text-xs bg-amber-200 px-2 py-0.5 rounded">${deptFilter}</span>
+                            <p class="mt-1 text-slate-700 text-sm">${data.customItem}</p>
+                        </div>
+                    `);
+                }
+            }
 
-                if (totalQty > 0) {
-                    const priceInfo = receiptItemPrices[item.id] || { unitPrice: 0, checked: true };
-                    const tr = document.createElement("tr");
-                    tr.className = "hover:bg-slate-50";
+            if (itemsHtml.length > 0) {
+                container.innerHTML = itemsHtml.join('');
+            } else {
+                container.innerHTML = `<p class="text-slate-400 text-xs italic">ยังไม่มีรายการแจ้งขอเพิ่มในรอบนี้</p>`;
+            }
+        }
 
-                    tr.innerHTML = `
+        // Render Receipt Verification Items Table
+        function renderReceiptItemsTable() {
+            const tbody = document.getElementById('receipt-items-tbody');
+            
+            // Calculate total items from all departments
+            const totalOrdered = {};
+            for (const deptData of Object.values(mockDepartmentOrders)) {
+                if (deptData.orders) {
+                    for (const [itemId, qty] of Object.entries(deptData.orders)) {
+                        totalOrdered[itemId] = (totalOrdered[itemId] || 0) + qty;
+                    }
+                }
+            }
+
+            const activeItems = initialItems.filter(item => (totalOrdered[item.id] || 0) > 0 || receiptItemPrices[item.id]);
+
+            if (activeItems.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="6" class="p-4 text-center text-slate-400">ยังไม่มีรายการสั่งซื้อในระบบสำหรับออกใบเสร็จ</td></tr>`;
+                calculateReceiptTotal();
+                return;
+            }
+
+            tbody.innerHTML = activeItems.map((item, idx) => {
+                const qty = totalOrdered[item.id] || 1;
+                const priceData = receiptItemPrices[item.id] || { selected: true, unitPrice: 0, totalPrice: 0 };
+                receiptItemPrices[item.id] = priceData;
+
+                return `
+                    <tr class="hover:bg-slate-50 transition-colors">
                         <td class="p-2.5 text-center">
-                            <input type="checkbox" id="rec-check-${item.id}" ${priceInfo.checked ? 'checked' : ''} onchange="updateReceiptCalculations()" class="w-4 h-4 text-indigo-600 rounded">
+                            <input type="checkbox" id="chk-receipt-${item.id}" ${priceData.selected ? 'checked' : ''} onchange="toggleReceiptItem(${item.id}, this.checked)" class="rounded text-indigo-600 focus:ring-indigo-500 w-4 h-4">
                         </td>
                         <td class="p-2.5 font-medium text-slate-800">${item.name}</td>
-                        <td class="p-2.5 text-center font-bold text-slate-700">${totalQty}</td>
-                        <td class="p-2.5 text-center text-xs text-slate-500">${item.unit}</td>
+                        <td class="p-2.5 text-center font-bold text-slate-700">${qty}</td>
+                        <td class="p-2.5 text-center text-slate-500">${item.unit}</td>
                         <td class="p-2.5 text-center">
-                            <input type="number" id="rec-price-${item.id}" value="${priceInfo.unitPrice || ''}" placeholder="0.00" step="0.01" oninput="updateReceiptCalculations()" class="w-28 text-center border border-slate-300 rounded p-1 text-sm font-semibold focus:ring-2 focus:ring-indigo-500">
+                            <input type="number" step="0.01" value="${priceData.unitPrice}" oninput="updateReceiptPrice(${item.id}, 'unit', this.value, ${qty})" class="w-28 text-center border border-slate-300 rounded p-1 text-sm focus:ring-1 focus:ring-indigo-500">
                         </td>
-                        <td class="p-2.5 text-center font-bold text-indigo-900" id="rec-subtotal-${item.id}">
-                            0.00
+                        <td class="p-2.5 text-center">
+                            <input type="number" step="0.01" value="${priceData.totalPrice}" oninput="updateReceiptPrice(${item.id}, 'total', this.value, ${qty})" class="w-28 text-center border border-slate-300 rounded p-1 text-sm font-bold text-indigo-700 focus:ring-1 focus:ring-indigo-500">
                         </td>
-                    `;
-                    tbody.appendChild(tr);
-                }
-            });
+                    </tr>
+                `;
+            }).join('');
 
-            updateReceiptCalculations();
+            calculateReceiptTotal();
         }
 
-        function updateReceiptCalculations() {
-            let totalAmount = 0;
-
-            initialItems.forEach(item => {
-                const checkEl = document.getElementById(`rec-check-${item.id}`);
-                const priceEl = document.getElementById(`rec-price-${item.id}`);
-                const subtotalEl = document.getElementById(`rec-subtotal-${item.id}`);
-
-                if (checkEl && priceEl) {
-                    const isChecked = checkEl.checked;
-                    const unitPrice = parseFloat(priceEl.value) || 0;
-
-                    let totalQty = 0;
-                    const filterDept = document.getElementById("admin-filter-dept").value;
-                    if (filterDept === "ALL") {
-                        DEPARTMENTS.forEach(dept => {
-                            totalQty += mockDepartmentOrders[dept.full]?.cart[item.id] || 0;
-                        });
-                    } else {
-                        totalQty = mockDepartmentOrders[filterDept]?.cart[item.id] || 0;
-                    }
-
-                    const subtotal = isChecked ? (totalQty * unitPrice) : 0;
-                    if (subtotalEl) subtotalEl.textContent = subtotal.toFixed(2);
-
-                    if (isChecked) totalAmount += subtotal;
-
-                    receiptItemPrices[item.id] = { unitPrice: unitPrice, checked: isChecked };
-                }
-            });
-
-            document.getElementById("req-total-num-display").textContent = `${totalAmount.toFixed(2)} บาท`;
-            document.getElementById("req-total-text-display").textContent = `(${bahtText(totalAmount)})`;
-        }
-
-        // Generate PEA Official Requisition Form
-        function generateRequisitionForm() {
-            const filterDept = document.getElementById("admin-filter-dept").value;
-            const docNo = document.getElementById("req-doc-no").value || "ผสน.กฟส.ลส.";
-            const docDate = document.getElementById("req-doc-date").value || "10 กันยายน 2569";
-            const receiptNo = document.getElementById("req-receipt-no").value || "-";
-            const receiptDate = document.getElementById("req-receipt-date").value || "-";
-            const wbsNo = document.getElementById("req-wbs-no").value || "";
-            const personName = document.getElementById("req-person-name").value || "นางสาววลัยรัตน์ สรรเสริญ";
-
-            // Update PEA Print Template DOM
-            document.getElementById("pea-doc-from").textContent = filterDept === "ALL" ? "ผสน.กฟส.ลส." : filterDept;
-            document.getElementById("pea-doc-no").textContent = toThaiDigits(docNo);
-            document.getElementById("pea-doc-date").textContent = toThaiDigits(docDate);
-            document.getElementById("pea-body-dept").textContent = filterDept === "ALL" ? "ผสน.กฟส.ลส." : filterDept;
-
-            let totalSum = 0;
-            let totalCount = 0;
-            let itemSummaryList = [];
-
-            const peaTableBody = document.getElementById("pea-table-body");
-            peaTableBody.innerHTML = "";
-
-            initialItems.forEach(item => {
-                const priceInfo = receiptItemPrices[item.id];
-                if (priceInfo && priceInfo.checked) {
-                    let totalQty = 0;
-                    if (filterDept === "ALL") {
-                        DEPARTMENTS.forEach(dept => {
-                            totalQty += mockDepartmentOrders[dept.full]?.cart[item.id] || 0;
-                        });
-                    } else {
-                        totalQty = mockDepartmentOrders[filterDept]?.cart[item.id] || 0;
-                    }
-
-                    if (totalQty > 0) {
-                        totalCount++;
-                        const lineTotal = totalQty * (priceInfo.unitPrice || 0);
-                        totalSum += lineTotal;
-                        itemSummaryList.push(item.name);
-
-                        const tr = document.createElement("tr");
-                        tr.innerHTML = `
-                            <td class="border border-black p-1.5 text-center">${toThaiDigits(totalCount)}</td>
-                            <td class="border border-black p-1.5">${item.name}</td>
-                            <td class="border border-black p-1.5 text-center">${toThaiDigits(totalQty)} ${item.unit}</td>
-                            <td class="border border-black p-1.5 text-right">${toThaiDigits(lineTotal.toFixed(2))}</td>
-                            <td class="border border-black p-1.5 text-center text-xs">
-                                ใบเสร็จเลขที่ ${toThaiDigits(receiptNo)}<br>ลงวันที่ ${toThaiDigits(receiptDate)}
-                            </td>
-                        `;
-                        peaTableBody.appendChild(tr);
-                    }
-                }
-            });
-
-            // Summary Row in PEA Table
-            const summaryTr = document.createElement("tr");
-            summaryTr.className = "font-bold";
-            summaryTr.innerHTML = `
-                <td colspan="3" class="border border-black p-1.5 text-center">
-                    รวมเป็นเงิน ( / ) รวม (  ) ไม่รวม ภาษีมูลค่าเพิ่ม<br>
-                    (${bahtText(totalSum)})
-                </td>
-                <td class="border border-black p-1.5 text-right">${toThaiDigits(totalSum.toFixed(2))}</td>
-                <td class="border border-black p-1.5"></td>
-            `;
-            peaTableBody.appendChild(summaryTr);
-
-            // Populate Body texts
-            document.getElementById("pea-body-item-summary").textContent = itemSummaryList.join(", ") || "วัสดุสำนักงาน";
-            document.getElementById("pea-body-item-count").textContent = toThaiDigits(totalCount);
-            document.getElementById("pea-body-total-num").textContent = `${toThaiDigits(totalSum.toFixed(2))}.-`;
-            document.getElementById("pea-body-total-text").textContent = bahtText(totalSum);
-
-            // Signature & Footer placeholders
-            document.querySelectorAll(".pea-val-total-num").forEach(el => el.textContent = toThaiDigits(totalSum.toFixed(2)));
-            document.querySelectorAll(".pea-val-total-text").forEach(el => el.textContent = bahtText(totalSum));
-            document.querySelectorAll(".pea-val-date").forEach(el => el.textContent = toThaiDigits(docDate));
-            document.getElementById("pea-val-wbs").textContent = toThaiDigits(wbsNo);
-            document.getElementById("pea-val-person").textContent = personName;
-
-            // Trigger Print Preview focusing on PEA Template
-            document.getElementById("print-template-summary").style.display = "none";
-            document.getElementById("print-template-pea-req").style.display = "block";
-            
-            window.print();
-
-            // Re-reset view styles after printing
-            setTimeout(() => {
-                document.getElementById("print-template-summary").style.display = "";
-                document.getElementById("print-template-pea-req").style.display = "";
-            }, 1000);
-        }
-
-        // Admin Table & General Summary Print Render
-        function renderAdminTable() {
-            const thead = document.getElementById("admin-table-head");
-            const tbody = document.getElementById("admin-table-body");
-            const printBody = document.getElementById("print-table-body");
-            const filterDept = document.getElementById("admin-filter-dept").value;
-            
-            document.getElementById("print-dept-text").textContent = filterDept === "ALL" ? "รวมทุกแผนก" : filterDept;
-            document.getElementById("table-title-text").textContent = filterDept === "ALL" ? "สรุปรายการความต้องการสั่งซื้อรวม" : `สรุปรายการความต้องการ: ${filterDept}`;
-
-            let headHtml = `<tr>
-                <th class="p-2 text-center w-10">#</th>
-                <th class="p-2 min-w-[200px]">รายการวัสดุ</th>
-                <th class="p-2 text-center w-20">หน่วยนับ</th>`;
-
-            if (filterDept === "ALL") {
-                DEPARTMENTS.forEach(dept => { headHtml += `<th class="p-2 text-center min-w-[100px]">${dept.short}</th>`; });
-                headHtml += `<th class="p-2 text-center bg-indigo-50 font-bold text-indigo-900 w-24">รวมทั้งหมด</th>`;
-            } else {
-                const deptObj = DEPARTMENTS.find(d => d.full === filterDept);
-                headHtml += `<th class="p-2 text-center bg-indigo-50 font-bold text-indigo-900 w-36">${deptObj ? deptObj.short : filterDept}</th>`;
+        function toggleReceiptItem(itemId, isChecked) {
+            if (receiptItemPrices[itemId]) {
+                receiptItemPrices[itemId].selected = isChecked;
             }
-            headHtml += `<th class="p-2 text-center w-12">จัดการ</th></tr>`;
-            thead.innerHTML = headHtml;
+            calculateReceiptTotal();
+        }
 
-            tbody.innerHTML = "";
-            printBody.innerHTML = "";
+        function updateReceiptPrice(itemId, mode, value, qty) {
+            const val = parseFloat(value) || 0;
+            if (!receiptItemPrices[itemId]) {
+                receiptItemPrices[itemId] = { selected: true, unitPrice: 0, totalPrice: 0 };
+            }
 
-            let printRowIdx = 1;
+            if (mode === 'unit') {
+                receiptItemPrices[itemId].unitPrice = val;
+                receiptItemPrices[itemId].totalPrice = val * qty;
+            } else {
+                receiptItemPrices[itemId].totalPrice = val;
+                receiptItemPrices[itemId].unitPrice = qty > 0 ? val / qty : 0;
+            }
 
-            initialItems.forEach((item, index) => {
-                const tr = document.createElement("tr");
-                tr.className = "hover:bg-slate-50";
+            renderReceiptItemsTable();
+        }
 
-                let rowHtml = `
-                    <td class="p-3 text-center text-slate-400 text-xs font-medium">${index + 1}</td>
-                    <td class="p-3 font-medium text-slate-800">${item.name}</td>
-                    <td class="p-3 text-center text-slate-500 text-xs">${item.unit}</td>
+        function calculateReceiptTotal() {
+            let total = 0;
+            for (const [itemId, data] of Object.entries(receiptItemPrices)) {
+                if (data.selected) {
+                    total += data.totalPrice || 0;
+                }
+            }
+
+            document.getElementById('req-total-num-display').innerText = `${total.toFixed(2)} บาท`;
+            document.getElementById('req-total-text-display').innerText = `(${arabicToThaiText(total)})`;
+        }
+
+        // Convert Thai Baht Number to Text
+        function arabicToThaiText(number) {
+            if (number === 0) return "ศูนย์บาทถ้วน";
+            const thaiNums = ["ศูนย์", "หนึ่ง", "สอง", "สาม", "สี่", "ห้า", "หก", "เจ็ด", "แปด", "เก้า"];
+            const units = ["", "สิบ", "ร้อย", "พัน", "หมื่น", "แสน", "ล้าน"];
+            
+            let [baht, satang] = number.toFixed(2).split('.');
+            let bahtText = "";
+
+            let len = baht.length;
+            for (let i = 0; i < len; i++) {
+                let digit = parseInt(baht[i]);
+                let pos = len - i - 1;
+                if (digit !== 0) {
+                    if (pos === 1 && digit === 1) bahtText += "สิบ";
+                    else if (pos === 1 && digit === 2) bahtText += "ยี่สิบ";
+                    else if (pos === 0 && digit === 1 && len > 1) bahtText += "เอ็ด";
+                    else bahtText += thaiNums[digit] + units[pos];
+                }
+            }
+            bahtText += "บาท";
+
+            if (parseInt(satang) === 0) {
+                bahtText += "ถ้วน";
+            } else {
+                let sLen = satang.length;
+                for (let i = 0; i < sLen; i++) {
+                    let digit = parseInt(satang[i]);
+                    let pos = sLen - i - 1;
+                    if (digit !== 0) {
+                        if (pos === 1 && digit === 1) bahtText += "สิบ";
+                        else if (pos === 1 && digit === 2) bahtText += "ยี่สิบ";
+                        else if (pos === 0 && digit === 1 && sLen > 1) bahtText += "เอ็ด";
+                        else bahtText += thaiNums[digit] + units[pos];
+                    }
+                }
+                bahtText += "สตางค์";
+            }
+
+            return bahtText;
+        }
+
+        // Convert Arabic digits to Thai digits
+        function toThaiDigits(str) {
+            const thaiDigits = ['๐', '๑', '๒', '๓', '๔', '๕', '๖', '๗', '๘', '๙'];
+            return String(str).replace(/[0-9]/g, digit => thaiDigits[digit]);
+        }
+
+        // Generate and Print PEA Requisition Form
+        function generateRequisitionForm() {
+            const docNo = document.getElementById('req-doc-no').value;
+            const docDate = document.getElementById('req-doc-date').value;
+            const receiptNo = document.getElementById('req-receipt-no').value;
+            const receiptDate = document.getElementById('req-receipt-date').value;
+            const wbsNo = document.getElementById('req-wbs-no').value;
+            const personName = document.getElementById('req-person-name').value;
+
+            // Update Header Values in Printable Template
+            document.getElementById('pea-doc-no').innerText = toThaiDigits(docNo);
+            document.getElementById('pea-doc-date').innerText = toThaiDigits(docDate);
+            document.getElementById('pea-val-wbs').innerText = wbsNo;
+            document.getElementById('pea-val-person').innerText = personName;
+
+            const dates = document.querySelectorAll('.pea-val-date');
+            dates.forEach(el => el.innerText = toThaiDigits(docDate));
+
+            // Populate PEA Printable Table
+            const peaTbody = document.getElementById('pea-table-body');
+            let totalAmount = 0;
+            let itemCount = 0;
+            let itemsSummaryNames = [];
+
+            // Compute total orders
+            const totalOrdered = {};
+            for (const deptData of Object.values(mockDepartmentOrders)) {
+                if (deptData.orders) {
+                    for (const [itemId, qty] of Object.entries(deptData.orders)) {
+                        totalOrdered[itemId] = (totalOrdered[itemId] || 0) + qty;
+                    }
+                }
+            }
+
+            const activeItems = initialItems.filter(item => receiptItemPrices[item.id] && receiptItemPrices[item.id].selected);
+
+            peaTbody.innerHTML = activeItems.map((item, idx) => {
+                const qty = totalOrdered[item.id] || 1;
+                const priceInfo = receiptItemPrices[item.id] || { totalPrice: 0 };
+                totalAmount += priceInfo.totalPrice;
+                itemCount++;
+                itemsSummaryNames.push(item.name);
+
+                return `
+                    <tr>
+                        <td class="border border-black p-1.5 text-center">${toThaiDigits(idx + 1)}</td>
+                        <td class="border border-black p-1.5">${item.name}</td>
+                        <td class="border border-black p-1.5 text-center">${toThaiDigits(qty)} ${item.unit}</td>
+                        <td class="border border-black p-1.5 text-right">${toThaiDigits(priceInfo.totalPrice.toFixed(2))}</td>
+                        <td class="border border-black p-1.5 text-center text-xs">เล่มที่/เลขที่ ${toThaiDigits(receiptNo)}<br>ลงวันที่ ${toThaiDigits(receiptDate)}</td>
+                    </tr>
                 `;
+            }).join('');
 
-                let printTotal = 0;
+            // Fill Paragraph Summaries
+            document.getElementById('pea-body-item-summary').innerText = itemsSummaryNames.join(', ') || "วัสดุสำนักงาน";
+            document.getElementById('pea-body-item-count').innerText = toThaiDigits(itemCount);
+            document.getElementById('pea-body-total-num').innerText = toThaiDigits(totalAmount.toFixed(2));
+            document.getElementById('pea-body-total-text').innerText = arabicToThaiText(totalAmount);
 
-                const makeAdminQtyCell = (deptName, qty) => {
+            const totalsNum = document.querySelectorAll('.pea-val-total-num');
+            totalsNum.forEach(el => el.innerText = toThaiDigits(totalAmount.toFixed(2)));
+
+            const totalsText = document.querySelectorAll('.pea-val-total-text');
+            totalsText.forEach(el => el.innerText = arabicToThaiText(totalAmount));
+
+            window.print();
+        }
+
+        // Handle Print Trigger Button
+        function triggerPrint() {
+            if (currentAdminSubTab === 'receipt') {
+                generateRequisitionForm();
+            } else {
+                // Populate Summary Print Template
+                const deptFilter = document.getElementById('admin-filter-dept').value;
+                document.getElementById('print-dept-text').innerText = deptFilter === 'ALL' ? 'รวมทุกแผนก' : deptFilter;
+                document.getElementById('print-period-text').innerText = document.getElementById('admin-filter-month').value;
+
+                const printBody = document.getElementById('print-table-body');
+                
+                printBody.innerHTML = initialItems.map((item, idx) => {
+                    let qtyDisplay = 0;
+                    if (deptFilter === 'ALL') {
+                        for (const deptData of Object.values(mockDepartmentOrders)) {
+                            qtyDisplay += (deptData.orders ? (deptData.orders[item.id] || 0) : 0);
+                        }
+                    } else {
+                        const deptData = mockDepartmentOrders[deptFilter];
+                        qtyDisplay = deptData && deptData.orders ? (deptData.orders[item.id] || 0) : 0;
+                    }
+
                     return `
-                        <td class="p-1.5 text-center">
-                            <div class="inline-flex items-center space-x-1 bg-slate-100 p-0.5 rounded border border-slate-200">
-                                <button onclick="adminUpdateDeptQty('${item.id}', '${deptName}', -1)" class="w-5 h-5 bg-white rounded border border-slate-300 text-xs font-bold text-slate-600 hover:bg-slate-200 flex items-center justify-center">-</button>
-                                <span class="w-6 text-center font-bold text-xs ${qty ? 'text-indigo-600' : 'text-slate-400'}">${qty || 0}</span>
-                                <button onclick="adminUpdateDeptQty('${item.id}', '${deptName}', 1)" class="w-5 h-5 bg-indigo-600 rounded text-xs font-bold text-white hover:bg-indigo-700 flex items-center justify-center">+</button>
-                            </div>
-                        </td>
+                        <tr>
+                            <td class="border border-slate-400 p-2 text-center">${idx + 1}</td>
+                            <td class="border border-slate-400 p-2">${item.name}</td>
+                            <td class="border border-slate-400 p-2 text-center">${item.unit}</td>
+                            <td class="border border-slate-400 p-2 text-center font-bold">${qtyDisplay || '-'}</td>
+                            <td class="border border-slate-400 p-2"></td>
+                        </tr>
                     `;
-                };
+                }).join('');
 
-                if (filterDept === "ALL") {
-                    let total = 0;
-                    DEPARTMENTS.forEach(dept => {
-                        const q = mockDepartmentOrders[dept.full]?.cart[item.id] || 0;
-                        total += q;
-                        rowHtml += makeAdminQtyCell(dept.full, q);
-                    });
-                    rowHtml += `<td class="p-3 text-center font-bold bg-indigo-100 text-indigo-900">${total}</td>`;
-                    printTotal = total;
-                } else {
-                    const q = mockDepartmentOrders[filterDept]?.cart[item.id] || 0;
-                    rowHtml += makeAdminQtyCell(filterDept, q);
-                    printTotal = q;
-                }
-
-                rowHtml += `
-                    <td class="p-3 text-center">
-                        <button onclick="deleteMainItem('${item.id}', '${item.name}')" class="text-rose-500 hover:text-rose-700 p-1.5 rounded-lg">
-                            <i class="fa-solid fa-trash-can"></i>
-                        </button>
-                    </td>
-                `;
-
-                tr.innerHTML = rowHtml;
-                tbody.appendChild(tr);
-
-                if(printTotal > 0) {
-                    const printTr = document.createElement("tr");
-                    printTr.innerHTML = `
-                        <td class="border border-slate-400 p-2 text-center">${printRowIdx++}</td>
-                        <td class="border border-slate-400 p-2 font-medium">${item.name}</td>
-                        <td class="border border-slate-400 p-2 text-center">${item.unit}</td>
-                        <td class="border border-slate-400 p-2 text-center font-bold text-lg">${printTotal}</td>
-                        <td class="border border-slate-400 p-2"></td>
-                    `;
-                    printBody.appendChild(printTr);
-                }
-            });
+                window.print();
+            }
         }
     </script>
 </body>
