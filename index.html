@@ -3,1031 +3,286 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ระบบสั่งซื้อวัสดุสำนักงาน - กฟส.หลังสวน</title>
+    <title>ระบบสั่งซื้อวัสดุสำนักงาน</title>
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Font Awesome Icons -->
+    <!-- Google Fonts Prompt -->
+    <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- FontAwesome icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <!-- Google Font - Sarabun -->
-    <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
-        body { font-family: 'Sarabun', sans-serif; }
-        .font-sarabun { font-family: 'Sarabun', sans-serif; }
-        
-        @media print {
-            .no-print { display: none !important; }
-            .print-only { display: block !important; }
-            .page-break { page-break-before: always; }
-            body { background-color: white !important; font-size: 14pt; color: black; }
-            @page { size: A4 portrait; margin: 15mm 20mm 15mm 20mm; }
+        body {
+            font-family: 'Prompt', sans-serif;
+            background-color: #f1f5f9;
         }
-        .print-only { display: none; }
     </style>
 </head>
-<body class="bg-slate-100 min-h-screen flex flex-col text-slate-800">
+<body class="min-h-screen pb-24 text-slate-800">
 
     <!-- Header / Navbar -->
-    <header class="bg-indigo-900 text-white shadow-md no-print sticky top-0 z-50">
-        <div class="max-w-7xl mx-auto px-4 py-3 flex justify-between items-center">
+    <header class="bg-indigo-900 text-white shadow-lg sticky top-0 z-30">
+        <div class="max-w-7xl mx-auto px-4 py-4 flex flex-wrap justify-between items-center gap-4">
             <div class="flex items-center space-x-3">
-                <i class="fa-solid fa-boxes-packing text-amber-400 text-2xl"></i>
+                <div class="bg-amber-500 p-2 rounded-lg text-indigo-950 font-bold text-xl">
+                    <i class="fa-solid fa-box-archive"></i>
+                </div>
                 <div>
-                    <h1 class="font-bold text-lg leading-tight">ระบบสั่งซื้อวัสดุสำนักงาน</h1>
+                    <h1 class="text-xl font-bold leading-tight">ระบบสั่งซื้อวัสดุสำนักงาน</h1>
                     <p class="text-xs text-indigo-200">กฟส.หลังสวน และหน่วยงานในสังกัด</p>
                 </div>
             </div>
-            
-            <!-- Tab Switcher -->
-            <div class="flex bg-indigo-950 p-1 rounded-lg text-sm font-medium">
-                <button id="btn-user-mode" onclick="switchMode('user')" class="px-4 py-1.5 rounded-md transition-colors bg-indigo-600 text-white shadow">
-                    <i class="fa-solid fa-pen-to-square mr-1"></i> กรอกความต้องการ
+            <div class="flex items-center space-x-2">
+                <button class="bg-indigo-700 hover:bg-indigo-600 px-3 py-1.5 rounded-lg text-xs md:text-sm font-medium transition flex items-center gap-2">
+                    <i class="fa-solid fa-pen-to-square"></i> กรอกความต้องการ
                 </button>
-                <button id="btn-admin-mode" onclick="switchMode('admin')" class="px-4 py-1.5 rounded-md transition-colors text-indigo-200 hover:text-white">
-                    <i class="fa-solid fa-user-shield mr-1"></i> ผู้ดูแลระบบ (Admin)
+                <button class="bg-indigo-950 hover:bg-black px-3 py-1.5 rounded-lg text-xs md:text-sm font-medium transition flex items-center gap-2 text-indigo-200">
+                    <i class="fa-solid fa-user-gear"></i> ผู้ดูแลระบบ (Admin)
                 </button>
             </div>
         </div>
     </header>
 
-    <!-- Main Content Container -->
-    <main class="max-w-7xl mx-auto px-4 py-6 flex-1 w-full">
+    <main class="max-w-7xl mx-auto px-4 mt-6 space-y-6">
 
-        <!-- Banner แจ้งเตือนสถานะการเปิด/ปิดรับเรื่อง -->
-        <div id="status-banner" class="mb-6 p-4 rounded-xl shadow-sm flex items-center justify-between border-l-4 border-emerald-500 bg-emerald-50 text-emerald-800 no-print">
+        <!-- Banner สถานะระบบ -->
+        <div class="bg-emerald-50 border border-emerald-200 rounded-2xl p-4 flex items-center justify-between shadow-sm">
             <div class="flex items-center space-x-3">
-                <i id="status-icon" class="fa-solid fa-circle-check text-emerald-600 text-xl"></i>
+                <div class="w-10 h-10 rounded-full bg-emerald-500 text-white flex items-center justify-center font-bold text-lg">
+                    <i class="fa-solid fa-check"></i>
+                </div>
                 <div>
-                    <span class="font-bold text-base" id="status-title">ระบบกำลังเปิดรับรายการความต้องการ</span>
-                    <p class="text-sm opacity-90" id="status-desc">สามารถเลือกรายการ และระบุจำนวนที่ต้องการได้จนกว่าแอดมินจะทำการปิดรอบ</p>
+                    <h2 class="font-bold text-emerald-900 text-base">ระบบกำลังเปิดรับรายการความต้องการ</h2>
+                    <p class="text-xs text-emerald-700">สามารถเลือกรายการ และระบุจำนวนที่ต้องการได้จนกว่าแอดมินจะทำการปิดรอบ</p>
                 </div>
             </div>
-            <span id="status-badge" class="bg-emerald-200 text-emerald-800 text-xs font-bold px-3 py-1 rounded-full uppercase">เปิดรับข้อมูล</span>
+            <span class="bg-emerald-200 text-emerald-800 text-xs px-3 py-1.5 rounded-full font-semibold hidden md:inline-block">
+                เปิดรับข้อมูล
+            </span>
         </div>
 
-        <!-- ==================== MODE 1: USER VIEW (กรอกความต้องการ) ==================== -->
-        <section id="user-view" class="space-y-6">
-            <!-- Form Header & Department Selector -->
-            <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200 no-print">
-                <h2 class="text-lg font-bold text-slate-800 mb-4 flex items-center">
-                    <i class="fa-solid fa-id-card text-indigo-600 mr-2"></i> ข้อมูลผู้ส่งความต้องการ
-                </h2>
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div>
-                        <label class="block text-sm font-semibold text-slate-700 mb-1">แผนก / หน่วยงาน <span class="text-red-500">*</span></label>
-                        <select id="user-dept" class="w-full border-slate-300 rounded-lg p-2.5 text-sm border focus:ring-2 focus:ring-indigo-500 focus:outline-none">
-                            <option value="">-- กรุณาเลือกแผนก --</option>
-                            <option value="แผนกสนับสนุน (ผสน.) และ กฟส.xs">แผนกสนับสนุน (ผสน.) และ กฟส.xs</option>
-                            <option value="แผนกบริการและลูกค้าสัมพันธ์ (ผบส.)">แผนกบริการและลูกค้าสัมพันธ์ (ผบส.)</option>
-                            <option value="แผนกบริหารรายได้ค่าไฟ (ผบร.)">แผนกบริหารรายได้ค่าไฟ (ผบร.)</option>
-                            <option value="แผนกก่อสร้างระบบไฟฟ้า (ผกส.)">แผนกก่อสร้างระบบไฟฟ้า (ผกส.)</option>
-                            <option value="แผนกมิเตอร์และหม้อแปลง (ผมต.)">แผนกมิเตอร์และหม้อแปลง (ผมต.)</option>
-                            <option value="แผนกปฏิบัติการและบำรุงรักษาระบบไฟฟ้า (ผปบ.)">แผนกปฏิบัติการและบำรุงรักษาระบบไฟฟ้า (ผปบ.)</option>
-                        </select>
-                    </div>
-                    <div>
-                        <label class="block text-sm font-semibold text-slate-700 mb-1">รอบเดือนที่สั่งซื้อ</label>
-                        <input type="text" id="user-period" class="w-full border-slate-300 rounded-lg p-2.5 text-sm border bg-slate-50 font-medium" value="ประจำเดือน กันยายน 2026 (ตัดรอบ 15 ก.ย.)" readonly>
-                    </div>
-                </div>
-                
-                <div class="mt-4 pt-4 border-t border-slate-200">
-                    <label class="block text-sm font-semibold text-slate-700 mb-1">
-                        <i class="fa-solid fa-plus-circle text-indigo-600 mr-1"></i> แจ้งขอเพิ่มรายการวัสดุอื่นๆ (กรณีไม่มีในรายการด้านบน)
-                    </label>
-                    <textarea id="user-custom-item" rows="2" placeholder="ระบุชื่อรายการ, หน่วยนับ, และจำนวนที่ต้องการ (เช่น: ปากกาเคมีสีแดง 2 ด้าม, กระดาษคาร์บอน 1 กล่อง)" class="w-full border-slate-300 rounded-lg p-2.5 text-sm border focus:ring-2 focus:ring-indigo-500 focus:outline-none"></textarea>
-                </div>
+        <!-- ฟอร์มข้อมูลผู้ส่ง -->
+        <div class="bg-white rounded-2xl p-6 shadow-sm border border-slate-200 space-y-4">
+            <div class="flex items-center space-x-2 text-indigo-900 font-bold text-lg border-b border-slate-100 pb-3">
+                <i class="fa-solid fa-address-card text-indigo-600"></i>
+                <span>ข้อมูลผู้ส่งความต้องการ</span>
             </div>
-
-            <!-- Filter & Search Bar -->
-            <div class="bg-white p-4 rounded-xl shadow-sm border border-slate-200 flex flex-wrap gap-3 items-center justify-between no-print">
-                <div class="relative flex-1 min-w-[240px]">
-                    <i class="fa-solid fa-magnifying-glass absolute left-3 top-3 text-slate-400"></i>
-                    <input type="text" id="search-item" oninput="filterItems()" placeholder="ค้นหารายการวัสดุ..." class="w-full pl-9 pr-4 py-2 border border-slate-300 rounded-lg text-sm focus:ring-2 focus:ring-indigo-500 focus:outline-none">
-                </div>
-                <div class="text-sm text-slate-500">
-                    แสดงวัสดุทั้งหมด <span id="item-count" class="font-bold text-indigo-600">0</span> รายการ
-                </div>
-            </div>
-
-            <!-- Material Items Grid -->
-            <div id="items-grid" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 no-print">
-                <div class="col-span-full text-center py-8 text-slate-400">
-                    <i class="fa-solid fa-spinner fa-spin text-2xl mb-2 text-indigo-600"></i>
-                    <p>กำลังโหลดรายการวัสดุจาก Google Sheet...</p>
-                </div>
-            </div>
-
-            <!-- Form Submit Floating Action Bar -->
-            <div class="bg-white p-4 rounded-xl shadow-lg border border-slate-200 sticky bottom-4 flex justify-between items-center z-40 no-print">
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
-                    <p class="text-xs text-slate-500">รวมรายการที่เลือก</p>
-                    <p class="text-lg font-bold text-indigo-700"><span id="selected-items-count">0</span> รายการ (<span id="total-qty-sum">0</span> ชิ้น)</p>
-                </div>
-                <button id="btn-submit-order" onclick="submitOrder()" class="bg-indigo-600 hover:bg-indigo-700 text-white font-bold px-6 py-2.5 rounded-lg shadow flex items-center space-x-2 transition-all">
-                    <i class="fa-solid fa-paper-plane"></i>
-                    <span>ส่งรายการความต้องการ</span>
-                </button>
-            </div>
-        </section>
-
-        <!-- ==================== MODE 2: ADMIN VIEW (ผู้ดูแลระบบ) ==================== -->
-        <section id="admin-view" class="space-y-6 hidden no-print">
-            <!-- Control Panel -->
-            <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200">
-                <div class="flex justify-between items-center mb-4 flex-wrap gap-2">
-                    <h2 class="text-lg font-bold text-slate-800 flex items-center">
-                        <i class="fa-solid fa-sliders text-indigo-600 mr-2"></i> แผงควบคุมระบบ (Admin Control)
-                    </h2>
-                    <!-- Sub-Tab Switcher -->
-                    <div class="flex bg-slate-100 p-1 rounded-lg text-xs font-semibold">
-                        <button id="subtab-summary" onclick="switchAdminSubTab('summary')" class="px-3 py-1.5 rounded-md bg-white text-indigo-700 shadow">
-                            <i class="fa-solid fa-table-list mr-1"></i> ตารางรวบรวมสั่งซื้อ
-                        </button>
-                        <button id="subtab-receipt" onclick="switchAdminSubTab('receipt')" class="px-3 py-1.5 rounded-md text-slate-600 hover:text-slate-900">
-                            <i class="fa-solid fa-file-invoice-dollar mr-1"></i> ตรวจรับ & ออกใบเบิกเงิน (กฟภ.)
-                        </button>
-                    </div>
-                </div>
-
-                <div class="grid grid-cols-1 md:grid-cols-4 gap-4 items-end">
-                    <div class="flex items-center space-x-3 bg-slate-50 p-3 rounded-xl border border-slate-200">
-                        <label class="relative inline-flex items-center cursor-pointer">
-                            <input type="checkbox" id="admin-toggle-status" onchange="toggleSystemStatus()" class="sr-only peer" checked>
-                            <div class="w-11 h-6 bg-slate-300 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-emerald-600"></div>
-                        </label>
-                        <div>
-                            <span class="block font-bold text-xs" id="toggle-label-text">รับเรื่องสั่งซื้อ: เปิดอยู่</span>
-                            <span class="text-[10px] text-slate-500">สวิตช์เปิด/ปิดรับเรื่อง</span>
-                        </div>
-                    </div>
-
-                    <div>
-                        <label class="block text-xs font-semibold text-slate-600 mb-1"><i class="fa-regular fa-calendar-days text-indigo-600 mr-1"></i>เลือกรอบเดือน</label>
-                        <select id="admin-filter-month" onchange="onAdminFilterChange()" class="w-full border-slate-300 rounded-lg p-2 text-sm border focus:ring-2 focus:ring-indigo-500 focus:outline-none">
-                            <option value="2026-09">กันยายน 2026</option>
-                            <option value="2026-10">ตุลาคม 2026</option>
-                            <option value="2026-11">พฤศจิกายน 2026</option>
-                            <option value="2026-12">ธันวาคม 2026</option>
-                        </select>
-                    </div>
-
-                    <div>
-                        <label class="block text-xs font-semibold text-slate-600 mb-1"><i class="fa-solid fa-building text-indigo-600 mr-1"></i>กรองตามแผนก</label>
-                        <select id="admin-filter-dept" onchange="renderAdminTable()" class="w-full border-slate-300 rounded-lg p-2 text-sm border focus:ring-2 focus:ring-indigo-500 focus:outline-none">
-                            <option value="ALL">-- แสดงรวมทุกแผนก --</option>
-                            <option value="แผนกสนับสนุน (ผสน.) และ กฟส.xs">แผนกสนับสนุน (ผสน.) และ กฟส.xs</option>
-                            <option value="แผนกบริการและลูกค้าสัมพันธ์ (ผบส.)">แผนกบริการและลูกค้าสัมพันธ์ (ผบส.)</option>
-                            <option value="แผนกบริหารรายได้ค่าไฟ (ผบร.)">แผนกบริหารรายได้ค่าไฟ (ผบร.)</option>
-                            <option value="แผนกก่อสร้างระบบไฟฟ้า (ผกส.)">แผนกก่อสร้างระบบไฟฟ้า (ผกส.)</option>
-                            <option value="แผนกมิเตอร์และหม้อแปลง (ผมต.)">แผนกมิเตอร์และหม้อแปลง (ผมต.)</option>
-                            <option value="แผนกปฏิบัติการและบำรุงรักษาระบบไฟฟ้า (ผปบ.)">แผนกปฏิบัติการและบำรุงรักษาระบบไฟฟ้า (ผปบ.)</option>
-                        </select>
-                    </div>
-
-                    <div>
-                        <button onclick="triggerPrint()" class="w-full bg-slate-800 hover:bg-slate-900 text-white font-bold py-2 px-3 rounded-lg shadow flex items-center justify-center space-x-2 text-sm transition-colors">
-                            <i class="fa-solid fa-print"></i>
-                            <span>พิมพ์เอกสาร</span>
-                        </button>
-                    </div>
-                </div>
-            </div>
-
-            <!-- SUB-TAB 1: Summary Table -->
-            <div id="admin-subcontent-summary" class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
-                <div class="p-4 bg-slate-50 border-b border-slate-200 flex justify-between items-center flex-wrap gap-2">
-                    <h3 class="font-bold text-slate-700 flex items-center">
-                        <i class="fa-solid fa-list-check text-indigo-600 mr-2"></i> <span id="table-title-text">สรุปรายการความต้องการสั่งซื้อรวม</span>
-                    </h3>
-                    <div class="flex items-center space-x-2">
-                        <button onclick="loadDataFromSheets()" class="text-xs bg-indigo-50 hover:bg-indigo-100 text-indigo-700 font-bold px-3 py-1 rounded-lg border border-indigo-200 transition-colors flex items-center space-x-1">
-                            <i class="fa-solid fa-rotate-right"></i>
-                            <span>รีเฟรชข้อมูล</span>
-                        </button>
-                        <span id="selected-period-badge" class="text-xs bg-indigo-100 text-indigo-800 px-2.5 py-1 rounded-full font-medium">รอบประจำเดือน กันยายน 2026</span>
-                    </div>
-                </div>
-                <div class="overflow-x-auto">
-                    <table class="w-full text-left text-sm">
-                        <thead id="admin-table-head" class="bg-slate-100 text-slate-600 border-b border-slate-200 font-semibold text-xs uppercase"></thead>
-                        <tbody id="admin-table-body" class="divide-y divide-slate-100"></tbody>
-                    </table>
-                </div>
-
-                <div class="p-5 bg-white border-t border-slate-200">
-                    <h4 class="font-bold text-slate-800 text-sm mb-3 flex items-center">
-                        <i class="fa-solid fa-comment-medical text-amber-500 mr-2"></i> รายการวัสดุพิเศษที่ผู้ใช้แจ้งขอเพิ่ม
-                    </h4>
-                    <div id="admin-custom-items-list" class="space-y-3 text-sm text-slate-600">
-                        <p class="text-slate-400 text-xs italic">ยังไม่มีรายการแจ้งขอเพิ่มในรอบนี้</p>
-                    </div>
-                </div>
-            </div>
-
-            <!-- SUB-TAB 2: Receipt Verification & Requisition Form Generator -->
-            <div id="admin-subcontent-receipt" class="bg-white rounded-xl shadow-sm border border-slate-200 p-6 space-y-6 hidden">
-                <div class="border-b border-slate-200 pb-4">
-                    <h3 class="font-bold text-lg text-slate-800 flex items-center">
-                        <i class="fa-solid fa-receipt text-indigo-600 mr-2"></i> กรอกรายละเอียดใบเสร็จเพื่อออกบันทึกข้อความขอซื้อ/เบิกเงิน
-                    </h3>
-                    <p class="text-xs text-slate-500 mt-1">ป้อนข้อมูลเลขที่ใบเสร็จรับเงิน วันที่ และราคาเพื่อสร้างแบบฟอร์มขออนุมัติเบิกเงิน กฟภ.</p>
-                </div>
-
-                <!-- Receipt Master Info Header Form -->
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-4 bg-indigo-50/50 p-4 rounded-xl border border-indigo-100">
-                    <div>
-                        <label class="block text-xs font-bold text-slate-700 mb-1">เลขที่หนังสือบันทึก</label>
-                        <input type="text" id="req-doc-no" value="ผสน.กฟส.ลส." class="w-full border-slate-300 rounded-lg p-2 text-sm border focus:ring-2 focus:ring-indigo-500 bg-white">
-                    </div>
-                    <div>
-                        <label class="block text-xs font-bold text-slate-700 mb-1">วันที่ในหนังสือบันทึก</label>
-                        <input type="text" id="req-doc-date" value="10 กันยายน 2569" class="w-full border-slate-300 rounded-lg p-2 text-sm border focus:ring-2 focus:ring-indigo-500 bg-white">
-                    </div>
-                    <div>
-                        <label class="block text-xs font-bold text-slate-700 mb-1">เลขที่ใบเสร็จรับเงิน / เล่มที่</label>
-                        <input type="text" id="req-receipt-no" value="055230220990000006" class="w-full border-slate-300 rounded-lg p-2 text-sm border focus:ring-2 focus:ring-indigo-500 bg-white" placeholder="เช่น 055230220990000006">
-                    </div>
-                    <div>
-                        <label class="block text-xs font-bold text-slate-700 mb-1">วันที่ตามใบเสร็จรับเงิน</label>
-                        <input type="text" id="req-receipt-date" value="10/09/2569" class="w-full border-slate-300 rounded-lg p-2 text-sm border focus:ring-2 focus:ring-indigo-500 bg-white" placeholder="เช่น 10/09/2569">
-                    </div>
-                    <div>
-                        <label class="block text-xs font-bold text-slate-700 mb-1">งบประมาณ (บัญชี/WBS)</label>
-                        <input type="text" id="req-wbs-no" value="5303010100...WBS/CCA...J333010100" class="w-full border-slate-300 rounded-lg p-2 text-sm border focus:ring-2 focus:ring-indigo-500 bg-white">
-                    </div>
-                    <div>
-                        <label class="block text-xs font-bold text-slate-700 mb-1">ชื่อผู้ดำเนินการ (ผู้ขอเบิก)</label>
-                        <input type="text" id="req-person-name" value="นางสาววลัยรัตน์ สรรเสริญ" class="w-full border-slate-300 rounded-lg p-2 text-sm border focus:ring-2 focus:ring-indigo-500 bg-white">
-                    </div>
-                </div>
-
-                <!-- Item Price & Recheck Table -->
-                <div>
-                    <h4 class="font-bold text-sm text-slate-800 mb-3 flex items-center justify-between">
-                        <span><i class="fa-solid fa-list-check text-indigo-600 mr-2"></i>รายการพัสดุที่ได้รับตามใบเสร็จ</span>
-                        <span class="text-xs text-slate-500 font-normal">* กรอกราคารวม/ราคาต่อหน่วยเพื่อคำนวณเงิน</span>
-                    </h4>
-                    <div class="overflow-x-auto border border-slate-200 rounded-lg">
-                        <table class="w-full text-left text-sm">
-                            <thead class="bg-slate-100 text-slate-700 font-semibold text-xs border-b border-slate-200">
-                                <tr>
-                                    <th class="p-2.5 text-center w-12">เลือก</th>
-                                    <th class="p-2.5">รายการพัสดุ / งานจ้าง</th>
-                                    <th class="p-2.5 text-center w-28">จำนวนสั่งซื้อ</th>
-                                    <th class="p-2.5 text-center w-24">หน่วยนับ</th>
-                                    <th class="p-2.5 text-center w-36">ราคาต่อหน่วย (บาท)</th>
-                                    <th class="p-2.5 text-center w-36">จำนวนเงินรวม (บาท)</th>
-                                </tr>
-                            </thead>
-                            <tbody id="receipt-items-tbody" class="divide-y divide-slate-100">
-                                <!-- Populated dynamically via JS -->
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-
-                <!-- Price Summary Bar -->
-                <div class="bg-slate-900 text-white p-4 rounded-xl flex justify-between items-center">
-                    <div>
-                        <p class="text-xs text-slate-400">ยอดเงินรวมสุทธิ (ตามใบเสร็จ)</p>
-                        <p class="text-xs text-amber-300 font-medium" id="req-total-text-display">(ศูนย์บาทถ้วน)</p>
-                    </div>
-                    <div class="text-right">
-                        <p class="text-2xl font-bold text-amber-400" id="req-total-num-display">0.00 บาท</p>
-                    </div>
-                </div>
-
-                <div class="flex justify-end space-x-3 pt-2">
-                    <button onclick="generateRequisitionForm()" class="bg-indigo-600 hover:bg-indigo-700 text-white font-bold px-6 py-2.5 rounded-lg shadow flex items-center space-x-2">
-                        <i class="fa-solid fa-file-contract"></i>
-                        <span>สร้างแบบฟอร์มบันทึกข้อความขอเบิกเงิน</span>
-                    </button>
-                </div>
-            </div>
-        </section>
-
-        <!-- ==================== PRINT TEMPLATE 1: ตารางสรุปสั่งซื้อทั่วไป ==================== -->
-        <section id="print-template-summary" class="print-only p-8 bg-white text-black font-sarabun">
-            <div class="text-center mb-6">
-                <h1 class="text-2xl font-bold">ใบสรุปรายการสั่งซื้อวัสดุสำนักงาน</h1>
-                <p class="text-sm">การไฟฟ้าส่วนภูมิภาคอำเภอหลังสวน และหน่วยงานในสังกัด</p>
-                <p class="text-xs mt-1">ประจำรอบเดือน: <span id="print-period-text">กันยายน 2026</span> | หน่วยงาน: <span id="print-dept-text">รวมทุกแผนก</span></p>
-            </div>
-
-            <table class="w-full border-collapse border border-slate-400 text-sm mb-6">
-                <thead>
-                    <tr class="bg-slate-200 text-center">
-                        <th class="border border-slate-400 p-2 w-12">ลำดับ</th>
-                        <th class="border border-slate-400 p-2 text-left">รายการวัสดุสำนักงาน</th>
-                        <th class="border border-slate-400 p-2 w-24">หน่วยนับ</th>
-                        <th class="border border-slate-400 p-2 w-28">จำนวนรวมสั่งซื้อ</th>
-                        <th class="border border-slate-400 p-2 w-36">หมายเหตุ / ราคาต่อหน่วย</th>
-                    </tr>
-                </thead>
-                <tbody id="print-table-body"></tbody>
-            </table>
-
-            <div class="flex justify-between items-end mt-12 text-sm">
-                <div class="text-center w-48">
-                    <p>(........................................................)</p>
-                    <p class="text-xs text-slate-500">ผู้จัดซื้อ</p>
-                </div>
-                <div class="text-center w-48">
-                    <p>(........................................................)</p>
-                    <p class="text-xs text-slate-500">ผู้อนุมัติ</p>
-                </div>
-            </div>
-        </section>
-
-        <!-- ==================== PRINT TEMPLATE 2: แบบฟอร์มบันทึกข้อความ กฟภ. ==================== -->
-        <section id="print-template-pea-req" class="print-only p-2 bg-white text-black font-sarabun text-[15pt] leading-normal">
-            <!-- PEA Logo Header -->
-            <div class="flex items-center mb-2">
-                <div class="w-20 mr-4">
-                    <img src="https://www.pea.co.th/portals/0/PEA_logo_Vector.png" alt="PEA Logo" class="w-full h-auto object-contain">
+                    <label class="block text-xs font-semibold text-slate-600 mb-1">แผนก / หน่วยงาน <span class="text-red-500">*</span></label>
+                    <select id="departmentSelect" class="w-full border border-slate-300 rounded-xl px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 bg-slate-50">
+                        <option value="">-- กรุณาเลือกแผนก --</option>
+                        <option value="แผนกบริหารงานทั่วไป">แผนกบริหารงานทั่วไป</option>
+                        <option value="แผนกการเงินและบัญชี">แผนกการเงินและบัญชี</option>
+                        <option value="แผนกบริการลูกค้า">แผนกบริการลูกค้า</option>
+                        <option value="แผนกปฏิบัติการและบำรุงรักษา">แผนกปฏิบัติการและบำรุงรักษา</option>
+                        <option value="แผนกคลังพัสดุ">แผนกคลังพัสดุ</option>
+                    </select>
                 </div>
                 <div>
-                    <h1 class="text-2xl font-bold tracking-tight">การไฟฟ้าส่วนภูมิภาค</h1>
-                    <p class="text-xs uppercase tracking-wider font-semibold">PROVINCIAL ELECTRICITY AUTHORITY</p>
+                    <label class="block text-xs font-semibold text-slate-600 mb-1">รอบเดือนที่สั่งซื้อ</label>
+                    <input type="text" id="roundInput" class="w-full border border-slate-300 rounded-xl px-3 py-2 text-sm bg-slate-100 text-slate-600 font-medium cursor-not-allowed" value="ประจำเดือน กันยายน 2026 (ตัดรอบ 15 ก.ย.)" readonly>
                 </div>
             </div>
 
-            <!-- Memo Header Text -->
-            <div class="grid grid-cols-2 gap-2 mb-2 text-[15pt]">
-                <div><span class="font-bold">จาก</span> <span id="pea-doc-from">ผสน.กฟส.ลส.</span></div>
-                <div><span class="font-bold">ถึง</span> ผจก.กฟส.ลส.</div>
-                <div><span class="font-bold">เลขที่</span> <span id="pea-doc-no">ผสน.กฟส.ลส.</span></div>
-                <div><span class="font-bold">วันที่</span> <span id="pea-doc-date">๑๐ กันยายน ๒๕๖๙</span></div>
+            <div>
+                <label class="block text-xs font-semibold text-slate-600 mb-1 flex items-center gap-1">
+                    <i class="fa-solid fa-circle-plus text-indigo-500"></i> แจ้งขอเพิ่มรายการวัสดุอื่นๆ (กรณีไม่มีในรายการด้านล่าง)
+                </label>
+                <textarea id="customRequestInput" rows="2" class="w-full border border-slate-300 rounded-xl p-3 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500" placeholder="ระบุชื่อรายการ, หน่วยนับ, และจำนวนที่ต้องการ (เช่น: ปากกาเคมีสีแดง 2 ด้าม, กระดาษคาร์บอน 1 กล่อง)"></textarea>
             </div>
+        </div>
 
-            <div class="mb-3 text-[15pt]">
-                <span class="font-bold">เรื่อง</span> รายงานขอความเห็นชอบการจัดซื้อจัดจ้างพัสดุ ที่เกี่ยวกับค่าใช้จ่ายในการบริหารงานที่มีวงเงินการจัดซื้อจัดจ้างครั้งหนึ่งไม่เกิน ๑๐,๐๐๐ บาท
+        <!-- ค้นหาและตัวกรอง -->
+        <div class="bg-white rounded-2xl p-4 shadow-sm border border-slate-200 flex flex-col md:flex-row justify-between items-center gap-4">
+            <div class="relative w-full md:w-96">
+                <i class="fa-solid fa-magnifying-glass absolute left-3 top-1/2 -translate-y-1/2 text-slate-400"></i>
+                <input type="text" id="searchInput" oninput="filterItems()" class="w-full pl-9 pr-4 py-2 border border-slate-300 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500" placeholder="ค้นหารายการวัสดุ...">
             </div>
-
-            <div class="mb-3 text-[15pt]">
-                <span class="font-bold">เรียน</span> ผจก.กฟส.ลส.ผ่าน ผจก.(ล) กฟส.ลส.
+            <div class="text-xs text-slate-500 font-medium">
+                แสดงวัสดุทั้งหมด <span id="totalItemsCount" class="font-bold text-indigo-600">0</span> รายการ
             </div>
+        </div>
 
-            <!-- Text Body Section 1 -->
-            <div class="text-justify mb-3 indent-8 text-[15pt]">
-                (๑) ด้วย <span id="pea-body-dept">ผสน.กฟส.ลส.</span> ได้ดำเนินการจัดซื้อจัดจ้าง <span id="pea-body-item-summary">วัสดุสำนักงาน</span> ของ กฟส.ลส. และ กฟส. ในสังกัด จำนวน <span id="pea-body-item-count">๑</span> รายการ เป็นจำนวนเงินทั้งสิ้น <span id="pea-body-total-num">๐.-</span> บาท (<span id="pea-body-total-text">ศูนย์บาทถ้วน</span>) โดยมีรายละเอียดดังต่อไปนี้
+        <!-- Grid รายการสินค้า -->
+        <div id="itemsContainer" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+            <!-- Loading Spinner -->
+            <div id="loadingBox" class="col-span-full text-center py-12">
+                <i class="fa-solid fa-spinner fa-spin text-3xl text-indigo-600 mb-2"></i>
+                <p class="text-sm text-slate-500">กำลังโหลดรายการวัสดุจาก Google Sheet...</p>
             </div>
-
-            <!-- PEA Table -->
-            <table class="w-full border-collapse border border-black text-[14pt] mb-3">
-                <thead>
-                    <tr class="text-center font-bold">
-                        <th class="border border-black p-1.5 w-10">ที่</th>
-                        <th class="border border-black p-1.5">รายการพัสดุ/งานจ้าง</th>
-                        <th class="border border-black p-1.5 w-24">จำนวน/ปริมาณงาน</th>
-                        <th class="border border-black p-1.5 w-28">จำนวนเงิน (บาท)</th>
-                        <th class="border border-black p-1.5 w-48">ใบเสร็จรับเงิน/ใบส่งของเล่มที่/เลขที่/วันที่</th>
-                    </tr>
-                </thead>
-                <tbody id="pea-table-body">
-                    <!-- Populated via JS -->
-                </tbody>
-            </table>
-
-            <!-- Regulation Text Section -->
-            <div class="text-justify mb-2 indent-8 text-[14pt]">
-                ทั้งนี้ การดำเนินการจัดซื้อจัดจ้างดังกล่าว เป็นการดำเนินการตามหนังสือคณะกรรมการวินิจฉัยปัญหาการจัดซื้อจัดจ้างและการบริหารพัสดุภาครัฐ กรมบัญชีกลางที่ กต (กวจ) ๐๔๐๕.๒/ว ๑๑๙ ลงวันที่ ๗ มีนาคม ๒๕๖๑ เรื่อง แนวทางการปฏิบัติในการดำเนินการจัดซื้อจัดจ้างพัสดุที่เกี่ยวกับค่าใช้จ่ายในการบริหารงาน ค่าใช้จ่ายในการฝึกอบรม การจัดงาน และการประชุมของหน่วยงานของรัฐ ที่มีวงเงินการจัดซื้อจัดจ้างครั้งหนึ่งไม่เกิน ๑๐,๐๐0 บาท ตาราง ๑ ลำดับที่.......๑๓.........
-            </div>
-
-            <div class="text-justify mb-6 indent-8 text-[14pt]">
-                จึงเรียนมาเพื่อโปรดพิจารณาให้ความเห็นชอบและให้ถือรายงานนี้เป็นหลักฐานการตรวจรับพัสดุโดยอนุโลม พร้อมอนุมัติเบิกจ่ายเงินต่อไป
-            </div>
-
-            <!-- Signatures Grid Section -->
-            <div class="grid grid-cols-2 gap-4 text-[13pt] border-t border-transparent pt-2">
-                <!-- Left Signature Box (2) -->
-                <div class="border border-black p-3 space-y-2">
-                    <p class="font-bold">(๒) เรียน ผจก.กฟส.ลส.</p>
-                    <p class="pl-4">เพื่อโปรดพิจารณา</p>
-                    <p class="pl-8">๑. ให้ความเห็นชอบการจัดซื้อจัดจ้างดังกล่าวข้างต้น</p>
-                    <p class="pl-8">๒. อนุมัติให้จ่ายเงิน จำนวน <span class="pea-val-total-num">๐.๐๐</span> บาท</p>
-                    <p class="pl-12">(<span class="pea-val-total-text">ศูนย์บาทถ้วน</span>)</p>
-                    <p class="pl-2">จากงบ.......<span id="pea-val-wbs">5303010100...WBS/CCA...J333010100</span>.......</p>
-                    
-                    <div class="mt-6 text-center space-y-1">
-                        <p>ลงชื่อ..........................................................พผ./ผู้บังคับบัญชาชั้นต้น</p>
-                        <p>( นางสาวพรศิริ เมสสิ )</p>
-                        <p>ตำแหน่ง หผ.ผสน.กฟส.ลส.</p>
-                        <p>วันที่ <span class="pea-val-date">๑๐ กันยายน ๒๕๖๙</span></p>
-                    </div>
-                </div>
-
-                <!-- Right Signature Box (1 & 3) -->
-                <div class="flex flex-col justify-between space-y-4">
-                    <div class="text-center space-y-1">
-                        <p>ลงชื่อ..........................................................ผู้ดำเนินการ</p>
-                        <p>( <span id="pea-val-person">นางสาววลัยรัตน์ สรรเสริญ</span> )</p>
-                        <p>ตำแหน่ง พบจ.๖ ผสน.กฟส.ลส.</p>
-                        <p>วันที่ <span class="pea-val-date">๑๐ กันยายน ๒๕๖๙</span></p>
-                    </div>
-
-                    <div class="border border-black p-3 space-y-3">
-                        <p class="font-bold">(๓) - เห็นชอบและอนุมัติ</p>
-                        <div class="text-center space-y-1">
-                            <p>ลงชื่อ..........................................................หัวหน้าหน่วยงาน</p>
-                            <p>(นายกิตติพงษ์ โสภาพงษ์)</p>
-                            <p>ตำแหน่ง ผจก.กฟส.ลส.</p>
-                            <p>วันที่ <span class="pea-val-date">๑๐ กันยายน ๒๕๖๙</span></p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
+        </div>
 
     </main>
 
-    <!-- JavaScript logic -->
+    <!-- Sticky Footer แสดงสรุป -->
+    <footer class="fixed bottom-0 left-0 right-0 bg-white/95 backdrop-blur-md border-t border-slate-200 shadow-lg z-20 py-3">
+        <div class="max-w-7xl mx-auto px-4 flex justify-between items-center">
+            <div>
+                <p class="text-xs text-slate-500 font-medium">รวมรายการที่เลือก</p>
+                <p class="text-lg font-bold text-indigo-900">
+                    <span id="selectedCount">0</span> รายการ (<span id="totalPieces">0</span> ชิ้น)
+                </p>
+            </div>
+            <button onclick="submitOrder()" class="bg-indigo-600 hover:bg-indigo-700 text-white font-semibold px-6 py-2.5 rounded-xl transition flex items-center gap-2 shadow-md hover:shadow-lg">
+                <i class="fa-solid fa-paper-plane"></i> ส่งรายการความต้องการ
+            </button>
+        </div>
+    </footer>
+
     <script>
+        // *** ใส่ URL ของ Google Apps Script ของคุณที่นี่ ***
         const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbx8FmBE6P8J7S7PqJIJPGXEgzfhqLgz1gDK45WRz6VdAoxtRp8TZxBVxKmliolF8IpoJw/exec";
 
-        const DEPARTMENTS = [
-            { full: "แผนกสนับสนุน (ผสน.) และ กฟส.xs", short: "ผสน./กฟส.xs" },
-            { full: "แผนกบริการและลูกค้าสัมพันธ์ (ผบส.)", short: "ผบส." },
-            { full: "แผนกบริหารรายได้ค่าไฟ (ผบร.)", short: "ผบร." },
-            { full: "แผนกก่อสร้างระบบไฟฟ้า (ผกส.)", short: "ผกส." },
-            { full: "แผนกมิเตอร์และหม้อแปลง (ผมต.)", short: "ผมต." },
-            { full: "แผนกปฏิบัติการและบำรุงรักษาระบบไฟฟ้า (ผปบ.)", short: "ผปบ." }
-        ];
+        let allItems = [];
+        let itemQuantities = {};
 
-        let initialItems = [];
-        let systemIsOpen = true;
-        let mockDepartmentOrders = {};
-        let currentUserCart = {};
-        let receiptItemPrices = {}; // Store price entries for receipt mode
-        let currentMode = 'user'; // 'user' or 'admin'
-        let currentAdminSubTab = 'summary'; // 'summary' or 'receipt'
+        // โหลดข้อมูลเมื่อเปิดหน้าเว็บ
+        window.onload = function() {
+            fetchData();
+        };
 
-        document.addEventListener("DOMContentLoaded", () => {
-            loadDataFromSheets();
-        });
+        function fetchData() {
+            const container = document.getElementById('itemsContainer');
+            container.innerHTML = `
+                <div class="col-span-full text-center py-12">
+                    <i class="fa-solid fa-spinner fa-spin text-3xl text-indigo-600 mb-2"></i>
+                    <p class="text-sm text-slate-500">กำลังโหลดรายการวัสดุจาก Google Sheet...</p>
+                </div>`;
 
-        // Switch Main Mode (User / Admin)
-        function switchMode(mode) {
-            currentMode = mode;
-            const userView = document.getElementById('user-view');
-            const adminView = document.getElementById('admin-view');
-            const btnUser = document.getElementById('btn-user-mode');
-            const btnAdmin = document.getElementById('btn-admin-mode');
-
-            if (mode === 'user') {
-                userView.classList.remove('hidden');
-                adminView.classList.add('hidden');
-                btnUser.className = "px-4 py-1.5 rounded-md transition-colors bg-indigo-600 text-white shadow";
-                btnAdmin.className = "px-4 py-1.5 rounded-md transition-colors text-indigo-200 hover:text-white";
-            } else {
-                userView.classList.add('hidden');
-                adminView.classList.remove('hidden');
-                btnAdmin.className = "px-4 py-1.5 rounded-md transition-colors bg-indigo-600 text-white shadow";
-                btnUser.className = "px-4 py-1.5 rounded-md transition-colors text-indigo-200 hover:text-white";
-                renderAdminTable();
-            }
+            fetch(GOOGLE_SCRIPT_URL)
+                .then(response => response.json())
+                .then(res => {
+                    if (res.status === "success") {
+                        allItems = res.data;
+                        document.getElementById('totalItemsCount').innerText = allItems.length;
+                        renderItems(allItems);
+                    } else {
+                        container.innerHTML = `<div class="col-span-full text-center text-red-500 py-8">เกิดข้อผิดพลาด: ${res.message}</div>`;
+                    }
+                })
+                .catch(err => {
+                    console.error(err);
+                    container.innerHTML = `<div class="col-span-full text-center text-red-500 py-8">ไม่สามารถดึงข้อมูลจาก Google Sheet ได้ กรุณาตรวจสอบการตั้งค่า URL หรือ Deploy</div>`;
+                });
         }
 
-        // Switch Admin Sub-Tabs
-        function switchAdminSubTab(tab) {
-            currentAdminSubTab = tab;
-            const subSummary = document.getElementById('admin-subcontent-summary');
-            const subReceipt = document.getElementById('admin-subcontent-receipt');
-            const btnSummary = document.getElementById('subtab-summary');
-            const btnReceipt = document.getElementById('subtab-receipt');
-
-            if (tab === 'summary') {
-                subSummary.classList.remove('hidden');
-                subReceipt.classList.add('hidden');
-                btnSummary.className = "px-3 py-1.5 rounded-md bg-white text-indigo-700 shadow";
-                btnReceipt.className = "px-3 py-1.5 rounded-md text-slate-600 hover:text-slate-900";
-            } else {
-                subSummary.classList.add('hidden');
-                subReceipt.classList.remove('hidden');
-                btnReceipt.className = "px-3 py-1.5 rounded-md bg-white text-indigo-700 shadow";
-                btnSummary.className = "px-3 py-1.5 rounded-md text-slate-600 hover:text-slate-900";
-                renderReceiptItemsTable();
-            }
-        }
-
-        // Fetch Data from Google Sheets API
-        async function loadDataFromSheets() {
-            try {
-                const response = await fetch(GOOGLE_SCRIPT_URL);
-                const data = await response.json();
-                
-                if (data && data.items) {
-                    initialItems = data.items;
-                } else {
-                    // Fallback Mock Data
-                    initialItems = [
-                        { id: 1, name: "กระดาษ A4 80 แกรม Double A", unit: "รีม" },
-                        { id: 2, name: "ปากกาลูกลื่น 0.5 มม. (น้ำเงิน)", unit: "ด้าม" },
-                        { id: 3, name: "ปากกาลูกลื่น 0.5 มม. (แดง)", unit: "ด้าม" },
-                        { id: 4, name: "แฟ้มเสนอเซ็นต์ A4", unit: "เล่ม" },
-                        { id: 5, name: "ลวดเย็บกระดาษ เบอร์ 10", unit: "กล่อง" },
-                        { id: 6, name: "เทปกาวสองหน้า 1 นิ้ว", unit: "ม้วน" }
-                    ];
-                }
-                renderItemsGrid(initialItems);
-            } catch (err) {
-                console.error("Failed to load sheet data:", err);
-                // Fallback Mock Data on Error
-                initialItems = [
-                    { id: 1, name: "กระดาษ A4 80 แกรม Double A", unit: "รีม" },
-                    { id: 2, name: "ปากกาลูกลื่น 0.5 มม. (น้ำเงิน)", unit: "ด้าม" },
-                    { id: 3, name: "ปากกาลูกลื่น 0.5 มม. (แดง)", unit: "ด้าม" },
-                    { id: 4, name: "แฟ้มเสนอเซ็นต์ A4", unit: "เล่ม" },
-                    { id: 5, name: "ลวดเย็บกระดาษ เบอร์ 10", unit: "กล่อง" }
-                ];
-                renderItemsGrid(initialItems);
-            }
-        }
-
-        // Render Material Grid in User View
-        function renderItemsGrid(items) {
-            const grid = document.getElementById('items-grid');
-            document.getElementById('item-count').innerText = items.length;
-
-            if (items.length === 0) {
-                grid.innerHTML = `<div class="col-span-full text-center py-8 text-slate-400">ไม่พบรายการวัสดุที่ค้นหา</div>`;
+        function renderItems(items) {
+            const container = document.getElementById('itemsContainer');
+            if (!items || items.length === 0) {
+                container.innerHTML = `<div class="col-span-full text-center text-slate-400 py-12">ไม่พบรายการวัสดุ</div>`;
                 return;
             }
 
-            grid.innerHTML = items.map(item => {
-                const qty = currentUserCart[item.id] || 0;
+            container.innerHTML = items.map(item => {
+                const qty = itemQuantities[item.id] || 0;
                 return `
-                    <div class="bg-white p-4 rounded-xl shadow-sm border border-slate-200 flex flex-col justify-between hover:shadow-md transition-shadow">
-                        <div>
-                            <span class="text-[10px] font-bold text-indigo-600 bg-indigo-50 px-2 py-0.5 rounded">รหัส #${item.id}</span>
-                            <h3 class="font-bold text-slate-800 text-sm mt-1">${item.name}</h3>
-                            <p class="text-xs text-slate-500 mt-1">หน่วยนับ: <span class="font-medium text-slate-700">${item.unit}</span></p>
-                        </div>
-                        <div class="mt-4 pt-3 border-t border-slate-100 flex items-center justify-between">
-                            <span class="text-xs text-slate-500">จำนวนที่ขอ:</span>
-                            <div class="flex items-center space-x-1">
-                                <button onclick="updateItemQty(${item.id}, -1)" class="w-8 h-8 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold flex items-center justify-center transition-colors">-</button>
-                                <input type="number" id="qty-input-${item.id}" value="${qty}" min="0" onchange="setItemQty(${item.id}, this.value)" class="w-12 text-center border border-slate-300 rounded-lg py-1 text-sm font-bold text-indigo-700 focus:outline-none">
-                                <button onclick="updateItemQty(${item.id}, 1)" class="w-8 h-8 rounded-lg bg-indigo-50 hover:bg-indigo-100 text-indigo-700 font-bold flex items-center justify-center transition-colors">+</button>
-                            </div>
+                <div class="bg-white rounded-2xl p-4 shadow-sm border border-slate-200 flex flex-col justify-between hover:shadow-md transition">
+                    <div>
+                        <span class="text-[10px] font-bold px-2 py-0.5 rounded bg-indigo-50 text-indigo-600">รหัส #${item.id}</span>
+                        <h3 class="font-bold text-slate-800 text-sm mt-2 leading-snug line-clamp-2">${item.name}</h3>
+                        <p class="text-xs text-slate-500 mt-1">หน่วยนับ: <span class="font-medium text-slate-700">${item.unit}</span></p>
+                    </div>
+                    <div class="mt-4 pt-3 border-t border-slate-100 flex justify-between items-center">
+                        <span class="text-xs text-slate-500">จำนวนที่ขอ:</span>
+                        <div class="flex items-center space-x-1 bg-slate-100 rounded-lg p-1">
+                            <button onclick="updateQty('${item.id}', -1)" class="w-7 h-7 bg-white rounded-md flex items-center justify-center text-slate-600 hover:bg-slate-200 font-bold text-sm shadow-sm">-</button>
+                            <input type="number" readonly value="${qty}" class="w-10 text-center bg-transparent font-bold text-sm text-indigo-900 focus:outline-none">
+                            <button onclick="updateQty('${item.id}', 1)" class="w-7 h-7 bg-white rounded-md flex items-center justify-center text-slate-600 hover:bg-slate-200 font-bold text-sm shadow-sm">+</button>
                         </div>
                     </div>
-                `;
+                </div>`;
             }).join('');
         }
 
-        function filterItems() {
-            const query = document.getElementById('search-item').value.toLowerCase();
-            const filtered = initialItems.filter(item => item.name.toLowerCase().includes(query));
-            renderItemsGrid(filtered);
-        }
-
-        function updateItemQty(id, delta) {
-            if (!systemIsOpen) {
-                alert("ระบบปิดรับเรื่องสั่งซื้อประจำรอบนี้แล้ว");
-                return;
-            }
-            const current = currentUserCart[id] || 0;
-            const nextVal = Math.max(0, current + delta);
-            setItemQty(id, nextVal);
-        }
-
-        function setItemQty(id, val) {
-            const qty = Math.max(0, parseInt(val) || 0);
-            if (qty > 0) {
-                currentUserCart[id] = qty;
+        function updateQty(id, change) {
+            const current = itemQuantities[id] || 0;
+            const updated = Math.max(0, current + change);
+            if (updated === 0) {
+                delete itemQuantities[id];
             } else {
-                delete currentUserCart[id];
+                itemQuantities[id] = updated;
             }
-            const input = document.getElementById(`qty-input-${id}`);
-            if (input) input.value = qty;
-            updateCartSummary();
+            
+            // อัปเดตตัวเลขใน Input โดยไม่ต้อง Render ทั้งหมดใหม่
+            filterItems();
+            updateSummary();
         }
 
-        function updateCartSummary() {
-            const selectedCount = Object.keys(currentUserCart).length;
-            const totalQtySum = Object.values(currentUserCart).reduce((a, b) => a + b, 0);
-
-            document.getElementById('selected-items-count').innerText = selectedCount;
-            document.getElementById('total-qty-sum').innerText = totalQtySum;
+        function filterItems() {
+            const query = document.getElementById('searchInput').value.toLowerCase().trim();
+            const filtered = allItems.filter(item => 
+                item.name.toLowerCase().includes(query) || 
+                item.id.toString().includes(query)
+            );
+            renderItems(filtered);
         }
 
-        // Submit User Order
-        async function submitOrder() {
-            const dept = document.getElementById('user-dept').value;
-            const customItem = document.getElementById('user-custom-item').value.trim();
+        function updateSummary() {
+            const keys = Object.keys(itemQuantities);
+            const totalItems = keys.length;
+            const totalPieces = keys.reduce((sum, key) => sum + itemQuantities[key], 0);
 
-            if (!dept) {
-                alert("กรุณาเลือก แผนก/หน่วยงาน ก่อนส่งรายการ");
+            document.getElementById('selectedCount').innerText = totalItems;
+            document.getElementById('totalPieces').innerText = totalPieces;
+        }
+
+        function submitOrder() {
+            const department = document.getElementById('departmentSelect').value;
+            const round = document.getElementById('roundInput').value;
+            const customRequest = document.getElementById('customRequestInput').value;
+
+            if (!department) {
+                alert("กรุณาเลือกแผนก / หน่วยงาน ก่อนส่งข้อมูล");
                 return;
             }
 
-            if (Object.keys(currentUserCart).length === 0 && !customItem) {
-                alert("กรุณาระบุจำนวนอย่างน้อย 1 รายการ หรือแจ้งขอเพิ่มรายการพิเศษ");
+            const selectedItems = Object.keys(itemQuantities).map(id => {
+                const item = allItems.find(i => i.id.toString() === id.toString());
+                return {
+                    id: id,
+                    name: item ? item.name : "",
+                    unit: item ? item.unit : "",
+                    quantity: itemQuantities[id]
+                };
+            });
+
+            if (selectedItems.length === 0 && !customRequest.trim()) {
+                alert("กรุณาเลือกวัสดุอย่างน้อย 1 รายการ หรือกรอกรายการขอเพิ่ม");
                 return;
             }
 
             const payload = {
-                department: dept,
-                period: document.getElementById('user-period').value,
-                orders: currentUserCart,
-                customItem: customItem
+                department: department,
+                round: round,
+                customRequest: customRequest,
+                items: selectedItems,
+                totalItems: selectedItems.length,
+                totalPieces: document.getElementById('totalPieces').innerText
             };
 
-            // Record locally for preview
-            mockDepartmentOrders[dept] = {
-                orders: { ...currentUserCart },
-                customItem: customItem
-            };
+            if (!confirm("คุณต้องการส่งรายการสั่งซื้อนี้ใช่หรือไม่?")) return;
 
-            try {
-                await fetch(GOOGLE_SCRIPT_URL, {
-                    method: 'POST',
-                    mode: 'no-cors',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(payload)
-                });
-                alert("บันทึกข้อมูลความต้องการสั่งซื้อเรียบร้อยแล้ว!");
-            } catch (err) {
-                console.error("Error submitting order:", err);
-                alert("บันทึกข้อมูลสำเร็จ (โหมดจำลอง)");
-            }
-        }
-
-        // Toggle System Status (Admin)
-        function toggleSystemStatus() {
-            const toggle = document.getElementById('admin-toggle-status');
-            const statusBanner = document.getElementById('status-banner');
-            const statusIcon = document.getElementById('status-icon');
-            const statusTitle = document.getElementById('status-title');
-            const statusDesc = document.getElementById('status-desc');
-            const statusBadge = document.getElementById('status-badge');
-            const toggleLabelText = document.getElementById('toggle-label-text');
-
-            systemIsOpen = toggle.checked;
-
-            if (systemIsOpen) {
-                toggleLabelText.innerText = "รับเรื่องสั่งซื้อ: เปิดอยู่";
-                statusBanner.className = "mb-6 p-4 rounded-xl shadow-sm flex items-center justify-between border-l-4 border-emerald-500 bg-emerald-50 text-emerald-800 no-print";
-                statusIcon.className = "fa-solid fa-circle-check text-emerald-600 text-xl";
-                statusTitle.innerText = "ระบบกำลังเปิดรับรายการความต้องการ";
-                statusDesc.innerText = "สามารถเลือกรายการ และระบุจำนวนที่ต้องการได้จนกว่าแอดมินจะทำการปิดรอบ";
-                statusBadge.className = "bg-emerald-200 text-emerald-800 text-xs font-bold px-3 py-1 rounded-full uppercase";
-                statusBadge.innerText = "เปิดรับข้อมูล";
-            } else {
-                toggleLabelText.innerText = "รับเรื่องสั่งซื้อ: ปิดแล้ว";
-                statusBanner.className = "mb-6 p-4 rounded-xl shadow-sm flex items-center justify-between border-l-4 border-rose-500 bg-rose-50 text-rose-800 no-print";
-                statusIcon.className = "fa-solid fa-circle-xmark text-rose-600 text-xl";
-                statusTitle.innerText = "ระบบปิดรับรายการความต้องการแล้ว";
-                statusDesc.innerText = "แอดมินทำการปิดรอบแล้ว ขณะนี้ไม่อนุญาตให้แก้ไขหรือเพิ่มรายการสั่งซื้อ";
-                statusBadge.className = "bg-rose-200 text-rose-800 text-xs font-bold px-3 py-1 rounded-full uppercase";
-                statusBadge.innerText = "ปิดรับข้อมูล";
-            }
-        }
-
-        function onAdminFilterChange() {
-            const monthVal = document.getElementById('admin-filter-month').value;
-            document.getElementById('selected-period-badge').innerText = `รอบประจำเดือน ${monthVal}`;
-            renderAdminTable();
-        }
-
-        // Render Admin Summary Table
-        function renderAdminTable() {
-            const selectedDept = document.getElementById('admin-filter-dept').value;
-            const head = document.getElementById('admin-table-head');
-            const body = document.getElementById('admin-table-body');
-
-            if (selectedDept === 'ALL') {
-                // Table Header with all departments
-                head.innerHTML = `
-                    <tr>
-                        <th class="p-3 w-12 text-center">ลำดับ</th>
-                        <th class="p-3">รายการวัสดุสำนักงาน</th>
-                        <th class="p-3 text-center w-20">หน่วย</th>
-                        ${DEPARTMENTS.map(d => `<th class="p-3 text-center w-24">${d.short}</th>`).join('')}
-                        <th class="p-3 text-center w-24 bg-indigo-50 text-indigo-900 font-bold">รวมสั่งซื้อ</th>
-                    </tr>
-                `;
-
-                // Table Body
-                body.innerHTML = initialItems.map((item, index) => {
-                    let totalSum = 0;
-                    const deptCols = DEPARTMENTS.map(d => {
-                        const qty = mockDepartmentOrders[d.full]?.orders[item.id] || 0;
-                        totalSum += qty;
-                        return `<td class="p-3 text-center ${qty > 0 ? 'font-bold text-slate-800' : 'text-slate-300'}">${qty || '-'}</td>`;
-                    }).join('');
-
-                    return `
-                        <tr class="hover:bg-slate-50 transition-colors">
-                            <td class="p-3 text-center text-slate-400 font-medium">${index + 1}</td>
-                            <td class="p-3 font-medium text-slate-800">${item.name}</td>
-                            <td class="p-3 text-center text-slate-500">${item.unit}</td>
-                            ${deptCols}
-                            <td class="p-3 text-center font-bold bg-indigo-50/50 text-indigo-700">${totalSum}</td>
-                        </tr>
-                    `;
-                }).join('');
-            } else {
-                // Single Department Table View
-                const deptShort = DEPARTMENTS.find(d => d.full === selectedDept)?.short || selectedDept;
-                head.innerHTML = `
-                    <tr>
-                        <th class="p-3 w-12 text-center">ลำดับ</th>
-                        <th class="p-3">รายการวัสดุสำนักงาน</th>
-                        <th class="p-3 text-center w-24">หน่วยนับ</th>
-                        <th class="p-3 text-center w-32 bg-indigo-50 text-indigo-900 font-bold">จำนวนที่ขอสั่งซื้อ (${deptShort})</th>
-                    </tr>
-                `;
-
-                body.innerHTML = initialItems.map((item, index) => {
-                    const qty = mockDepartmentOrders[selectedDept]?.orders[item.id] || 0;
-                    return `
-                        <tr class="hover:bg-slate-50 transition-colors">
-                            <td class="p-3 text-center text-slate-400 font-medium">${index + 1}</td>
-                            <td class="p-3 font-medium text-slate-800">${item.name}</td>
-                            <td class="p-3 text-center text-slate-500">${item.unit}</td>
-                            <td class="p-3 text-center font-bold bg-indigo-50/50 text-indigo-700">${qty || '-'}</td>
-                        </tr>
-                    `;
-                }).join('');
-            }
-
-            // Render Custom Requested Items
-            renderCustomItemsList(selectedDept);
-        }
-
-        function renderCustomItemsList(deptFilter) {
-            const container = document.getElementById('admin-custom-items-list');
-            let itemsHtml = [];
-
-            if (deptFilter === 'ALL') {
-                for (const [dept, data] of Object.entries(mockDepartmentOrders)) {
-                    if (data.customItem) {
-                        itemsHtml.push(`
-                            <div class="p-3 bg-amber-50 rounded-lg border border-amber-200">
-                                <span class="font-bold text-amber-900 text-xs bg-amber-200 px-2 py-0.5 rounded">${dept}</span>
-                                <p class="mt-1 text-slate-700 text-sm">${data.customItem}</p>
-                            </div>
-                        `);
-                    }
+            fetch(GOOGLE_SCRIPT_URL, {
+                method: "POST",
+                body: JSON.stringify(payload)
+            })
+            .then(res => res.json())
+            .then(res => {
+                if (res.status === "success") {
+                    alert("บันทึกข้อมูลสำเร็จแล้ว!");
+                    itemQuantities = {};
+                    document.getElementById('customRequestInput').value = "";
+                    updateSummary();
+                    filterItems();
+                } else {
+                    alert("เกิดข้อผิดพลาด: " + res.message);
                 }
-            } else {
-                const data = mockDepartmentOrders[deptFilter];
-                if (data && data.customItem) {
-                    itemsHtml.push(`
-                        <div class="p-3 bg-amber-50 rounded-lg border border-amber-200">
-                            <span class="font-bold text-amber-900 text-xs bg-amber-200 px-2 py-0.5 rounded">${deptFilter}</span>
-                            <p class="mt-1 text-slate-700 text-sm">${data.customItem}</p>
-                        </div>
-                    `);
-                }
-            }
-
-            if (itemsHtml.length > 0) {
-                container.innerHTML = itemsHtml.join('');
-            } else {
-                container.innerHTML = `<p class="text-slate-400 text-xs italic">ยังไม่มีรายการแจ้งขอเพิ่มในรอบนี้</p>`;
-            }
-        }
-
-        // Render Receipt Verification Items Table
-        function renderReceiptItemsTable() {
-            const tbody = document.getElementById('receipt-items-tbody');
-            
-            // Calculate total items from all departments
-            const totalOrdered = {};
-            for (const deptData of Object.values(mockDepartmentOrders)) {
-                if (deptData.orders) {
-                    for (const [itemId, qty] of Object.entries(deptData.orders)) {
-                        totalOrdered[itemId] = (totalOrdered[itemId] || 0) + qty;
-                    }
-                }
-            }
-
-            const activeItems = initialItems.filter(item => (totalOrdered[item.id] || 0) > 0 || receiptItemPrices[item.id]);
-
-            if (activeItems.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="6" class="p-4 text-center text-slate-400">ยังไม่มีรายการสั่งซื้อในระบบสำหรับออกใบเสร็จ</td></tr>`;
-                calculateReceiptTotal();
-                return;
-            }
-
-            tbody.innerHTML = activeItems.map((item, idx) => {
-                const qty = totalOrdered[item.id] || 1;
-                const priceData = receiptItemPrices[item.id] || { selected: true, unitPrice: 0, totalPrice: 0 };
-                receiptItemPrices[item.id] = priceData;
-
-                return `
-                    <tr class="hover:bg-slate-50 transition-colors">
-                        <td class="p-2.5 text-center">
-                            <input type="checkbox" id="chk-receipt-${item.id}" ${priceData.selected ? 'checked' : ''} onchange="toggleReceiptItem(${item.id}, this.checked)" class="rounded text-indigo-600 focus:ring-indigo-500 w-4 h-4">
-                        </td>
-                        <td class="p-2.5 font-medium text-slate-800">${item.name}</td>
-                        <td class="p-2.5 text-center font-bold text-slate-700">${qty}</td>
-                        <td class="p-2.5 text-center text-slate-500">${item.unit}</td>
-                        <td class="p-2.5 text-center">
-                            <input type="number" step="0.01" value="${priceData.unitPrice}" oninput="updateReceiptPrice(${item.id}, 'unit', this.value, ${qty})" class="w-28 text-center border border-slate-300 rounded p-1 text-sm focus:ring-1 focus:ring-indigo-500">
-                        </td>
-                        <td class="p-2.5 text-center">
-                            <input type="number" step="0.01" value="${priceData.totalPrice}" oninput="updateReceiptPrice(${item.id}, 'total', this.value, ${qty})" class="w-28 text-center border border-slate-300 rounded p-1 text-sm font-bold text-indigo-700 focus:ring-1 focus:ring-indigo-500">
-                        </td>
-                    </tr>
-                `;
-            }).join('');
-
-            calculateReceiptTotal();
-        }
-
-        function toggleReceiptItem(itemId, isChecked) {
-            if (receiptItemPrices[itemId]) {
-                receiptItemPrices[itemId].selected = isChecked;
-            }
-            calculateReceiptTotal();
-        }
-
-        function updateReceiptPrice(itemId, mode, value, qty) {
-            const val = parseFloat(value) || 0;
-            if (!receiptItemPrices[itemId]) {
-                receiptItemPrices[itemId] = { selected: true, unitPrice: 0, totalPrice: 0 };
-            }
-
-            if (mode === 'unit') {
-                receiptItemPrices[itemId].unitPrice = val;
-                receiptItemPrices[itemId].totalPrice = val * qty;
-            } else {
-                receiptItemPrices[itemId].totalPrice = val;
-                receiptItemPrices[itemId].unitPrice = qty > 0 ? val / qty : 0;
-            }
-
-            renderReceiptItemsTable();
-        }
-
-        function calculateReceiptTotal() {
-            let total = 0;
-            for (const [itemId, data] of Object.entries(receiptItemPrices)) {
-                if (data.selected) {
-                    total += data.totalPrice || 0;
-                }
-            }
-
-            document.getElementById('req-total-num-display').innerText = `${total.toFixed(2)} บาท`;
-            document.getElementById('req-total-text-display').innerText = `(${arabicToThaiText(total)})`;
-        }
-
-        // Convert Thai Baht Number to Text
-        function arabicToThaiText(number) {
-            if (number === 0) return "ศูนย์บาทถ้วน";
-            const thaiNums = ["ศูนย์", "หนึ่ง", "สอง", "สาม", "สี่", "ห้า", "หก", "เจ็ด", "แปด", "เก้า"];
-            const units = ["", "สิบ", "ร้อย", "พัน", "หมื่น", "แสน", "ล้าน"];
-            
-            let [baht, satang] = number.toFixed(2).split('.');
-            let bahtText = "";
-
-            let len = baht.length;
-            for (let i = 0; i < len; i++) {
-                let digit = parseInt(baht[i]);
-                let pos = len - i - 1;
-                if (digit !== 0) {
-                    if (pos === 1 && digit === 1) bahtText += "สิบ";
-                    else if (pos === 1 && digit === 2) bahtText += "ยี่สิบ";
-                    else if (pos === 0 && digit === 1 && len > 1) bahtText += "เอ็ด";
-                    else bahtText += thaiNums[digit] + units[pos];
-                }
-            }
-            bahtText += "บาท";
-
-            if (parseInt(satang) === 0) {
-                bahtText += "ถ้วน";
-            } else {
-                let sLen = satang.length;
-                for (let i = 0; i < sLen; i++) {
-                    let digit = parseInt(satang[i]);
-                    let pos = sLen - i - 1;
-                    if (digit !== 0) {
-                        if (pos === 1 && digit === 1) bahtText += "สิบ";
-                        else if (pos === 1 && digit === 2) bahtText += "ยี่สิบ";
-                        else if (pos === 0 && digit === 1 && sLen > 1) bahtText += "เอ็ด";
-                        else bahtText += thaiNums[digit] + units[pos];
-                    }
-                }
-                bahtText += "สตางค์";
-            }
-
-            return bahtText;
-        }
-
-        // Convert Arabic digits to Thai digits
-        function toThaiDigits(str) {
-            const thaiDigits = ['๐', '๑', '๒', '๓', '๔', '๕', '๖', '๗', '๘', '๙'];
-            return String(str).replace(/[0-9]/g, digit => thaiDigits[digit]);
-        }
-
-        // Generate and Print PEA Requisition Form
-        function generateRequisitionForm() {
-            const docNo = document.getElementById('req-doc-no').value;
-            const docDate = document.getElementById('req-doc-date').value;
-            const receiptNo = document.getElementById('req-receipt-no').value;
-            const receiptDate = document.getElementById('req-receipt-date').value;
-            const wbsNo = document.getElementById('req-wbs-no').value;
-            const personName = document.getElementById('req-person-name').value;
-
-            // Update Header Values in Printable Template
-            document.getElementById('pea-doc-no').innerText = toThaiDigits(docNo);
-            document.getElementById('pea-doc-date').innerText = toThaiDigits(docDate);
-            document.getElementById('pea-val-wbs').innerText = wbsNo;
-            document.getElementById('pea-val-person').innerText = personName;
-
-            const dates = document.querySelectorAll('.pea-val-date');
-            dates.forEach(el => el.innerText = toThaiDigits(docDate));
-
-            // Populate PEA Printable Table
-            const peaTbody = document.getElementById('pea-table-body');
-            let totalAmount = 0;
-            let itemCount = 0;
-            let itemsSummaryNames = [];
-
-            // Compute total orders
-            const totalOrdered = {};
-            for (const deptData of Object.values(mockDepartmentOrders)) {
-                if (deptData.orders) {
-                    for (const [itemId, qty] of Object.entries(deptData.orders)) {
-                        totalOrdered[itemId] = (totalOrdered[itemId] || 0) + qty;
-                    }
-                }
-            }
-
-            const activeItems = initialItems.filter(item => receiptItemPrices[item.id] && receiptItemPrices[item.id].selected);
-
-            peaTbody.innerHTML = activeItems.map((item, idx) => {
-                const qty = totalOrdered[item.id] || 1;
-                const priceInfo = receiptItemPrices[item.id] || { totalPrice: 0 };
-                totalAmount += priceInfo.totalPrice;
-                itemCount++;
-                itemsSummaryNames.push(item.name);
-
-                return `
-                    <tr>
-                        <td class="border border-black p-1.5 text-center">${toThaiDigits(idx + 1)}</td>
-                        <td class="border border-black p-1.5">${item.name}</td>
-                        <td class="border border-black p-1.5 text-center">${toThaiDigits(qty)} ${item.unit}</td>
-                        <td class="border border-black p-1.5 text-right">${toThaiDigits(priceInfo.totalPrice.toFixed(2))}</td>
-                        <td class="border border-black p-1.5 text-center text-xs">เล่มที่/เลขที่ ${toThaiDigits(receiptNo)}<br>ลงวันที่ ${toThaiDigits(receiptDate)}</td>
-                    </tr>
-                `;
-            }).join('');
-
-            // Fill Paragraph Summaries
-            document.getElementById('pea-body-item-summary').innerText = itemsSummaryNames.join(', ') || "วัสดุสำนักงาน";
-            document.getElementById('pea-body-item-count').innerText = toThaiDigits(itemCount);
-            document.getElementById('pea-body-total-num').innerText = toThaiDigits(totalAmount.toFixed(2));
-            document.getElementById('pea-body-total-text').innerText = arabicToThaiText(totalAmount);
-
-            const totalsNum = document.querySelectorAll('.pea-val-total-num');
-            totalsNum.forEach(el => el.innerText = toThaiDigits(totalAmount.toFixed(2)));
-
-            const totalsText = document.querySelectorAll('.pea-val-total-text');
-            totalsText.forEach(el => el.innerText = arabicToThaiText(totalAmount));
-
-            window.print();
-        }
-
-        // Handle Print Trigger Button
-        function triggerPrint() {
-            if (currentAdminSubTab === 'receipt') {
-                generateRequisitionForm();
-            } else {
-                // Populate Summary Print Template
-                const deptFilter = document.getElementById('admin-filter-dept').value;
-                document.getElementById('print-dept-text').innerText = deptFilter === 'ALL' ? 'รวมทุกแผนก' : deptFilter;
-                document.getElementById('print-period-text').innerText = document.getElementById('admin-filter-month').value;
-
-                const printBody = document.getElementById('print-table-body');
-                
-                printBody.innerHTML = initialItems.map((item, idx) => {
-                    let qtyDisplay = 0;
-                    if (deptFilter === 'ALL') {
-                        for (const deptData of Object.values(mockDepartmentOrders)) {
-                            qtyDisplay += (deptData.orders ? (deptData.orders[item.id] || 0) : 0);
-                        }
-                    } else {
-                        const deptData = mockDepartmentOrders[deptFilter];
-                        qtyDisplay = deptData && deptData.orders ? (deptData.orders[item.id] || 0) : 0;
-                    }
-
-                    return `
-                        <tr>
-                            <td class="border border-slate-400 p-2 text-center">${idx + 1}</td>
-                            <td class="border border-slate-400 p-2">${item.name}</td>
-                            <td class="border border-slate-400 p-2 text-center">${item.unit}</td>
-                            <td class="border border-slate-400 p-2 text-center font-bold">${qtyDisplay || '-'}</td>
-                            <td class="border border-slate-400 p-2"></td>
-                        </tr>
-                    `;
-                }).join('');
-
-                window.print();
-            }
+            })
+            .catch(err => {
+                console.error(err);
+                alert("เกิดข้อผิดพลาดในการส่งข้อมูล");
+            });
         }
     </script>
 </body>
