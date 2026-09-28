@@ -32,17 +32,56 @@
                 </div>
             </div>
             <div class="flex items-center space-x-2">
-                <button class="bg-indigo-700 hover:bg-indigo-600 px-3 py-1.5 rounded-lg text-xs md:text-sm font-medium transition flex items-center gap-2">
+                <button onclick="scrollToOrder()" class="bg-indigo-700 hover:bg-indigo-600 px-3 py-1.5 rounded-lg text-xs md:text-sm font-medium transition flex items-center gap-2">
                     <i class="fa-solid fa-pen-to-square"></i> กรอกความต้องการ
                 </button>
-                <button onclick="openAdmin()" class="bg-indigo-950 hover:bg-black px-3 py-1.5 rounded-lg text-xs md:text-sm font-medium transition flex items-center gap-2 text-indigo-200">
-                    <i class="fa-solid fa-user-gear"></i> ผู้ดูแลระบบ (Admin)
+                <button id="adminBtn" onclick="toggleAdminMode()" class="bg-indigo-950 hover:bg-black px-3 py-1.5 rounded-lg text-xs md:text-sm font-medium transition flex items-center gap-2 text-indigo-200 border border-indigo-700">
+                    <i class="fa-solid fa-user-gear"></i> <span id="adminBtnText">ผู้ดูแลระบบ (Admin)</span>
                 </button>
             </div>
         </div>
     </header>
 
     <main class="max-w-7xl mx-auto px-4 mt-6 space-y-6">
+
+        <!-- ================= ส่วนสำหรับ ADMIN (ซ่อนอยู่เป็นหลัก) ================= -->
+        <div id="adminPanel" class="hidden bg-slate-900 text-white rounded-2xl p-6 shadow-xl border border-slate-700 space-y-4">
+            <div class="flex justify-between items-center border-b border-slate-700 pb-3">
+                <div class="flex items-center space-x-2 text-amber-400 font-bold text-lg">
+                    <i class="fa-solid fa-sliders"></i>
+                    <span>เมนูจัดการสำหรับผู้ดูแลระบบ (Admin Panel)</span>
+                </div>
+                <button onclick="logoutAdmin()" class="bg-red-600 hover:bg-red-700 text-white text-xs px-3 py-1.5 rounded-lg font-semibold transition">
+                    <i class="fa-solid fa-right-from-bracket"></i> ออกจากโหมด Admin
+                </button>
+            </div>
+
+            <!-- ฟอร์มเพิ่มวัสดุใหม่ -->
+            <div class="bg-slate-800 p-4 rounded-xl space-y-3 border border-slate-700">
+                <h3 class="font-bold text-sm text-indigo-300 flex items-center gap-2">
+                    <i class="fa-solid fa-plus-circle"></i> เพิ่มรายการวัสดุใหม่เข้าสู่ระบบ
+                </h3>
+                <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                    <div>
+                        <label class="block text-xs text-slate-300 mb-1">รหัสวัสดุ (ID)</label>
+                        <input type="text" id="newItemId" class="w-full bg-slate-900 border border-slate-600 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:ring-2 focus:ring-amber-500" placeholder="เช่น 101 หรือ MAT-01">
+                    </div>
+                    <div>
+                        <label class="block text-xs text-slate-300 mb-1">ชื่อรายการวัสดุ <span class="text-red-400">*</span></label>
+                        <input type="text" id="newItemName" class="w-full bg-slate-900 border border-slate-600 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:ring-2 focus:ring-amber-500" placeholder="เช่น ปากกาลูกลื่น สีน้ำเงิน">
+                    </div>
+                    <div>
+                        <label class="block text-xs text-slate-300 mb-1">หน่วยนับ <span class="text-red-400">*</span></label>
+                        <input type="text" id="newItemUnit" class="w-full bg-slate-900 border border-slate-600 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:ring-2 focus:ring-amber-500" placeholder="เช่น ด้าม, กล่อง, รีม">
+                    </div>
+                </div>
+                <div class="flex justify-end pt-2">
+                    <button onclick="addNewItem()" id="addItemBtn" class="bg-amber-500 hover:bg-amber-600 text-slate-950 font-bold px-5 py-2 rounded-lg text-sm transition flex items-center gap-2">
+                        <i class="fa-solid fa-save"></i> บันทึกรายการใหม่ลง Google Sheet
+                    </button>
+                </div>
+            </div>
+        </div>
 
         <!-- Banner สถานะระบบ -->
         <div class="bg-emerald-50 border border-emerald-200 rounded-2xl p-4 flex items-center justify-between shadow-sm">
@@ -61,7 +100,7 @@
         </div>
 
         <!-- ฟอร์มข้อมูลผู้ส่ง -->
-        <div class="bg-white rounded-2xl p-6 shadow-sm border border-slate-200 space-y-4">
+        <div id="orderForm" class="bg-white rounded-2xl p-6 shadow-sm border border-slate-200 space-y-4">
             <div class="flex items-center space-x-2 text-indigo-900 font-bold text-lg border-b border-slate-100 pb-3">
                 <i class="fa-solid fa-address-card text-indigo-600"></i>
                 <span>ข้อมูลผู้ส่งความต้องการ</span>
@@ -131,13 +170,13 @@
     </footer>
 
     <script>
-        // *** ใส่ URL ของ Google Apps Script ของคุณที่นี่ ***
+        // *** URL ของ Google Apps Script ***
         const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbx8FmBE6P8J7S7PqJIJPGXEgzfhqLgz1gDK45WRz6VdAoxtRp8TZxBVxKmliolF8IpoJw/exec";
 
-        // *** ตั้งค่าสำหรับ Admin ***
-        const ADMIN_PASSWORD = "1234"; // เปลี่ยนรหัสผ่านตรงนี้ได้ตามต้องการ
-        const GOOGLE_SHEET_ADMIN_URL = "https://docs.google.com/spreadsheets"; // ใส่ URL หน้า Google Sheet ของคุณตรงนี้
+        // *** รหัสผ่านสำหรับ Admin ***
+        const ADMIN_PASSWORD = "1234"; 
 
+        let isAdminLoggedIn = false;
         let allItems = [];
         let itemQuantities = {};
 
@@ -146,16 +185,36 @@
             fetchData();
         };
 
-        // ฟังก์ชันสำหรับเปิดหน้า Admin
-        function openAdmin() {
-            const password = prompt("กรุณากรอกรหัสผ่านสำหรับผู้ดูแลระบบ:");
-            if (password === ADMIN_PASSWORD) {
-                window.open(GOOGLE_SHEET_ADMIN_URL, "_blank");
-            } else if (password !== null) {
-                alert("รหัสผ่านไม่ถูกต้อง!");
+        function scrollToOrder() {
+            document.getElementById('orderForm').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        // สลับสถานะเข้า/ออกจาก Admin Mode
+        function toggleAdminMode() {
+            if (isAdminLoggedIn) {
+                logoutAdmin();
+            } else {
+                const password = prompt("กรุณากรอกรหัสผ่านสำหรับผู้ดูแลระบบ:");
+                if (password === ADMIN_PASSWORD) {
+                    isAdminLoggedIn = true;
+                    document.getElementById('adminPanel').classList.remove('hidden');
+                    document.getElementById('adminBtnText').innerText = "โหมดผู้ดูแลระบบ (เปิดอยู่)";
+                    document.getElementById('adminBtn').classList.replace('bg-indigo-950', 'bg-amber-600');
+                    document.getElementById('adminPanel').scrollIntoView({ behavior: 'smooth' });
+                } else if (password !== null) {
+                    alert("รหัสผ่านไม่ถูกต้อง!");
+                }
             }
         }
 
+        function logoutAdmin() {
+            isAdminLoggedIn = false;
+            document.getElementById('adminPanel').classList.add('hidden');
+            document.getElementById('adminBtnText').innerText = "ผู้ดูแลระบบ (Admin)";
+            document.getElementById('adminBtn').classList.replace('bg-amber-600', 'bg-indigo-950');
+        }
+
+        // ดึงรายการวัสดุจาก Google Sheet
         function fetchData() {
             const container = document.getElementById('itemsContainer');
             container.innerHTML = `
@@ -179,6 +238,54 @@
                     console.error(err);
                     container.innerHTML = `<div class="col-span-full text-center text-red-500 py-8">ไม่สามารถดึงข้อมูลจาก Google Sheet ได้ กรุณาตรวจสอบการตั้งค่า URL หรือ Deploy</div>`;
                 });
+        }
+
+        // แอดมินเพิ่มรายการวัสดุใหม่ลง Google Sheet
+        function addNewItem() {
+            const id = document.getElementById('newItemId').value.trim() || (allItems.length + 1).toString();
+            const name = document.getElementById('newItemName').value.trim();
+            const unit = document.getElementById('newItemUnit').value.trim();
+
+            if (!name || !unit) {
+                alert("กรุณากรอกชื่อรายการวัสดุและหน่วยนับให้ครบถ้วน");
+                return;
+            }
+
+            const btn = document.getElementById('addItemBtn');
+            btn.disabled = true;
+            btn.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> กำลังบันทึก...`;
+
+            const payload = {
+                action: "addItem",
+                id: id,
+                name: name,
+                unit: unit
+            };
+
+            fetch(GOOGLE_SCRIPT_URL, {
+                method: "POST",
+                body: JSON.stringify(payload)
+            })
+            .then(res => res.json())
+            .then(res => {
+                if (res.status === "success") {
+                    alert("เพิ่มรายการวัสดุใหม่สำเร็จแล้ว!");
+                    document.getElementById('newItemId').value = "";
+                    document.getElementById('newItemName').value = "";
+                    document.getElementById('newItemUnit').value = "";
+                    fetchData(); // โหลดข้อมูลใหม่เพื่ออัปเดตหน้าเว็บทันที
+                } else {
+                    alert("เกิดข้อผิดพลาด: " + res.message);
+                }
+            })
+            .catch(err => {
+                console.error(err);
+                alert("เกิดข้อผิดพลาดในการเชื่อมต่อระบบ");
+            })
+            .finally(() => {
+                btn.disabled = false;
+                btn.innerHTML = `<i class="fa-solid fa-save"></i> บันทึกรายการใหม่ลง Google Sheet`;
+            });
         }
 
         function renderItems(items) {
@@ -217,8 +324,6 @@
             } else {
                 itemQuantities[id] = updated;
             }
-            
-            // อัปเดตตัวเลขใน Input โดยไม่ต้อง Render ทั้งหมดใหม่
             filterItems();
             updateSummary();
         }
@@ -267,6 +372,7 @@
             }
 
             const payload = {
+                action: "submitOrder",
                 department: department,
                 round: round,
                 customRequest: customRequest,
