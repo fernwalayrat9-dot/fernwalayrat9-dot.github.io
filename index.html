@@ -35,7 +35,7 @@
                 <button class="bg-indigo-700 hover:bg-indigo-600 px-3 py-1.5 rounded-lg text-xs md:text-sm font-medium transition flex items-center gap-2">
                     <i class="fa-solid fa-pen-to-square"></i> กรอกความต้องการ
                 </button>
-                <button class="bg-indigo-950 hover:bg-black px-3 py-1.5 rounded-lg text-xs md:text-sm font-medium transition flex items-center gap-2 text-indigo-200">
+                <button onclick="openAdmin()" class="bg-indigo-950 hover:bg-black px-3 py-1.5 rounded-lg text-xs md:text-sm font-medium transition flex items-center gap-2 text-indigo-200">
                     <i class="fa-solid fa-user-gear"></i> ผู้ดูแลระบบ (Admin)
                 </button>
             </div>
@@ -134,6 +134,10 @@
         // *** ใส่ URL ของ Google Apps Script ของคุณที่นี่ ***
         const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbx8FmBE6P8J7S7PqJIJPGXEgzfhqLgz1gDK45WRz6VdAoxtRp8TZxBVxKmliolF8IpoJw/exec";
 
+        // *** ตั้งค่าสำหรับ Admin ***
+        const ADMIN_PASSWORD = "1234"; // เปลี่ยนรหัสผ่านตรงนี้ได้ตามต้องการ
+        const GOOGLE_SHEET_ADMIN_URL = "https://docs.google.com/spreadsheets"; // ใส่ URL หน้า Google Sheet ของคุณตรงนี้
+
         let allItems = [];
         let itemQuantities = {};
 
@@ -141,6 +145,16 @@
         window.onload = function() {
             fetchData();
         };
+
+        // ฟังก์ชันสำหรับเปิดหน้า Admin
+        function openAdmin() {
+            const password = prompt("กรุณากรอกรหัสผ่านสำหรับผู้ดูแลระบบ:");
+            if (password === ADMIN_PASSWORD) {
+                window.open(GOOGLE_SHEET_ADMIN_URL, "_blank");
+            } else if (password !== null) {
+                alert("รหัสผ่านไม่ถูกต้อง!");
+            }
+        }
 
         function fetchData() {
             const container = document.getElementById('itemsContainer');
