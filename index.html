@@ -1,676 +1,496 @@
 <!DOCTYPE html>
 <html lang="th">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ระบบสั่งซื้อวัสดุสำนักงาน</title>
-    <!-- Tailwind CSS -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Google Fonts Prompt -->
-    <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <!-- FontAwesome icons -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <style>
-        body { font-family: 'Prompt', sans-serif; background-color: #f1f5f9; }
-        @media print {
-            body * { visibility: hidden; }
-            #printArea, #printArea * { visibility: visible; }
-            #printArea { position: absolute; left: 0; top: 0; width: 100%; }
-            .no-print { display: none !important; }
-        }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ระบบสั่งซื้อวัสดุสำนักงาน - กฟส.หลังสวน</title>
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- FontAwesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <!-- Google Font (Sarabun) -->
+  <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    body { font-family: 'Sarabun', sans-serif; }
+    @media print {
+      .no-print { display: none !important; }
+      .print-only { display: block !important; }
+    }
+  </style>
 </head>
-<body class="min-h-screen pb-24 text-slate-800">
+<body class="bg-slate-50 min-h-screen text-slate-800 pb-28">
 
-    <!-- Header / Navbar -->
-    <header class="bg-indigo-900 text-white shadow-lg sticky top-0 z-30 no-print">
-        <div class="max-w-7xl mx-auto px-4 py-4 flex flex-wrap justify-between items-center gap-4">
-            <div class="flex items-center space-x-3">
-                <div class="bg-amber-500 p-2 rounded-lg text-indigo-950 font-bold text-xl">
-                    <i class="fa-solid fa-box-archive"></i>
-                </div>
-                <div>
-                    <h1 class="text-xl font-bold leading-tight">ระบบสั่งซื้อวัสดุสำนักงาน</h1>
-                    <p class="text-xs text-indigo-200">กฟส.หลังสวน และหน่วยงานในสังกัด</p>
-                </div>
-            </div>
-            <div class="flex items-center space-x-2">
-                <button onclick="scrollToOrder()" class="bg-indigo-700 hover:bg-indigo-600 px-3 py-1.5 rounded-lg text-xs md:text-sm font-medium transition flex items-center gap-2">
-                    <i class="fa-solid fa-pen-to-square"></i> กรอกความต้องการ
-                </button>
-                <button id="adminBtn" onclick="toggleAdminMode()" class="bg-indigo-950 hover:bg-black px-3 py-1.5 rounded-lg text-xs md:text-sm font-medium transition flex items-center gap-2 text-indigo-200 border border-indigo-700">
-                    <i class="fa-solid fa-user-gear"></i> <span id="adminBtnText">ผู้ดูแลระบบ (Admin)</span>
-                </button>
-            </div>
+  <!-- Header / Navbar -->
+  <header class="bg-gradient-to-r from-purple-800 to-indigo-900 text-white shadow-lg sticky top-0 z-40">
+    <div class="max-w-7xl mx-auto px-4 py-4 flex flex-col md:flex-row justify-between items-center gap-4">
+      <div class="flex items-center space-x-3">
+        <div class="p-3 bg-white/10 rounded-lg backdrop-blur-sm">
+          <i class="fa-solid fa-boxes-packing text-2xl text-amber-300"></i>
         </div>
-    </header>
+        <div>
+          <h1 class="text-xl font-bold tracking-wide">ระบบสั่งซื้อพัสดุ / วัสดุสำนักงาน</h1>
+          <p class="text-xs text-purple-200">แผนกบริการลูกค้าและผู้ใช้ไฟ - กฟส.หลังสวน</p>
+        </div>
+      </div>
+      <div class="flex items-center gap-3 no-print">
+        <a href="#order-form" class="px-4 py-2 bg-amber-400 hover:bg-amber-500 text-slate-900 font-semibold rounded-lg text-sm transition shadow">
+          <i class="fa-solid fa-cart-plus mr-1"></i> กรอกความต้องการ
+        </a>
+        <button onclick="toggleAdminModal()" class="px-4 py-2 bg-white/10 hover:bg-white/20 text-white rounded-lg text-sm border border-white/20 transition">
+          <i class="fa-solid fa-user-gear mr-1"></i> ผู้ดูแลระบบ
+        </button>
+      </div>
+    </div>
+  </header>
 
-    <main class="max-w-7xl mx-auto px-4 mt-6 space-y-6">
+  <main class="max-w-7xl mx-auto px-4 py-6">
 
-        <!-- ================= ADMIN DASHBOARD (หน้าผู้ดูแลระบบ) ================= -->
-        <div id="adminPanel" class="hidden bg-slate-900 text-white rounded-2xl p-6 shadow-xl border border-slate-700 space-y-6 no-print">
-            <div class="flex flex-wrap justify-between items-center border-b border-slate-700 pb-4 gap-4">
-                <div class="flex items-center space-x-2 text-amber-400 font-bold text-lg">
-                    <i class="fa-solid fa-sliders"></i>
-                    <span>แผงควบคุมผู้ดูแลระบบ (Admin Dashboard)</span>
-                </div>
-                <div class="flex items-center gap-3">
-                    <!-- ปุ่ม เปิด-ปิด รับความต้องการ -->
-                    <button id="toggleSystemBtn" onclick="toggleSystemStatus()" class="bg-emerald-600 hover:bg-emerald-700 text-white text-xs px-3 py-2 rounded-xl font-bold transition flex items-center gap-2">
-                        <i class="fa-solid fa-power-off"></i> สถานะระบบ: <span id="systemStatusText">เปิดรับรายการ</span>
-                    </button>
-                    <button onclick="logoutAdmin()" class="bg-red-600 hover:bg-red-700 text-white text-xs px-3 py-2 rounded-xl font-bold transition">
-                        <i class="fa-solid fa-right-from-bracket"></i> ออกจากระบบ
-                    </button>
-                </div>
-            </div>
-
-            <!-- แท็บเมนู Admin -->
-            <div class="flex gap-2 border-b border-slate-800 pb-2">
-                <button onclick="switchAdminTab('orders')" id="tabBtnOrders" class="px-4 py-2 rounded-xl text-xs font-bold bg-amber-500 text-slate-950">
-                    <i class="fa-solid fa-list-check"></i> รายงานการสั่งซื้อของแผนกต่างๆ
-                </button>
-                <button onclick="switchAdminTab('addItem')" id="tabBtnAddItem" class="px-4 py-2 rounded-xl text-xs font-bold bg-slate-800 text-slate-300 hover:bg-slate-700">
-                    <i class="fa-solid fa-plus-circle"></i> เพิ่มรายการวัสดุใหม่
-                </button>
-            </div>
-
-            <!-- TAB 1: ดูรายงานการสั่งซื้อ & แก้ไข/ลบ/พิมพ์ -->
-            <div id="tabOrdersContent" class="space-y-4">
-                <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 bg-slate-800 p-4 rounded-xl border border-slate-700">
-                    <div>
-                        <h3 class="font-bold text-amber-400 text-sm">รายการคำขอสั่งซื้อพัสดุทั้งหมด</h3>
-                        <p class="text-xs text-slate-400">สามารถแก้ไขจำนวน ลบรายการ หรือพิมพ์รายงานส่งร้านได้ที่นี่</p>
-                    </div>
-                    <div class="flex gap-2">
-                        <button onclick="loadAdminOrders()" class="bg-indigo-600 hover:bg-indigo-700 text-white text-xs px-3 py-2 rounded-lg font-medium transition">
-                            <i class="fa-solid fa-rotate"></i> รีเฟรชข้อมูล
-                        </button>
-                        <button onclick="printOrderReport()" class="bg-emerald-600 hover:bg-emerald-700 text-white text-xs px-3 py-2 rounded-lg font-bold transition flex items-center gap-1 shadow-md">
-                            <i class="fa-solid fa-print"></i> พิมพ์รายงานส่งร้านค้า
-                        </button>
-                    </div>
-                </div>
-
-                <!-- ตารางสรุปการสั่งซื้อ -->
-                <div class="overflow-x-auto bg-slate-800 rounded-xl border border-slate-700">
-                    <table class="w-full text-left text-xs text-slate-300">
-                        <thead class="bg-slate-950 text-slate-400 uppercase border-b border-slate-700">
-                            <tr>
-                                <th class="p-3">วัน-เวลา</th>
-                                <th class="p-3">แผนก/หน่วยงาน</th>
-                                <th class="p-3">รายการวัสดุที่ขอสั่งซื้อ</th>
-                                <th class="p-3">ขอเพิ่มพิเศษ</th>
-                                <th class="p-3 text-center">จัดการ</th>
-                            </tr>
-                        </thead>
-                        <tbody id="adminOrdersTable" class="divide-y divide-slate-700">
-                            <tr><td colspan="5" class="p-4 text-center text-slate-500">กดรีเฟรชข้อมูลเพื่อดูรายการสั่งซื้อล่าสุด</td></tr>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-
-            <!-- TAB 2: ฟอร์มเพิ่มวัสดุใหม่เข้าฐานข้อมูล -->
-            <div id="tabAddItemContent" class="hidden bg-slate-800 p-4 rounded-xl space-y-3 border border-slate-700">
-                <h3 class="font-bold text-sm text-amber-400 flex items-center gap-2">
-                    <i class="fa-solid fa-plus-circle"></i> เพิ่มรายการวัสดุใหม่เข้า Google Sheet
-                </h3>
-                <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
-                    <div>
-                        <label class="block text-xs text-slate-300 mb-1">รหัสวัสดุ (ID)</label>
-                        <input type="text" id="newItemId" class="w-full bg-slate-900 border border-slate-600 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:ring-2 focus:ring-amber-500" placeholder="เช่น 101">
-                    </div>
-                    <div>
-                        <label class="block text-xs text-slate-300 mb-1">ชื่อรายการวัสดุ *</label>
-                        <input type="text" id="newItemName" class="w-full bg-slate-900 border border-slate-600 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:ring-2 focus:ring-amber-500" placeholder="เช่น กระดาษ A4 80 แกรม">
-                    </div>
-                    <div>
-                        <label class="block text-xs text-slate-300 mb-1">หน่วยนับ *</label>
-                        <input type="text" id="newItemUnit" class="w-full bg-slate-900 border border-slate-600 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:ring-2 focus:ring-amber-500" placeholder="เช่น รีม, กล่อง">
-                    </div>
-                </div>
-                <div class="flex justify-end pt-2">
-                    <button onclick="addNewItem()" id="addItemBtn" class="bg-amber-500 hover:bg-amber-600 text-slate-950 font-bold px-5 py-2 rounded-lg text-sm transition flex items-center gap-2">
-                        <i class="fa-solid fa-save"></i> บันทึกลง Google Sheet
-                    </button>
-                </div>
-            </div>
+    <!-- Admin Section Modal / Dashboard -->
+    <div id="adminModal" class="hidden fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+      <div class="bg-white rounded-2xl shadow-2xl max-w-4xl w-full max-h-[90vh] flex flex-col overflow-hidden">
+        <div class="p-4 bg-slate-800 text-white flex justify-between items-center">
+          <h2 class="font-bold text-lg"><i class="fa-solid fa-sliders mr-2"></i>เมนูผู้ดูแลระบบ (Admin)</h2>
+          <button onclick="toggleAdminModal()" class="text-slate-400 hover:text-white"><i class="fa-solid fa-xmark text-xl"></i></button>
+        </div>
+        
+        <!-- Login Password Check -->
+        <div id="adminLoginArea" class="p-8 text-center">
+          <i class="fa-solid fa-lock text-4xl text-slate-300 mb-3"></i>
+          <h3 class="font-semibold text-slate-700 mb-2">กรุณาใส่รหัสผ่านผู้ดูแลระบบ</h3>
+          <div class="max-w-xs mx-auto flex gap-2">
+            <input type="password" id="adminPass" placeholder="รหัสผ่าน" class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-purple-600 outline-none">
+            <button onclick="checkAdminAuth()" class="px-4 py-2 bg-purple-700 text-white rounded-lg font-medium hover:bg-purple-800">ยืนยัน</button>
+          </div>
         </div>
 
-        <!-- Banner สถานะระบบ -->
-        <div id="statusBanner" class="bg-emerald-50 border border-emerald-200 rounded-2xl p-4 flex items-center justify-between shadow-sm no-print">
-            <div class="flex items-center space-x-3">
-                <div id="statusIcon" class="w-10 h-10 rounded-full bg-emerald-500 text-white flex items-center justify-center font-bold text-lg">
-                    <i class="fa-solid fa-check"></i>
-                </div>
-                <div>
-                    <h2 id="statusTitle" class="font-bold text-emerald-900 text-base">ระบบกำลังเปิดรับรายการความต้องการ</h2>
-                    <p id="statusDesc" class="text-xs text-emerald-700">สามารถเลือกรายการ และระบุจำนวนที่ต้องการได้จนกว่าแอดมินจะทำการปิดรอบ</p>
-                </div>
+        <!-- Admin Content Panel -->
+        <div id="adminPanel" class="hidden flex-1 overflow-y-auto p-6 space-y-6">
+          <div class="flex justify-between items-center border-b pb-4">
+            <div class="flex space-x-2">
+              <button onclick="switchAdminTab('orders')" id="tabOrdersBtn" class="px-4 py-2 rounded-lg font-medium text-sm bg-purple-100 text-purple-800">รายงานสั่งซื้อ</button>
+              <button onclick="switchAdminTab('addItem')" id="tabAddItemBtn" class="px-4 py-2 rounded-lg font-medium text-sm text-slate-600 hover:bg-slate-100">เพิ่มรายการพัสดุใหม่</button>
             </div>
-            <span id="statusTag" class="bg-emerald-200 text-emerald-800 text-xs px-3 py-1.5 rounded-full font-semibold hidden md:inline-block">
-                เปิดรับข้อมูล
-            </span>
-        </div>
-
-        <!-- ฟอร์มข้อมูลผู้ส่ง -->
-        <div id="orderForm" class="bg-white rounded-2xl p-6 shadow-sm border border-slate-200 space-y-4 no-print">
-            <div class="flex items-center space-x-2 text-indigo-900 font-bold text-lg border-b border-slate-100 pb-3">
-                <i class="fa-solid fa-address-card text-indigo-600"></i>
-                <span>ข้อมูลผู้ส่งความต้องการ</span>
-            </div>
-            
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div>
-                    <label class="block text-xs font-semibold text-slate-600 mb-1">แผนก / หน่วยงาน <span class="text-red-500">*</span></label>
-                    <select id="departmentSelect" class="w-full border border-slate-300 rounded-xl px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 bg-slate-50">
-                        <option value="">-- กรุณาเลือกแผนก --</option>
-                        <option value="แผนกสนับสนุน (ผสน.) และ กฟส.xs">แผนกสนับสนุน (ผสน.) และ กฟส.xs</option>
-                        <option value="แผนกบริการและลูกค้าสัมพันธ์ (ผบส.)">แผนกบริการและลูกค้าสัมพันธ์ (ผบส.)</option>
-                        <option value="แผนกบริหารรายได้ค่าไฟ (ผบร.)">แผนกบริหารรายได้ค่าไฟ (ผบร.)</option>
-                        <option value="แผนกก่อสร้างระบบไฟฟ้า (ผกส.)">แผนกก่อสร้างระบบไฟฟ้า (ผกส.)</option>
-                        <option value="แผนกมิเตอร์และหม้อแปลง (ผมต.)">แผนกมิเตอร์และหม้อแปลง (ผมต.)</option>
-                        <option value="แผนกปฏิบัติการและบำรุงรักษาระบบไฟฟ้า (ผปบ.)">แผนกปฏิบัติการและบำรุงรักษาระบบไฟฟ้า (ผปบ.)</option>
-                    </select>
-                </div>
-                <div>
-                    <label class="block text-xs font-semibold text-slate-600 mb-1">รอบเดือนที่สั่งซื้อ</label>
-                    <input type="text" id="roundInput" class="w-full border border-slate-300 rounded-xl px-3 py-2 text-sm bg-slate-100 text-slate-600 font-medium cursor-not-allowed" value="ประจำเดือน กันยายน 2026 (ตัดรอบ 15 ก.ย.)" readonly>
-                </div>
-            </div>
-
-            <div>
-                <label class="block text-xs font-semibold text-slate-600 mb-1 flex items-center gap-1">
-                    <i class="fa-solid fa-circle-plus text-indigo-500"></i> แจ้งขอเพิ่มรายการวัสดุอื่นๆ (กรณีไม่มีในรายการด้านล่าง)
-                </label>
-                <textarea id="customRequestInput" rows="2" class="w-full border border-slate-300 rounded-xl p-3 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500" placeholder="ระบุชื่อรายการ, หน่วยนับ, และจำนวนที่ต้องการ"></textarea>
-            </div>
-        </div>
-
-        <!-- ค้นหาและตัวกรอง -->
-        <div class="bg-white rounded-2xl p-4 shadow-sm border border-slate-200 flex flex-col md:flex-row justify-between items-center gap-4 no-print">
-            <div class="relative w-full md:w-96">
-                <i class="fa-solid fa-magnifying-glass absolute left-3 top-1/2 -translate-y-1/2 text-slate-400"></i>
-                <input type="text" id="searchInput" oninput="filterItems()" class="w-full pl-9 pr-4 py-2 border border-slate-300 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500" placeholder="ค้นหารายการวัสดุ...">
-            </div>
-            <div class="text-xs text-slate-500 font-medium">
-                แสดงวัสดุทั้งหมด <span id="totalItemsCount" class="font-bold text-indigo-600">0</span> รายการ
-            </div>
-        </div>
-
-        <!-- Grid รายการสินค้า -->
-        <div id="itemsContainer" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 no-print">
-            <div id="loadingBox" class="col-span-full text-center py-12">
-                <i class="fa-solid fa-spinner fa-spin text-3xl text-indigo-600 mb-2"></i>
-                <p class="text-sm text-slate-500">กำลังโหลดรายการวัสดุจาก Google Sheet...</p>
-            </div>
-        </div>
-
-        <!-- ================= พื้นที่สำหรับพิมพ์รายงานส่งร้านค้า ================= -->
-        <div id="printArea" class="hidden p-8 bg-white text-black">
-            <div class="text-center border-b-2 border-slate-800 pb-4 mb-6">
-                <h1 class="text-2xl font-bold">ใบสรุปรายการสั่งซื้อวัสดุสำนักงาน (ส่งร้านค้า)</h1>
-                <p class="text-sm text-slate-600 mt-1">กฟส.หลังสวน และหน่วยงานในสังกัด</p>
-                <p class="text-xs text-slate-500" id="printRoundText"></p>
-            </div>
-
-            <table class="w-full border-collapse border border-slate-400 text-xs mb-6">
-                <thead>
-                    <tr class="bg-slate-100">
-                        <th class="border border-slate-400 p-2 text-center w-12">ลำดับ</th>
-                        <th class="border border-slate-400 p-2 text-left">รายการวัสดุ / สเปก</th>
-                        <th class="border border-slate-400 p-2 text-center w-24">รวมจำนวน</th>
-                        <th class="border border-slate-400 p-2 text-center w-24">หน่วยนับ</th>
-                        <th class="border border-slate-400 p-2 text-left">แผนกที่ขอซื้อ</th>
-                    </tr>
-                </thead>
-                <tbody id="printTableBody">
-                    <!-- รายการสั่งซื้อรวมจะถูกสร้างตรงนี้ -->
-                </tbody>
-            </table>
-
-            <div class="flex justify-between items-end mt-12 pt-8 text-xs">
-                <div class="text-center w-48">
-                    <p>ลงชื่อ..................................................</p>
-                    <p class="mt-1">(..................................................)</p>
-                    <p class="text-slate-500 mt-0.5">ผู้จัดทำรายการ</p>
-                </div>
-                <div class="text-center w-48">
-                    <p>ลงชื่อ..................................................</p>
-                    <p class="mt-1">(..................................................)</p>
-                    <p class="text-slate-500 mt-0.5">ผู้อนุมัติสั่งซื้อ</p>
-                </div>
-            </div>
-        </div>
-
-    </main>
-
-    <!-- Sticky Footer แสดงสรุป -->
-    <footer class="fixed bottom-0 left-0 right-0 bg-white/95 backdrop-blur-md border-t border-slate-200 shadow-lg z-20 py-3 no-print">
-        <div class="max-w-7xl mx-auto px-4 flex justify-between items-center">
-            <div>
-                <p class="text-xs text-slate-500 font-medium">รวมรายการที่เลือก</p>
-                <p class="text-lg font-bold text-indigo-900">
-                    <span id="selectedCount">0</span> รายการ (<span id="totalPieces">0</span> ชิ้น)
-                </p>
-            </div>
-            <button id="submitBtn" onclick="submitOrder()" class="bg-indigo-600 hover:bg-indigo-700 text-white font-semibold px-6 py-2.5 rounded-xl transition flex items-center gap-2 shadow-md hover:shadow-lg">
-                <i class="fa-solid fa-paper-plane"></i> ส่งรายการความต้องการ
+            <button onclick="window.print()" class="px-3 py-1.5 bg-slate-700 text-white text-xs rounded-lg hover:bg-slate-800">
+              <i class="fa-solid fa-print mr-1"></i> พิมพ์รายงาน
             </button>
+          </div>
+
+          <!-- Tab: Orders Report -->
+          <div id="adminOrdersTab" class="space-y-4">
+            <div class="overflow-x-auto border rounded-xl">
+              <table class="w-full text-sm text-left text-slate-600">
+                <thead class="text-xs uppercase bg-slate-100 text-slate-700">
+                  <tr>
+                    <th class="p-3">วัน-เวลา</th>
+                    <th class="p-3">แผนก/งาน</th>
+                    <th class="p-3">รอบเดือน</th>
+                    <th class="p-3">รายการพัสดุ</th>
+                    <th class="p-3">ขอเพิ่มพิเศษ</th>
+                    <th class="p-3 text-center">รวมชิ้น</th>
+                    <th class="p-3 text-center">จัดการ</th>
+                  </tr>
+                </thead>
+                <tbody id="adminOrdersTable">
+                  <tr><td colspan="7" class="text-center py-4 text-slate-400">กำลังโหลดข้อมูล...</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- Tab: Add New Material Item -->
+          <div id="adminAddItemTab" class="hidden max-w-lg mx-auto bg-slate-50 p-6 rounded-xl border space-y-4">
+            <h4 class="font-bold text-slate-800">เพิ่มวัสดุใหม่ลง MasterItems</h4>
+            <div>
+              <label class="block text-xs font-semibold mb-1">รหัสพัสดุ</label>
+              <input type="text" id="newItemId" placeholder="เช่น OFF-080" class="w-full p-2 border rounded-lg text-sm">
+            </div>
+            <div>
+              <label class="block text-xs font-semibold mb-1">ชื่อรายการวัสดุ</label>
+              <input type="text" id="newItemName" placeholder="เช่น ปากกาเคมีสีแดง" class="w-full p-2 border rounded-lg text-sm">
+            </div>
+            <div>
+              <label class="block text-xs font-semibold mb-1">หน่วยนับ</label>
+              <input type="text" id="newItemUnit" placeholder="เช่น กล่อง, เล่ม, ด้าม" class="w-full p-2 border rounded-lg text-sm">
+            </div>
+            <button onclick="addNewItemToSheet()" class="w-full py-2 bg-emerald-600 text-white font-medium rounded-lg text-sm hover:bg-emerald-700">
+              <i class="fa-solid fa-plus mr-1"></i> บันทึกรายการใหม่
+            </button>
+          </div>
         </div>
-    </footer>
+      </div>
+    </div>
 
-    <script>
-        const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwZSgE6SFoOm1gt9sPILfV9-7L9dpzscnJS8_osnekuiwPmxKgZejcfNPForfg5QR6B7g/exec";
-        const ADMIN_PASSWORD = "1234"; 
+    <!-- User Section: Order Form Header -->
+    <div id="order-form" class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 mb-6">
+      <h2 class="text-lg font-bold text-slate-800 mb-4 flex items-center">
+        <i class="fa-solid fa-clipboard-user text-purple-700 mr-2"></i> ข้อมูลผู้ส่งรายการสั่งซื้อ
+      </h2>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div>
+          <label class="block text-sm font-medium text-slate-700 mb-1">แผนก / งานที่ขอเบิก <span class="text-rose-500">*</span></label>
+          <select id="userDepartment" class="w-full p-2.5 border border-slate-300 rounded-xl focus:ring-2 focus:ring-purple-600 outline-none text-sm">
+            <option value="">-- เลือกแผนก/งาน --</option>
+            <option value="แผนกสนับสนุน (ผสน.) และ กฟส.xs">แผนกสนับสนุน (ผสน.) และ กฟส.xs</option>
+            <option value="แผนกบริการและลูกค้าสัมพันธ์ (ผบส.)">แผนกบริการและลูกค้าสัมพันธ์ (ผบส.)</option>
+            <option value="แผนกบริหารรายได้ค่าไฟ (ผบร.)">แผนกบริหารรายได้ค่าไฟ (ผบร.)</option>
+            <option value="แผนกก่อสร้างระบบไฟฟ้า (ผกส.)">แผนกก่อสร้างระบบไฟฟ้า (ผกส.)</option>
+            <option value="แผนกมิเตอร์และหม้อแปลง (ผมต.)">แผนกมิเตอร์และหม้อแปลง (ผมต.)</option>
+            <option value="แผนกปฏิบัติการและบำรุงรักษาระบบไฟฟ้า (ผปบ.)">แผนกปฏิบัติการและบำรุงรักษาระบบไฟฟ้า (ผปบ.)</option>
+          </select>
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-slate-700 mb-1">ประจำรอบเดือน <span class="text-rose-500">*</span></label>
+          <input type="month" id="orderMonth" class="w-full p-2.5 border border-slate-300 rounded-xl focus:ring-2 focus:ring-purple-600 outline-none text-sm">
+        </div>
+      </div>
+    </div>
 
-        let isAdminLoggedIn = false;
-        let isSystemOpen = true; // สถานะ เปิด/ปิด ระบบ
-        let allItems = [];
-        let itemQuantities = {};
-        let adminOrdersList = [];
+    <!-- Search & Catalog -->
+    <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 mb-6">
+      <div class="flex flex-col md:flex-row justify-between items-center gap-4 mb-6">
+        <h2 class="text-lg font-bold text-slate-800 flex items-center">
+          <i class="fa-solid fa-list-check text-purple-700 mr-2"></i> รายการวัสดุสำนักงาน
+        </h2>
+        <div class="relative w-full md:w-72">
+          <input type="text" id="searchInput" oninput="filterItems()" placeholder="ค้นหาพัสดุ..." class="w-full pl-9 pr-4 py-2 border border-slate-300 rounded-xl text-sm focus:ring-2 focus:ring-purple-600 outline-none">
+          <i class="fa-solid fa-magnifying-glass absolute left-3 top-2.5 text-slate-400 text-sm"></i>
+        </div>
+      </div>
 
-        window.onload = function() {
-            fetchData();
-        };
+      <!-- Item List Container -->
+      <div id="itemsContainer" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        <div class="col-span-full text-center py-8 text-slate-400">กำลังโหลดรายการวัสดุจากระบบ...</div>
+      </div>
+    </div>
 
-        function scrollToOrder() {
-            document.getElementById('orderForm').scrollIntoView({ behavior: 'smooth' });
+    <!-- Special Requirement / Custom Item Input -->
+    <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 mb-6">
+      <h3 class="text-md font-bold text-slate-800 mb-2 flex items-center">
+        <i class="fa-solid fa-pen-to-square text-amber-500 mr-2"></i> กรณีไม่มีในรายการ (ระบุพัสดุพิเศษเพิ่มเติม)
+      </h3>
+      <textarea id="customRemarks" rows="2" placeholder="ระบุชื่อรายการ, หน่วยนับ และจำนวนที่ต้องการเพิ่มเติม (ถ้ามี)" class="w-full p-3 border border-slate-300 rounded-xl text-sm focus:ring-2 focus:ring-purple-600 outline-none"></textarea>
+    </div>
+
+  </main>
+
+  <!-- Sticky Bottom Bar -->
+  <div class="fixed bottom-0 left-0 right-0 bg-white/95 backdrop-blur-md border-t border-slate-200 p-4 shadow-lg z-30 no-print">
+    <div class="max-w-7xl mx-auto flex flex-row justify-between items-center gap-4">
+      <div>
+        <div class="text-xs text-slate-500">สรุปการเลือก</div>
+        <div class="text-sm font-bold text-purple-900">
+          <span id="selectedCount">0</span> รายการ (<span id="totalQuantity">0</span> ชิ้น)
+        </div>
+      </div>
+      <button onclick="submitOrder()" class="px-6 py-2.5 bg-purple-800 hover:bg-purple-900 text-white font-semibold rounded-xl text-sm transition shadow-md flex items-center gap-2">
+        <i class="fa-solid fa-paper-plane"></i> ยืนยันการส่งความต้องการ
+      </button>
+    </div>
+  </div>
+
+  <!-- JavaScript Logics -->
+  <script>
+    // ** Web App URL จาก Google Apps Script **
+    const GAS_WEB_APP_URL = "https://script.google.com/macros/s/AKfycbyLXu-xwMeHXpph1lRfisAas9ijKWc8QscAanWCpkLikQzsI-SZmQT-jRYh_Byi1q7TgA/exec";
+
+    let materialsList = [];
+    let selectedCart = {};
+
+    // Initial Load
+    document.addEventListener("DOMContentLoaded", () => {
+      fetchMasterItems();
+      setDefaultMonth();
+    });
+
+    function setDefaultMonth() {
+      const now = new Date();
+      const year = now.getFullYear();
+      const month = String(now.getMonth() + 1).padStart(2, '0');
+      document.getElementById('orderMonth').value = `${year}-${month}`;
+    }
+
+    // 1. ดึงรายการวัสดุจาก Google Sheets (MasterItems)
+    function fetchMasterItems() {
+      fetch(GAS_WEB_APP_URL)
+        .then(res => res.json())
+        .then(res => {
+          if (res.status === "success") {
+            materialsList = res.data;
+            renderItems(materialsList);
+          } else {
+            alert("เกิดข้อผิดพลาดในการโหลดข้อมูล: " + res.message);
+          }
+        })
+        .catch(err => {
+          console.error("Error loading items:", err);
+          document.getElementById('itemsContainer').innerHTML = `<div class="col-span-full text-center py-8 text-rose-500">ไม่สามารถดึงข้อมูลรายการวัสดุได้ กรุณาตรวจสอบการเชื่อมต่อ</div>`;
+        });
+    }
+
+    // Render Items to HTML
+    function renderItems(items) {
+      const container = document.getElementById('itemsContainer');
+      container.innerHTML = '';
+
+      if (!items || items.length === 0) {
+        container.innerHTML = `<div class="col-span-full text-center py-8 text-slate-400">ไม่พบรายการวัสดุในระบบ</div>`;
+        return;
+      }
+
+      items.forEach(item => {
+        const qty = selectedCart[item.id] || 0;
+        const card = document.createElement('div');
+        card.className = "p-4 border border-slate-200 rounded-xl bg-slate-50 hover:bg-white transition flex justify-between items-center gap-3 shadow-sm";
+        card.innerHTML = `
+          <div>
+            <div class="text-xs font-semibold text-purple-600">${item.id || '-'}</div>
+            <div class="font-semibold text-sm text-slate-800">${item.name}</div>
+            <div class="text-xs text-slate-500">หน่วยนับ: ${item.unit}</div>
+          </div>
+          <div class="flex items-center space-x-2">
+            <button onclick="updateQty('${item.id}', -1)" class="w-8 h-8 rounded-lg border bg-white text-slate-600 hover:bg-slate-100 flex items-center justify-center font-bold">-</button>
+            <span id="qty-${item.id}" class="w-8 text-center font-bold text-sm text-slate-800">${qty}</span>
+            <button onclick="updateQty('${item.id}', 1)" class="w-8 h-8 rounded-lg border bg-purple-700 text-white hover:bg-purple-800 flex items-center justify-center font-bold">+</button>
+          </div>
+        `;
+        container.appendChild(card);
+      });
+    }
+
+    function filterItems() {
+      const query = document.getElementById('searchInput').value.toLowerCase();
+      const filtered = materialsList.filter(i => 
+        (i.name && i.name.toLowerCase().includes(query)) || 
+        (i.id && i.id.toLowerCase().includes(query))
+      );
+      renderItems(filtered);
+    }
+
+    function updateQty(id, change) {
+      let current = selectedCart[id] || 0;
+      current += change;
+      if (current < 0) current = 0;
+
+      if (current === 0) {
+        delete selectedCart[id];
+      } else {
+        selectedCart[id] = current;
+      }
+
+      const qtyEl = document.getElementById(`qty-${id}`);
+      if (qtyEl) qtyEl.innerText = current;
+
+      calculateTotals();
+    }
+
+    function calculateTotals() {
+      const selectedKeys = Object.keys(selectedCart);
+      let totalQty = 0;
+      selectedKeys.forEach(k => totalQty += selectedCart[k]);
+
+      document.getElementById('selectedCount').innerText = selectedKeys.length;
+      document.getElementById('totalQuantity').innerText = totalQty;
+    }
+
+    // 2. ส่งคำสั่งซื้อไปยัง Google Sheets (Orders)
+    function submitOrder() {
+      const department = document.getElementById('userDepartment').value;
+      const month = document.getElementById('orderMonth').value;
+      const customRemarks = document.getElementById('customRemarks').value;
+
+      if (!department || !month) {
+        alert('กรุณากรอกแผนกและรอบเดือนให้ครบถ้วน');
+        return;
+      }
+
+      const selectedKeys = Object.keys(selectedCart);
+      if (selectedKeys.length === 0 && !customRemarks.trim()) {
+        alert('กรุณาเลือกรายการพัสดุอย่างน้อย 1 รายการ หรือระบุขอเพิ่มพิเศษ');
+        return;
+      }
+
+      // แปลงรายการที่เลือกเตรียมส่ง
+      const itemsArray = [];
+      let totalPieces = 0;
+
+      selectedKeys.forEach(id => {
+        const itemObj = materialsList.find(m => m.id === id);
+        if (itemObj) {
+          const qty = selectedCart[id];
+          itemsArray.push({
+            name: itemObj.name,
+            quantity: qty,
+            unit: itemObj.unit
+          });
+          totalPieces += qty;
         }
+      });
 
-        // เข้าสู่ระบบ Admin
-        function toggleAdminMode() {
-            if (isAdminLoggedIn) {
-                logoutAdmin();
-            } else {
-                const password = prompt("กรุณากรอกรหัสผ่านสำหรับผู้ดูแลระบบ:");
-                if (password === ADMIN_PASSWORD) {
-                    isAdminLoggedIn = true;
-                    document.getElementById('adminPanel').classList.remove('hidden');
-                    document.getElementById('adminBtnText').innerText = "โหมดผู้ดูแลระบบ (เปิดอยู่)";
-                    document.getElementById('adminBtn').classList.replace('bg-indigo-950', 'bg-amber-600');
-                    document.getElementById('adminPanel').scrollIntoView({ behavior: 'smooth' });
-                    loadAdminOrders();
-                } else if (password !== null) {
-                    alert("รหัสผ่านไม่ถูกต้อง!");
-                }
-            }
+      const payload = {
+        department: department,
+        round: month,
+        items: itemsArray,
+        customRequest: customRemarks,
+        totalPieces: totalPieces
+      };
+
+      // บันทึกลง Google Sheets
+      fetch(GAS_WEB_APP_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+        body: JSON.stringify(payload)
+      })
+      .then(res => res.json())
+      .then(res => {
+        if (res.status === "success") {
+          alert('บันทึกความต้องการสั่งซื้อสำเร็จแล้ว!');
+          selectedCart = {};
+          document.getElementById('customRemarks').value = '';
+          calculateTotals();
+          renderItems(materialsList);
+        } else {
+          alert('เกิดข้อผิดพลาด: ' + res.message);
         }
+      })
+      .catch(err => alert('เกิดข้อผิดพลาดในการส่งข้อมูล: ' + err));
+    }
 
-        function logoutAdmin() {
-            isAdminLoggedIn = false;
-            document.getElementById('adminPanel').classList.add('hidden');
-            document.getElementById('adminBtnText').innerText = "ผู้ดูแลระบบ (Admin)";
-            document.getElementById('adminBtn').classList.replace('bg-amber-600', 'bg-indigo-950');
+    // --- Admin Dashboard Logics ---
+    function toggleAdminModal() {
+      document.getElementById('adminModal').classList.toggle('hidden');
+    }
+
+    function checkAdminAuth() {
+      const pass = document.getElementById('adminPass').value;
+      if (pass === "1234") {
+        document.getElementById('adminLoginArea').classList.add('hidden');
+        document.getElementById('adminPanel').classList.remove('hidden');
+        fetchAdminOrders();
+      } else {
+        alert('รหัสผ่านไม่ถูกต้อง');
+      }
+    }
+
+    function switchAdminTab(tab) {
+      if (tab === 'orders') {
+        document.getElementById('adminOrdersTab').classList.remove('hidden');
+        document.getElementById('adminAddItemTab').classList.add('hidden');
+        document.getElementById('tabOrdersBtn').className = "px-4 py-2 rounded-lg font-medium text-sm bg-purple-100 text-purple-800";
+        document.getElementById('tabAddItemBtn').className = "px-4 py-2 rounded-lg font-medium text-sm text-slate-600 hover:bg-slate-100";
+        fetchAdminOrders();
+      } else {
+        document.getElementById('adminOrdersTab').classList.add('hidden');
+        document.getElementById('adminAddItemTab').classList.remove('hidden');
+        document.getElementById('tabAddItemBtn').className = "px-4 py-2 rounded-lg font-medium text-sm bg-purple-100 text-purple-800";
+        document.getElementById('tabOrdersBtn').className = "px-4 py-2 rounded-lg font-medium text-sm text-slate-600 hover:bg-slate-100";
+      }
+    }
+
+    // ดึงรายงานการสั่งซื้อทั้งหมดมาแสดงที่ Admin
+    function fetchAdminOrders() {
+      const tableBody = document.getElementById('adminOrdersTable');
+      tableBody.innerHTML = `<tr><td colspan="7" class="text-center py-4 text-slate-400">กำลังโหลดข้อมูลการสั่งซื้อ...</td></tr>`;
+
+      fetch(`${GAS_WEB_APP_URL}?action=getOrders`)
+        .then(res => res.json())
+        .then(res => {
+          if (res.status === "success") {
+            renderAdminTable(res.data);
+          } else {
+            tableBody.innerHTML = `<tr><td colspan="7" class="text-center py-4 text-rose-500">เกิดข้อผิดพลาด: ${res.message}</td></tr>`;
+          }
+        })
+        .catch(err => {
+          tableBody.innerHTML = `<tr><td colspan="7" class="text-center py-4 text-rose-500">ไม่สามารถโหลดข้อมูลได้</td></tr>`;
+        });
+    }
+
+    function renderAdminTable(orders) {
+      const tableBody = document.getElementById('adminOrdersTable');
+      tableBody.innerHTML = '';
+
+      if (!orders || orders.length === 0) {
+        tableBody.innerHTML = `<tr><td colspan="7" class="text-center py-4 text-slate-400">ยังไม่มีรายการสั่งซื้อ</td></tr>`;
+        return;
+      }
+
+      orders.forEach(order => {
+        const tr = document.createElement('tr');
+        tr.className = "border-b hover:bg-slate-50";
+        
+        let dateStr = order.timestamp ? new Date(order.timestamp).toLocaleString('th-TH') : '-';
+        
+        tr.innerHTML = `
+          <td class="p-3 text-xs">${dateStr}</td>
+          <td class="p-3 font-semibold text-slate-800">${order.department || '-'}</td>
+          <td class="p-3 text-xs">${order.round || '-'}</td>
+          <td class="p-3 text-xs whitespace-pre-line">${order.itemsText || '-'}</td>
+          <td class="p-3 text-xs text-amber-700 whitespace-pre-line">${order.customRequest || '-'}</td>
+          <td class="p-3 text-center font-bold text-purple-700">${order.totalPieces || 0}</td>
+          <td class="p-3 text-center">
+            <button onclick="deleteOrder(${order.rowIndex})" class="text-rose-600 hover:text-rose-800 text-xs px-2 py-1 rounded bg-rose-50 hover:bg-rose-100">
+              <i class="fa-solid fa-trash"></i> ลบ
+            </button>
+          </td>
+        `;
+        tableBody.appendChild(tr);
+      });
+    }
+
+    // ลบรายการสั่งซื้อ (Admin)
+    function deleteOrder(rowIndex) {
+      if (!confirm(`คุณต้องการลบรายการแถวที่ ${rowIndex} ใช่หรือไม่?`)) return;
+
+      fetch(GAS_WEB_APP_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+        body: JSON.stringify({ action: 'deleteOrder', rowIndex: rowIndex })
+      })
+      .then(res => res.json())
+      .then(res => {
+        if (res.status === "success") {
+          alert('ลบรายการเรียบร้อย');
+          fetchAdminOrders();
+        } else {
+          alert('เกิดข้อผิดพลาด: ' + res.message);
         }
+      });
+    }
 
-        function switchAdminTab(tab) {
-            if(tab === 'orders') {
-                document.getElementById('tabOrdersContent').classList.remove('hidden');
-                document.getElementById('tabAddItemContent').classList.add('hidden');
-                document.getElementById('tabBtnOrders').className = "px-4 py-2 rounded-xl text-xs font-bold bg-amber-500 text-slate-950";
-                document.getElementById('tabBtnAddItem').className = "px-4 py-2 rounded-xl text-xs font-bold bg-slate-800 text-slate-300 hover:bg-slate-700";
-            } else {
-                document.getElementById('tabOrdersContent').classList.add('hidden');
-                document.getElementById('tabAddItemContent').classList.remove('hidden');
-                document.getElementById('tabBtnAddItem').className = "px-4 py-2 rounded-xl text-xs font-bold bg-amber-500 text-slate-950";
-                document.getElementById('tabBtnOrders').className = "px-4 py-2 rounded-xl text-xs font-bold bg-slate-800 text-slate-300 hover:bg-slate-700";
-            }
+    // เพิ่มรายการวัสดุใหม่เข้า MasterItems (Admin)
+    function addNewItemToSheet() {
+      const id = document.getElementById('newItemId').value.trim();
+      const name = document.getElementById('newItemName').value.trim();
+      const unit = document.getElementById('newItemUnit').value.trim();
+
+      if (!name || !unit) {
+        alert('กรุณากรอกชื่อรายการและหน่วยนับ');
+        return;
+      }
+
+      fetch(GAS_WEB_APP_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+        body: JSON.stringify({
+          action: 'addItem',
+          id: id,
+          name: name,
+          unit: unit
+        })
+      })
+      .then(res => res.json())
+      .then(res => {
+        if (res.status === "success") {
+          alert('เพิ่มรายการวัสดุใหม่สำเร็จ!');
+          document.getElementById('newItemId').value = '';
+          document.getElementById('newItemName').value = '';
+          document.getElementById('newItemUnit').value = '';
+          fetchMasterItems(); // รีโหลดรายการพัสดุใหม่
+        } else {
+          alert('เกิดข้อผิดพลาด: ' + res.message);
         }
-
-        // ปุ่ม เปิด - ปิด ระบบรับความต้องการ
-        function toggleSystemStatus() {
-            isSystemOpen = !isSystemOpen;
-            const btn = document.getElementById('toggleSystemBtn');
-            const statusText = document.getElementById('systemStatusText');
-            const submitBtn = document.getElementById('submitBtn');
-
-            const banner = document.getElementById('statusBanner');
-            const icon = document.getElementById('statusIcon');
-            const title = document.getElementById('statusTitle');
-            const desc = document.getElementById('statusDesc');
-            const tag = document.getElementById('statusTag');
-
-            if (isSystemOpen) {
-                statusText.innerText = "เปิดรับรายการ";
-                btn.className = "bg-emerald-600 hover:bg-emerald-700 text-white text-xs px-3 py-2 rounded-xl font-bold transition flex items-center gap-2";
-                
-                banner.className = "bg-emerald-50 border border-emerald-200 rounded-2xl p-4 flex items-center justify-between shadow-sm no-print";
-                icon.className = "w-10 h-10 rounded-full bg-emerald-500 text-white flex items-center justify-center font-bold text-lg";
-                title.innerText = "ระบบกำลังเปิดรับรายการความต้องการ";
-                desc.innerText = "สามารถเลือกรายการ และระบุจำนวนที่ต้องการได้จนกว่าแอดมินจะทำการปิดรอบ";
-                tag.innerText = "เปิดรับข้อมูล";
-                tag.className = "bg-emerald-200 text-emerald-800 text-xs px-3 py-1.5 rounded-full font-semibold hidden md:inline-block";
-                
-                submitBtn.disabled = false;
-                submitBtn.classList.remove('opacity-50', 'cursor-not-allowed');
-            } else {
-                statusText.innerText = "ปิดรับรายการแล้ว";
-                btn.className = "bg-rose-600 hover:bg-rose-700 text-white text-xs px-3 py-2 rounded-xl font-bold transition flex items-center gap-2";
-                
-                banner.className = "bg-rose-50 border border-rose-200 rounded-2xl p-4 flex items-center justify-between shadow-sm no-print";
-                icon.className = "w-10 h-10 rounded-full bg-rose-500 text-white flex items-center justify-center font-bold text-lg";
-                title.innerText = "ขณะนี้ระบบได้ปิดรับรายการแล้ว";
-                desc.innerText = "แอดมินกำลังรวบรวมและสรุปรายการพัสดุ หากต้องการแก้ไขกรุณาติดต่อแอดมิน";
-                tag.innerText = "ปิดรับข้อมูล";
-                tag.className = "bg-rose-200 text-rose-800 text-xs px-3 py-1.5 rounded-full font-semibold hidden md:inline-block";
-                
-                submitBtn.disabled = true;
-                submitBtn.classList.add('opacity-50', 'cursor-not-allowed');
-            }
-        }
-
-        // ดึงรายการวัสดุจาก Google Sheet
-        function fetchData() {
-            const container = document.getElementById('itemsContainer');
-            container.innerHTML = `
-                <div class="col-span-full text-center py-12">
-                    <i class="fa-solid fa-spinner fa-spin text-3xl text-indigo-600 mb-2"></i>
-                    <p class="text-sm text-slate-500">กำลังโหลดรายการวัสดุจาก Google Sheet...</p>
-                </div>`;
-
-            fetch(GOOGLE_SCRIPT_URL)
-                .then(response => response.json())
-                .then(res => {
-                    if (res.status === "success") {
-                        allItems = res.data;
-                        document.getElementById('totalItemsCount').innerText = allItems.length;
-                        renderItems(allItems);
-                    } else {
-                        container.innerHTML = `<div class="col-span-full text-center text-red-500 py-8">เกิดข้อผิดพลาด: ${res.message}</div>`;
-                    }
-                })
-                .catch(err => {
-                    console.error(err);
-                    container.innerHTML = `<div class="col-span-full text-center text-red-500 py-8">ไม่สามารถดึงข้อมูลได้ กรุณาเช็กการ Deploy</div>`;
-                });
-        }
-
-        // โหลดข้อมูลรายงานการสั่งซื้อของแต่ละแผนก (สำหรับ Admin)
-        function loadAdminOrders() {
-            const tbody = document.getElementById('adminOrdersTable');
-            tbody.innerHTML = `<tr><td colspan="5" class="p-4 text-center text-slate-400"><i class="fa-solid fa-spinner fa-spin"></i> กำลังโหลดรายงานการสั่งซื้อ...</td></tr>`;
-
-            fetch(GOOGLE_SCRIPT_URL + "?action=getOrders")
-                .then(res => res.json())
-                .then(res => {
-                    if(res.status === "success") {
-                        adminOrdersList = res.data;
-                        renderAdminTable(adminOrdersList);
-                    } else {
-                        tbody.innerHTML = `<tr><td colspan="5" class="p-4 text-center text-red-400">เกิดข้อผิดพลาดในการโหลดรายการ</td></tr>`;
-                    }
-                })
-                .catch(err => {
-                    console.error(err);
-                    tbody.innerHTML = `<tr><td colspan="5" class="p-4 text-center text-red-400">ไม่สามารถเชื่อมต่อฐานข้อมูลสั่งซื้อได้</td></tr>`;
-                });
-        }
-
-        // แสดงตารางคำสั่งซื้อ พร้อมปุ่ม แก้ไข/ลบ
-        function renderAdminTable(orders) {
-            const tbody = document.getElementById('adminOrdersTable');
-            if(!orders || orders.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="5" class="p-4 text-center text-slate-400">ยังไม่มีรายการสั่งซื้อเข้ามาในระบบ</td></tr>`;
-                return;
-            }
-
-            tbody.innerHTML = orders.map((ord, idx) => `
-                <tr class="hover:bg-slate-700/50">
-                    <td class="p-3 text-slate-400">${ord.timestamp ? new Date(ord.timestamp).toLocaleString('th-TH') : '-'}</td>
-                    <td class="p-3 font-semibold text-amber-300">${ord.department}</td>
-                    <td class="p-3 whitespace-pre-line text-slate-200">${ord.itemsText || '-'}</td>
-                    <td class="p-3 text-indigo-300">${ord.customRequest || '-'}</td>
-                    <td class="p-3 text-center space-x-1">
-                        <button onclick="editAdminOrder(${idx})" class="bg-amber-500 hover:bg-amber-600 text-slate-950 font-bold px-2 py-1 rounded text-[11px]">
-                            <i class="fa-solid fa-pen"></i> แก้ไข
-                        </button>
-                        <button onclick="deleteAdminOrder(${ord.rowIndex})" class="bg-rose-600 hover:bg-rose-700 text-white font-bold px-2 py-1 rounded text-[11px]">
-                            <i class="fa-solid fa-trash"></i> ลบ
-                        </button>
-                    </td>
-                </tr>
-            `).join('');
-        }
-
-        // แก้ไขรายการสั่งซื้อ
-        function editAdminOrder(index) {
-            const order = adminOrdersList[index];
-            const newText = prompt(`แก้ไขรายการพัสดุของ "${order.department}":`, order.itemsText);
-            if (newText !== null) {
-                updateAdminOrderOnServer(order.rowIndex, newText, order.customRequest);
-            }
-        }
-
-        // ลบรายการสั่งซื้อ
-        function deleteAdminOrder(rowIndex) {
-            if (confirm("คุณแน่ใจหรือไม่ที่จะลบรายการสั่งซื้อแถวนี้ออกจากระบบ?")) {
-                fetch(GOOGLE_SCRIPT_URL, {
-                    method: "POST",
-                    body: JSON.stringify({ action: "deleteOrder", rowIndex: rowIndex })
-                })
-                .then(res => res.json())
-                .then(res => {
-                    alert("ลบรายการสำเร็จแล้ว");
-                    loadAdminOrders();
-                });
-            }
-        }
-
-        function updateAdminOrderOnServer(rowIndex, itemsText, customRequest) {
-            fetch(GOOGLE_SCRIPT_URL, {
-                method: "POST",
-                body: JSON.stringify({
-                    action: "updateOrder",
-                    rowIndex: rowIndex,
-                    itemsText: itemsText,
-                    customRequest: customRequest
-                })
-            })
-            .then(res => res.json())
-            .then(res => {
-                alert("อัปเดตข้อมูลสำเร็จ");
-                loadAdminOrders();
-            });
-        }
-
-        // ระบบพิมพ์รายงานส่งร้านค้า
-        function printOrderReport() {
-            if(adminOrdersList.length === 0) {
-                alert("ไม่มีรายการสั่งซื้อให้พิมพ์รายงาน");
-                return;
-            }
-
-            document.getElementById('printRoundText').innerText = document.getElementById('roundInput').value;
-            const printTbody = document.getElementById('printTableBody');
-            
-            // รวบรวมคำขอจากทุกแผนกจัดกลุ่มตามรายการสินค้า
-            let summaryMap = {};
-
-            adminOrdersList.forEach(ord => {
-                if(ord.itemsText) {
-                    const lines = ord.itemsText.split('\n');
-                    lines.forEach(line => {
-                        if(line.trim()) {
-                            if(!summaryMap[line]) {
-                                summaryMap[line] = { depts: [ord.department] };
-                            } else {
-                                summaryMap[line].depts.push(ord.department);
-                            }
-                        }
-                    });
-                }
-            });
-
-            let html = "";
-            let count = 1;
-            for(let itemKey in summaryMap) {
-                const uniqueDepts = [...new Set(summaryMap[itemKey].depts)].join(', ');
-                html += `
-                    <tr>
-                        <td class="border border-slate-400 p-2 text-center">${count++}</td>
-                        <td class="border border-slate-400 p-2 font-medium">${itemKey}</td>
-                        <td class="border border-slate-400 p-2 text-center">-</td>
-                        <td class="border border-slate-400 p-2 text-center">-</td>
-                        <td class="border border-slate-400 p-2 text-slate-600">${uniqueDepts}</td>
-                    </tr>
-                `;
-            }
-
-            printTbody.innerHTML = html;
-            document.getElementById('printArea').classList.remove('hidden');
-            window.print();
-            document.getElementById('printArea').classList.add('hidden');
-        }
-
-        // เพิ่มวัสดุใหม่ลง Google Sheet
-        function addNewItem() {
-            const id = document.getElementById('newItemId').value.trim() || (allItems.length + 1).toString();
-            const name = document.getElementById('newItemName').value.trim();
-            const unit = document.getElementById('newItemUnit').value.trim();
-
-            if (!name || !unit) {
-                alert("กรุณากรอกชื่อรายการและหน่วยนับ");
-                return;
-            }
-
-            const btn = document.getElementById('addItemBtn');
-            btn.disabled = true;
-
-            fetch(GOOGLE_SCRIPT_URL, {
-                method: "POST",
-                body: JSON.stringify({ action: "addItem", id: id, name: name, unit: unit })
-            })
-            .then(res => res.json())
-            .then(res => {
-                alert("เพิ่มรายการสำเร็จ!");
-                document.getElementById('newItemId').value = "";
-                document.getElementById('newItemName').value = "";
-                document.getElementById('newItemUnit').value = "";
-                fetchData();
-            })
-            .finally(() => btn.disabled = false);
-        }
-
-        function renderItems(items) {
-            const container = document.getElementById('itemsContainer');
-            if (!items || items.length === 0) {
-                container.innerHTML = `<div class="col-span-full text-center text-slate-400 py-12">ไม่พบรายการวัสดุ</div>`;
-                return;
-            }
-
-            container.innerHTML = items.map(item => {
-                const qty = itemQuantities[item.id] || 0;
-                return `
-                <div class="bg-white rounded-2xl p-4 shadow-sm border border-slate-200 flex flex-col justify-between hover:shadow-md transition">
-                    <div>
-                        <span class="text-[10px] font-bold px-2 py-0.5 rounded bg-indigo-50 text-indigo-600">รหัส #${item.id}</span>
-                        <h3 class="font-bold text-slate-800 text-sm mt-2 leading-snug line-clamp-2">${item.name}</h3>
-                        <p class="text-xs text-slate-500 mt-1">หน่วยนับ: <span class="font-medium text-slate-700">${item.unit}</span></p>
-                    </div>
-                    <div class="mt-4 pt-3 border-t border-slate-100 flex justify-between items-center">
-                        <span class="text-xs text-slate-500">จำนวนที่ขอ:</span>
-                        <div class="flex items-center space-x-1 bg-slate-100 rounded-lg p-1">
-                            <button onclick="updateQty('${item.id}', -1)" class="w-7 h-7 bg-white rounded-md flex items-center justify-center text-slate-600 hover:bg-slate-200 font-bold text-sm shadow-sm">-</button>
-                            <input type="number" readonly value="${qty}" class="w-10 text-center bg-transparent font-bold text-sm text-indigo-900 focus:outline-none">
-                            <button onclick="updateQty('${item.id}', 1)" class="w-7 h-7 bg-white rounded-md flex items-center justify-center text-slate-600 hover:bg-slate-200 font-bold text-sm shadow-sm">+</button>
-                        </div>
-                    </div>
-                </div>`;
-            }).join('');
-        }
-
-        function updateQty(id, change) {
-            if(!isSystemOpen) {
-                alert("ระบบปิดรับรายการอยู่ ไม่สามารถแก้ไขจำนวนได้");
-                return;
-            }
-            const current = itemQuantities[id] || 0;
-            const updated = Math.max(0, current + change);
-            if (updated === 0) delete itemQuantities[id];
-            else itemQuantities[id] = updated;
-            filterItems();
-            updateSummary();
-        }
-
-        function filterItems() {
-            const query = document.getElementById('searchInput').value.toLowerCase().trim();
-            const filtered = allItems.filter(item => 
-                item.name.toLowerCase().includes(query) || 
-                item.id.toString().includes(query)
-            );
-            renderItems(filtered);
-        }
-
-        function updateSummary() {
-            const keys = Object.keys(itemQuantities);
-            const totalItems = keys.length;
-            const totalPieces = keys.reduce((sum, key) => sum + itemQuantities[key], 0);
-
-            document.getElementById('selectedCount').innerText = totalItems;
-            document.getElementById('totalPieces').innerText = totalPieces;
-        }
-
-        function submitOrder() {
-            if(!isSystemOpen) {
-                alert("ขณะนี้ระบบปิดรับรายการสั่งซื้อแล้ว");
-                return;
-            }
-
-            const department = document.getElementById('departmentSelect').value;
-            const round = document.getElementById('roundInput').value;
-            const customRequest = document.getElementById('customRequestInput').value;
-
-            if (!department) {
-                alert("กรุณาเลือกแผนก / หน่วยงาน ก่อนส่งข้อมูล");
-                return;
-            }
-
-            const selectedItems = Object.keys(itemQuantities).map(id => {
-                const item = allItems.find(i => i.id.toString() === id.toString());
-                return {
-                    id: id,
-                    name: item ? item.name : "",
-                    unit: item ? item.unit : "",
-                    quantity: itemQuantities[id]
-                };
-            });
-
-            if (selectedItems.length === 0 && !customRequest.trim()) {
-                alert("กรุณาเลือกวัสดุอย่างน้อย 1 รายการ");
-                return;
-            }
-
-            const payload = {
-                action: "submitOrder",
-                department: department,
-                round: round,
-                customRequest: customRequest,
-                items: selectedItems,
-                totalItems: selectedItems.length,
-                totalPieces: document.getElementById('totalPieces').innerText
-            };
-
-            if (!confirm("คุณต้องการส่งรายการสั่งซื้อนี้ใช่หรือไม่?")) return;
-
-            fetch(GOOGLE_SCRIPT_URL, {
-                method: "POST",
-                body: JSON.stringify(payload)
-            })
-            .then(res => res.json())
-            .then(res => {
-                if (res.status === "success") {
-                    alert("บันทึกข้อมูลสำเร็จแล้ว!");
-                    itemQuantities = {};
-                    document.getElementById('customRequestInput').value = "";
-                    updateSummary();
-                    filterItems();
-                } else {
-                    alert("เกิดข้อผิดพลาด: " + res.message);
-                }
-            });
-        }
-    </script>
+      });
+    }
+  </script>
 </body>
 </html>
