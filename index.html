@@ -43,11 +43,16 @@
     </div>
   </header>
 
+  <!-- Banner เมื่อปิดรับระบบ -->
+  <div id="systemClosedBanner" class="hidden bg-rose-600 text-white text-center py-3 font-semibold shadow-md">
+    <i class="fa-solid fa-ban mr-2"></i> ขณะนี้ระบบปิดรับความต้องการสั่งซื้อวัสดุชั่วคราว
+  </div>
+
   <main class="max-w-7xl mx-auto px-4 py-6">
 
     <!-- Admin Section Modal / Dashboard -->
     <div id="adminModal" class="hidden fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-      <div class="bg-white rounded-2xl shadow-2xl max-w-4xl w-full max-h-[90vh] flex flex-col overflow-hidden">
+      <div class="bg-white rounded-2xl shadow-2xl max-w-5xl w-full max-h-[90vh] flex flex-col overflow-hidden">
         <div class="p-4 bg-slate-800 text-white flex justify-between items-center">
           <h2 class="font-bold text-lg"><i class="fa-solid fa-sliders mr-2"></i>เมนูผู้ดูแลระบบ (Admin)</h2>
           <button onclick="toggleAdminModal()" class="text-slate-400 hover:text-white"><i class="fa-solid fa-xmark text-xl"></i></button>
@@ -65,18 +70,47 @@
 
         <!-- Admin Content Panel -->
         <div id="adminPanel" class="hidden flex-1 overflow-y-auto p-6 space-y-6">
-          <div class="flex justify-between items-center border-b pb-4">
+          
+          <!-- Top Bar Admin Actions -->
+          <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 border-b pb-4">
             <div class="flex space-x-2">
               <button onclick="switchAdminTab('orders')" id="tabOrdersBtn" class="px-4 py-2 rounded-lg font-medium text-sm bg-purple-100 text-purple-800">รายงานสั่งซื้อ</button>
               <button onclick="switchAdminTab('addItem')" id="tabAddItemBtn" class="px-4 py-2 rounded-lg font-medium text-sm text-slate-600 hover:bg-slate-100">เพิ่มรายการพัสดุใหม่</button>
             </div>
-            <button onclick="window.print()" class="px-3 py-1.5 bg-slate-700 text-white text-xs rounded-lg hover:bg-slate-800">
-              <i class="fa-solid fa-print mr-1"></i> พิมพ์รายงาน
-            </button>
+            
+            <!-- ปุ่ม เปิด-ปิด การรับรายการสั่งซื้อ -->
+            <div class="flex items-center gap-3 bg-slate-100 px-4 py-2 rounded-xl border">
+              <span class="text-xs font-bold text-slate-700">สถานะเปิดรับรายการ:</span>
+              <button id="toggleSystemBtn" onclick="toggleSystemStatus()" class="px-3 py-1 bg-emerald-600 text-white text-xs font-semibold rounded-lg transition">
+                <i class="fa-solid fa-toggle-on mr-1"></i> เปิดรับรายการ
+              </button>
+            </div>
           </div>
 
           <!-- Tab: Orders Report -->
           <div id="adminOrdersTab" class="space-y-4">
+            
+            <!-- ตัวกรองตามแผนก -->
+            <div class="flex flex-col sm:flex-row justify-between items-center gap-3 bg-slate-50 p-3 rounded-xl border">
+              <div class="flex items-center space-x-2 w-full sm:w-auto">
+                <label class="text-xs font-bold text-slate-600 whitespace-nowrap"><i class="fa-solid fa-filter mr-1"></i>กรองตามแผนก:</label>
+                <select id="adminDeptFilter" onchange="filterAdminOrders()" class="p-2 border rounded-lg text-xs bg-white focus:ring-2 focus:ring-purple-600 outline-none w-full sm:w-64">
+                  <option value="ALL">-- แสดงทุกแผนก --</option>
+                  <option value="แผนกสนับสนุน (ผสน.) และ กฟส.xs">แผนกสนับสนุน (ผสน.) และ กฟส.xs</option>
+                  <option value="แผนกบริการและลูกค้าสัมพันธ์ (ผบส.)">แผนกบริการและลูกค้าสัมพันธ์ (ผบส.)</option>
+                  <option value="แผนกบริหารรายได้ค่าไฟ (ผบร.)">แผนกบริหารรายได้ค่าไฟ (ผบร.)</option>
+                  <option value="แผนกก่อสร้างระบบไฟฟ้า (ผกส.)">แผนกก่อสร้างระบบไฟฟ้า (ผกส.)</option>
+                  <option value="แผนกมิเตอร์และหม้อแปลง (ผมต.)">แผนกมิเตอร์และหม้อแปลง (ผมต.)</option>
+                  <option value="แผนกปฏิบัติการและบำรุงรักษาระบบไฟฟ้า (ผปบ.)">แผนกปฏิบัติการและบำรุงรักษาระบบไฟฟ้า (ผปบ.)</option>
+
+                </select>
+              </div>
+              <button onclick="window.print()" class="px-3 py-1.5 bg-slate-700 text-white text-xs rounded-lg hover:bg-slate-800">
+                <i class="fa-solid fa-print mr-1"></i> พิมพ์รายงาน
+              </button>
+            </div>
+
+            <!-- ตารางรายการสั่งซื้อ -->
             <div class="overflow-x-auto border rounded-xl">
               <table class="w-full text-sm text-left text-slate-600">
                 <thead class="text-xs uppercase bg-slate-100 text-slate-700">
@@ -130,12 +164,11 @@
           <label class="block text-sm font-medium text-slate-700 mb-1">แผนก / งานที่ขอเบิก <span class="text-rose-500">*</span></label>
           <select id="userDepartment" class="w-full p-2.5 border border-slate-300 rounded-xl focus:ring-2 focus:ring-purple-600 outline-none text-sm">
             <option value="">-- เลือกแผนก/งาน --</option>
-            <option value="แผนกสนับสนุน (ผสน.) และ กฟส.xs">แผนกสนับสนุน (ผสน.) และ กฟส.xs</option>
-            <option value="แผนกบริการและลูกค้าสัมพันธ์ (ผบส.)">แผนกบริการและลูกค้าสัมพันธ์ (ผบส.)</option>
-            <option value="แผนกบริหารรายได้ค่าไฟ (ผบร.)">แผนกบริหารรายได้ค่าไฟ (ผบร.)</option>
-            <option value="แผนกก่อสร้างระบบไฟฟ้า (ผกส.)">แผนกก่อสร้างระบบไฟฟ้า (ผกส.)</option>
-            <option value="แผนกมิเตอร์และหม้อแปลง (ผมต.)">แผนกมิเตอร์และหม้อแปลง (ผมต.)</option>
-            <option value="แผนกปฏิบัติการและบำรุงรักษาระบบไฟฟ้า (ผปบ.)">แผนกปฏิบัติการและบำรุงรักษาระบบไฟฟ้า (ผปบ.)</option>
+            <option value="แผนกบริการลูกค้าฯ">แผนกบริการลูกค้าและผู้ใช้ไฟ</option>
+            <option value="แผนกบัญชีและประมวลผล">แผนกบัญชีและประมวลผล</option>
+            <option value="แผนกก่อสร้างและปฏิบัติการ">แผนกก่อสร้างและปฏิบัติการ</option>
+            <option value="แผนกคลังพัสดุ">แผนกคลังพัสดุ</option>
+            <option value="งานบริหารทั่วไป">งานบริหารทั่วไป</option>
           </select>
         </div>
         <div>
@@ -182,7 +215,7 @@
           <span id="selectedCount">0</span> รายการ (<span id="totalQuantity">0</span> ชิ้น)
         </div>
       </div>
-      <button onclick="submitOrder()" class="px-6 py-2.5 bg-purple-800 hover:bg-purple-900 text-white font-semibold rounded-xl text-sm transition shadow-md flex items-center gap-2">
+      <button id="submitBtn" onclick="submitOrder()" class="px-6 py-2.5 bg-purple-800 hover:bg-purple-900 text-white font-semibold rounded-xl text-sm transition shadow-md flex items-center gap-2">
         <i class="fa-solid fa-paper-plane"></i> ยืนยันการส่งความต้องการ
       </button>
     </div>
@@ -195,6 +228,8 @@
 
     let materialsList = [];
     let selectedCart = {};
+    let rawAdminOrders = []; // เก็บรายการสั่งซื้อตั้งต้นสำหรับกรอง
+    let isSystemOpen = true; // สถานะ เปิด-ปิด ระบบสั่งซื้อ
 
     // Initial Load
     document.addEventListener("DOMContentLoaded", () => {
@@ -267,6 +302,10 @@
     }
 
     function updateQty(id, change) {
+      if (!isSystemOpen) {
+        alert("ขณะนี้ระบบปิดรับคำสั่งซื้อชั่วคราว");
+        return;
+      }
       let current = selectedCart[id] || 0;
       current += change;
       if (current < 0) current = 0;
@@ -294,6 +333,11 @@
 
     // 2. ส่งคำสั่งซื้อไปยัง Google Sheets (Orders)
     function submitOrder() {
+      if (!isSystemOpen) {
+        alert("ขณะนี้ระบบปิดรับคำสั่งซื้อชั่วคราว ไม่สามารถส่งรายการได้");
+        return;
+      }
+
       const department = document.getElementById('userDepartment').value;
       const month = document.getElementById('orderMonth').value;
       const customRemarks = document.getElementById('customRemarks').value;
@@ -371,6 +415,28 @@
       }
     }
 
+    // สลับเปิด-ปิดรับระบบสั่งซื้อ
+    function toggleSystemStatus() {
+      isSystemOpen = !isSystemOpen;
+      const btn = document.getElementById('toggleSystemBtn');
+      const banner = document.getElementById('systemClosedBanner');
+      const submitBtn = document.getElementById('submitBtn');
+
+      if (isSystemOpen) {
+        btn.className = "px-3 py-1 bg-emerald-600 text-white text-xs font-semibold rounded-lg transition";
+        btn.innerHTML = `<i class="fa-solid fa-toggle-on mr-1"></i> เปิดรับรายการ`;
+        banner.classList.add('hidden');
+        submitBtn.disabled = false;
+        submitBtn.classList.remove('opacity-50', 'cursor-not-allowed');
+      } else {
+        btn.className = "px-3 py-1 bg-rose-600 text-white text-xs font-semibold rounded-lg transition";
+        btn.innerHTML = `<i class="fa-solid fa-toggle-off mr-1"></i> ปิดรับรายการแล้ว`;
+        banner.classList.remove('hidden');
+        submitBtn.disabled = true;
+        submitBtn.classList.add('opacity-50', 'cursor-not-allowed');
+      }
+    }
+
     function switchAdminTab(tab) {
       if (tab === 'orders') {
         document.getElementById('adminOrdersTab').classList.remove('hidden');
@@ -395,7 +461,8 @@
         .then(res => res.json())
         .then(res => {
           if (res.status === "success") {
-            renderAdminTable(res.data);
+            rawAdminOrders = res.data;
+            filterAdminOrders(); // กรองข้อมูลตาม Select
           } else {
             tableBody.innerHTML = `<tr><td colspan="7" class="text-center py-4 text-rose-500">เกิดข้อผิดพลาด: ${res.message}</td></tr>`;
           }
@@ -405,12 +472,23 @@
         });
     }
 
+    // กรองการสั่งซื้อรายแผนก
+    function filterAdminOrders() {
+      const selectedDept = document.getElementById('adminDeptFilter').value;
+      if (selectedDept === 'ALL') {
+        renderAdminTable(rawAdminOrders);
+      } else {
+        const filtered = rawAdminOrders.filter(o => o.department === selectedDept);
+        renderAdminTable(filtered);
+      }
+    }
+
     function renderAdminTable(orders) {
       const tableBody = document.getElementById('adminOrdersTable');
       tableBody.innerHTML = '';
 
       if (!orders || orders.length === 0) {
-        tableBody.innerHTML = `<tr><td colspan="7" class="text-center py-4 text-slate-400">ยังไม่มีรายการสั่งซื้อ</td></tr>`;
+        tableBody.innerHTML = `<tr><td colspan="7" class="text-center py-4 text-slate-400">ไม่พบรายการสั่งซื้อ</td></tr>`;
         return;
       }
 
