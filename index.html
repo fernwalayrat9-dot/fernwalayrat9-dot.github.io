@@ -173,7 +173,7 @@
         </div>
         <div>
           <label class="block text-sm font-medium text-slate-700 mb-1">ประจำรอบเดือน <span class="text-rose-500">*</span></label>
-          <input type="text" id="orderMonth" class="w-full p-2.5 border border-slate-300 rounded-xl bg-slate-100 text-slate-600 font-medium cursor-not-allowed text-sm" value="ประจำเดือน กันยายน 2026 (ตัดรอบ 15 ก.ย.)" readonly>
+          <input type="text" id="orderMonth" class="w-full p-2.5 border border-slate-300 rounded-xl bg-slate-100 text-slate-600 font-medium cursor-not-allowed text-sm" readonly>
         </div>
       </div>
     </div>
@@ -231,8 +231,33 @@
     let rawAdminOrders = [];
     let isSystemOpen = true;
 
+    // คำนวณเดือนและวันตัดรอบอัตโนมัติตามวันที่ปัจจุบัน
+    function setAutoCurrentMonth() {
+      const thaiMonths = [
+        "มกราคม", "กุมภาพันธ์", "มีนาคม", "เมษายน", "พฤษภาคม", "มิถุนายน",
+        "กรกฎาคม", "สิงหาคม", "กันยายน", "ตุลาคม", "พฤศจิกายน", "ธันวาคม"
+      ];
+      const thaiShortMonths = [
+        "ม.ค.", "ก.พ.", "มี.ค.", "เม.ย.", "พ.ค.", "มิ.ย.",
+        "ก.ค.", "ส.ค.", "ก.ย.", "ต.ค.", "พ.ย.", "ธ.ค."
+      ];
+
+      const now = new Date();
+      const currentMonthName = thaiMonths[now.getMonth()];
+      const currentShortMonthName = thaiShortMonths[now.getMonth()];
+      const currentYear = now.getFullYear();
+
+      const formattedText = `ประจำเดือน ${currentMonthName} ${currentYear} (ตัดรอบ 15 ${currentShortMonthName})`;
+
+      const monthInput = document.getElementById('orderMonth');
+      if (monthInput) {
+        monthInput.value = formattedText;
+      }
+    }
+
     // Initial Load
     document.addEventListener("DOMContentLoaded", () => {
+      setAutoCurrentMonth();
       fetchMasterItems();
     });
 
