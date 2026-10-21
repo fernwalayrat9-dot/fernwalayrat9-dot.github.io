@@ -90,21 +90,33 @@
           <!-- Tab: Orders Report -->
           <div id="adminOrdersTab" class="space-y-4">
             
-            <!-- ตัวกรองตามแผนก -->
-            <div class="flex flex-col sm:flex-row justify-between items-center gap-3 bg-slate-50 p-3 rounded-xl border">
-              <div class="flex items-center space-x-2 w-full sm:w-auto">
-                <label class="text-xs font-bold text-slate-600 whitespace-nowrap"><i class="fa-solid fa-filter mr-1"></i>กรองตามแผนก:</label>
-                <select id="adminDeptFilter" onchange="filterAdminOrders()" class="p-2 border rounded-lg text-xs bg-white focus:ring-2 focus:ring-purple-600 outline-none w-full sm:w-72">
-                  <option value="ALL">-- แสดงทุกแผนก --</option>
-                  <option value="แผนกสนับสนุน (ผสน.) และ กฟส.xs">แผนกสนับสนุน (ผสน.) และ กฟส.xs</option>
-                  <option value="แผนกบริการและลูกค้าสัมพันธ์ (ผบส.)">แผนกบริการและลูกค้าสัมพันธ์ (ผบส.)</option>
-                  <option value="แผนกบริหารรายได้ค่าไฟ (ผบร.)">แผนกบริหารรายได้ค่าไฟ (ผบร.)</option>
-                  <option value="แผนกก่อสร้างระบบไฟฟ้า (ผกส.)">แผนกก่อสร้างระบบไฟฟ้า (ผกส.)</option>
-                  <option value="แผนกมิเตอร์และหม้อแปลง (ผมต.)">แผนกมิเตอร์และหม้อแปลง (ผมต.)</option>
-                  <option value="แผนกปฏิบัติการและบำรุงรักษาระบบไฟฟ้า (ผปบ.)">แผนกปฏิบัติการและบำรุงรักษาระบบไฟฟ้า (ผปบ.)</option>
-                </select>
+            <!-- ตัวกรองตามแผนก และ ตัวกรองตามรอบเดือน -->
+            <div class="flex flex-col lg:flex-row justify-between items-center gap-3 bg-slate-50 p-3 rounded-xl border">
+              <div class="flex flex-col sm:flex-row items-center gap-2 w-full lg:w-auto">
+                <!-- กรองตามแผนก -->
+                <div class="flex items-center space-x-2 w-full sm:w-auto">
+                  <label class="text-xs font-bold text-slate-600 whitespace-nowrap"><i class="fa-solid fa-filter mr-1"></i>แผนก:</label>
+                  <select id="adminDeptFilter" onchange="filterAdminOrders()" class="p-2 border rounded-lg text-xs bg-white focus:ring-2 focus:ring-purple-600 outline-none w-full sm:w-60">
+                    <option value="ALL">-- แสดงทุกแผนก --</option>
+                    <option value="แผนกสนับสนุน (ผสน.) และ กฟส.xs">แผนกสนับสนุน (ผสน.) และ กฟส.xs</option>
+                    <option value="แผนกบริการและลูกค้าสัมพันธ์ (ผบส.)">แผนกบริการและลูกค้าสัมพันธ์ (ผบส.)</option>
+                    <option value="แผนกบริหารรายได้ค่าไฟ (ผบร.)">แผนกบริหารรายได้ค่าไฟ (ผบร.)</option>
+                    <option value="แผนกก่อสร้างระบบไฟฟ้า (ผกส.)">แผนกก่อสร้างระบบไฟฟ้า (ผกส.)</option>
+                    <option value="แผนกมิเตอร์และหม้อแปลง (ผมต.)">แผนกมิเตอร์และหม้อแปลง (ผมต.)</option>
+                    <option value="แผนกปฏิบัติการและบำรุงรักษาระบบไฟฟ้า (ผปบ.)">แผนกปฏิบัติการและบำรุงรักษาระบบไฟฟ้า (ผปบ.)</option>
+                  </select>
+                </div>
+
+                <!-- กรองตามรอบเดือน -->
+                <div class="flex items-center space-x-2 w-full sm:w-auto">
+                  <label class="text-xs font-bold text-slate-600 whitespace-nowrap"><i class="fa-solid fa-calendar-days mr-1"></i>รอบเดือน:</label>
+                  <select id="adminMonthFilter" onchange="filterAdminOrders()" class="p-2 border rounded-lg text-xs bg-white focus:ring-2 focus:ring-purple-600 outline-none w-full sm:w-56">
+                    <option value="ALL">-- แสดงทุกรอบเดือน --</option>
+                  </select>
+                </div>
               </div>
-              <button onclick="window.print()" class="px-3 py-1.5 bg-slate-700 text-white text-xs rounded-lg hover:bg-slate-800">
+
+              <button onclick="window.print()" class="px-3 py-1.5 bg-slate-700 text-white text-xs rounded-lg hover:bg-slate-800 shrink-0">
                 <i class="fa-solid fa-print mr-1"></i> พิมพ์รายงาน
               </button>
             </div>
@@ -309,7 +321,6 @@
       });
     }
 
-    // แก้ไขฟังก์ชันค้นหารายการ (รองรับทั้งการแปลง ID ตัวเลข และชื่อเป็น String)
     function filterItems() {
       const query = document.getElementById('searchInput').value.trim().toLowerCase();
       
@@ -488,6 +499,7 @@
         .then(res => {
           if (res.status === "success") {
             rawAdminOrders = res.data;
+            populateMonthFilterOptions(rawAdminOrders); // สร้างตัวเลือกใน Dropdown รอบเดือน
             filterAdminOrders();
           } else {
             tableBody.innerHTML = `<tr><td colspan="7" class="text-center py-4 text-rose-500">เกิดข้อผิดพลาด: ${res.message}</td></tr>`;
@@ -498,14 +510,44 @@
         });
     }
 
+    // สร้างตัวเลือกใน Dropdown รอบเดือน อ้างอิงจากข้อมูลที่มีอยู่ใน Sheet
+    function populateMonthFilterOptions(orders) {
+      const monthSelect = document.getElementById('adminMonthFilter');
+      const currentSelected = monthSelect.value;
+      
+      // ดึงรายชื่อรอบเดือนที่ไม่ซ้ำกัน
+      const uniqueMonths = [...new Set(orders.map(o => o.round).filter(r => r && r.trim() !== ''))];
+
+      monthSelect.innerHTML = '<option value="ALL">-- แสดงทุกรอบเดือน --</option>';
+      uniqueMonths.forEach(m => {
+        const option = document.createElement('option');
+        option.value = m;
+        option.textContent = m;
+        monthSelect.appendChild(option);
+      });
+
+      // คงค่าเดิมที่เลือกไว้ก่อนหน้าถ้ามี
+      if (uniqueMonths.includes(currentSelected)) {
+        monthSelect.value = currentSelected;
+      }
+    }
+
+    // ฟังก์ชันกรองข้อมูลสั่งซื้อ (กรองทั้ง แผนก และ รอบเดือน ร่วมกัน)
     function filterAdminOrders() {
       const selectedDept = document.getElementById('adminDeptFilter').value;
-      if (selectedDept === 'ALL') {
-        renderAdminTable(rawAdminOrders);
-      } else {
-        const filtered = rawAdminOrders.filter(o => o.department === selectedDept);
-        renderAdminTable(filtered);
+      const selectedMonth = document.getElementById('adminMonthFilter').value;
+
+      let filtered = rawAdminOrders;
+
+      if (selectedDept !== 'ALL') {
+        filtered = filtered.filter(o => o.department === selectedDept);
       }
+
+      if (selectedMonth !== 'ALL') {
+        filtered = filtered.filter(o => o.round === selectedMonth);
+      }
+
+      renderAdminTable(filtered);
     }
 
     function renderAdminTable(orders) {
@@ -526,7 +568,7 @@
         tr.innerHTML = `
           <td class="p-3 text-xs">${dateStr}</td>
           <td class="p-3 font-semibold text-slate-800">${order.department || '-'}</td>
-          <td class="p-3 text-xs">${order.round || '-'}</td>
+          <td class="p-3 text-xs font-medium text-purple-700">${order.round || '-'}</td>
           <td class="p-3 text-xs whitespace-pre-line">${order.itemsText || '-'}</td>
           <td class="p-3 text-xs text-amber-700 whitespace-pre-line">${order.customRequest || '-'}</td>
           <td class="p-3 text-center font-bold text-purple-700">${order.totalPieces || 0}</td>
