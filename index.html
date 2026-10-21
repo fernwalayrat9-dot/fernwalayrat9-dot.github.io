@@ -29,7 +29,7 @@
         </div>
         <div>
           <h1 class="text-xl font-bold tracking-wide">ระบบสั่งซื้อพัสดุ / วัสดุสำนักงาน</h1>
-          <p class="text-xs text-purple-200">แผนกบริการลูกค้าและผู้ใช้ไฟ - กฟส.หลังสวน</p>
+          <p class="text-xs text-purple-200">กฟส.หลังสวน และหน่วยงานในสังกัด</p>
         </div>
       </div>
       <div class="flex items-center gap-3 no-print">
@@ -94,7 +94,7 @@
             <div class="flex flex-col sm:flex-row justify-between items-center gap-3 bg-slate-50 p-3 rounded-xl border">
               <div class="flex items-center space-x-2 w-full sm:w-auto">
                 <label class="text-xs font-bold text-slate-600 whitespace-nowrap"><i class="fa-solid fa-filter mr-1"></i>กรองตามแผนก:</label>
-                <select id="adminDeptFilter" onchange="filterAdminOrders()" class="p-2 border rounded-lg text-xs bg-white focus:ring-2 focus:ring-purple-600 outline-none w-full sm:w-64">
+                <select id="adminDeptFilter" onchange="filterAdminOrders()" class="p-2 border rounded-lg text-xs bg-white focus:ring-2 focus:ring-purple-600 outline-none w-full sm:w-72">
                   <option value="ALL">-- แสดงทุกแผนก --</option>
                   <option value="แผนกสนับสนุน (ผสน.) และ กฟส.xs">แผนกสนับสนุน (ผสน.) และ กฟส.xs</option>
                   <option value="แผนกบริการและลูกค้าสัมพันธ์ (ผบส.)">แผนกบริการและลูกค้าสัมพันธ์ (ผบส.)</option>
@@ -102,7 +102,6 @@
                   <option value="แผนกก่อสร้างระบบไฟฟ้า (ผกส.)">แผนกก่อสร้างระบบไฟฟ้า (ผกส.)</option>
                   <option value="แผนกมิเตอร์และหม้อแปลง (ผมต.)">แผนกมิเตอร์และหม้อแปลง (ผมต.)</option>
                   <option value="แผนกปฏิบัติการและบำรุงรักษาระบบไฟฟ้า (ผปบ.)">แผนกปฏิบัติการและบำรุงรักษาระบบไฟฟ้า (ผปบ.)</option>
-
                 </select>
               </div>
               <button onclick="window.print()" class="px-3 py-1.5 bg-slate-700 text-white text-xs rounded-lg hover:bg-slate-800">
@@ -135,16 +134,16 @@
           <div id="adminAddItemTab" class="hidden max-w-lg mx-auto bg-slate-50 p-6 rounded-xl border space-y-4">
             <h4 class="font-bold text-slate-800">เพิ่มวัสดุใหม่ลง MasterItems</h4>
             <div>
-              <label class="block text-xs font-semibold mb-1">รหัสพัสดุ</label>
-              <input type="text" id="newItemId" placeholder="เช่น OFF-080" class="w-full p-2 border rounded-lg text-sm">
+              <label class="block text-xs font-semibold mb-1">รหัสพัสดุ (ID)</label>
+              <input type="text" id="newItemId" placeholder="เช่น 80 หรือ OFF-080" class="w-full p-2 border rounded-lg text-sm">
             </div>
             <div>
               <label class="block text-xs font-semibold mb-1">ชื่อรายการวัสดุ</label>
-              <input type="text" id="newItemName" placeholder="เช่น ปากกาเคมีสีแดง" class="w-full p-2 border rounded-lg text-sm">
+              <input type="text" id="newItemName" placeholder="เช่น กระดาษ A4 80 แกรม" class="w-full p-2 border rounded-lg text-sm">
             </div>
             <div>
               <label class="block text-xs font-semibold mb-1">หน่วยนับ</label>
-              <input type="text" id="newItemUnit" placeholder="เช่น กล่อง, เล่ม, ด้าม" class="w-full p-2 border rounded-lg text-sm">
+              <input type="text" id="newItemUnit" placeholder="เช่น กล่อง, เล่ม, อัน" class="w-full p-2 border rounded-lg text-sm">
             </div>
             <button onclick="addNewItemToSheet()" class="w-full py-2 bg-emerald-600 text-white font-medium rounded-lg text-sm hover:bg-emerald-700">
               <i class="fa-solid fa-plus mr-1"></i> บันทึกรายการใหม่
@@ -164,16 +163,17 @@
           <label class="block text-sm font-medium text-slate-700 mb-1">แผนก / งานที่ขอเบิก <span class="text-rose-500">*</span></label>
           <select id="userDepartment" class="w-full p-2.5 border border-slate-300 rounded-xl focus:ring-2 focus:ring-purple-600 outline-none text-sm">
             <option value="">-- เลือกแผนก/งาน --</option>
-            <option value="แผนกบริการลูกค้าฯ">แผนกบริการลูกค้าและผู้ใช้ไฟ</option>
-            <option value="แผนกบัญชีและประมวลผล">แผนกบัญชีและประมวลผล</option>
-            <option value="แผนกก่อสร้างและปฏิบัติการ">แผนกก่อสร้างและปฏิบัติการ</option>
-            <option value="แผนกคลังพัสดุ">แผนกคลังพัสดุ</option>
-            <option value="งานบริหารทั่วไป">งานบริหารทั่วไป</option>
+            <option value="แผนกสนับสนุน (ผสน.) และ กฟส.xs">แผนกสนับสนุน (ผสน.) และ กฟส.xs</option>
+            <option value="แผนกบริการและลูกค้าสัมพันธ์ (ผบส.)">แผนกบริการและลูกค้าสัมพันธ์ (ผบส.)</option>
+            <option value="แผนกบริหารรายได้ค่าไฟ (ผบร.)">แผนกบริหารรายได้ค่าไฟ (ผบร.)</option>
+            <option value="แผนกก่อสร้างระบบไฟฟ้า (ผกส.)">แผนกก่อสร้างระบบไฟฟ้า (ผกส.)</option>
+            <option value="แผนกมิเตอร์และหม้อแปลง (ผมต.)">แผนกมิเตอร์และหม้อแปลง (ผมต.)</option>
+            <option value="แผนกปฏิบัติการและบำรุงรักษาระบบไฟฟ้า (ผปบ.)">แผนกปฏิบัติการและบำรุงรักษาระบบไฟฟ้า (ผปบ.)</option>
           </select>
         </div>
         <div>
           <label class="block text-sm font-medium text-slate-700 mb-1">ประจำรอบเดือน <span class="text-rose-500">*</span></label>
-          <input type="month" id="orderMonth" class="w-full p-2.5 border border-slate-300 rounded-xl focus:ring-2 focus:ring-purple-600 outline-none text-sm">
+          <input type="text" id="orderMonth" class="w-full p-2.5 border border-slate-300 rounded-xl bg-slate-100 text-slate-600 font-medium cursor-not-allowed text-sm" value="ประจำเดือน กันยายน 2026 (ตัดรอบ 15 ก.ย.)" readonly>
         </div>
       </div>
     </div>
@@ -185,7 +185,7 @@
           <i class="fa-solid fa-list-check text-purple-700 mr-2"></i> รายการวัสดุสำนักงาน
         </h2>
         <div class="relative w-full md:w-72">
-          <input type="text" id="searchInput" oninput="filterItems()" placeholder="ค้นหาพัสดุ..." class="w-full pl-9 pr-4 py-2 border border-slate-300 rounded-xl text-sm focus:ring-2 focus:ring-purple-600 outline-none">
+          <input type="text" id="searchInput" oninput="filterItems()" placeholder="ค้นหาพัสดุ (พิมพ์ชื่อ หรือ ID)..." class="w-full pl-9 pr-4 py-2 border border-slate-300 rounded-xl text-sm focus:ring-2 focus:ring-purple-600 outline-none">
           <i class="fa-solid fa-magnifying-glass absolute left-3 top-2.5 text-slate-400 text-sm"></i>
         </div>
       </div>
@@ -228,21 +228,13 @@
 
     let materialsList = [];
     let selectedCart = {};
-    let rawAdminOrders = []; // เก็บรายการสั่งซื้อตั้งต้นสำหรับกรอง
-    let isSystemOpen = true; // สถานะ เปิด-ปิด ระบบสั่งซื้อ
+    let rawAdminOrders = [];
+    let isSystemOpen = true;
 
     // Initial Load
     document.addEventListener("DOMContentLoaded", () => {
       fetchMasterItems();
-      setDefaultMonth();
     });
-
-    function setDefaultMonth() {
-      const now = new Date();
-      const year = now.getFullYear();
-      const month = String(now.getMonth() + 1).padStart(2, '0');
-      document.getElementById('orderMonth').value = `${year}-${month}`;
-    }
 
     // 1. ดึงรายการวัสดุจาก Google Sheets (MasterItems)
     function fetchMasterItems() {
@@ -278,9 +270,9 @@
         card.className = "p-4 border border-slate-200 rounded-xl bg-slate-50 hover:bg-white transition flex justify-between items-center gap-3 shadow-sm";
         card.innerHTML = `
           <div>
-            <div class="text-xs font-semibold text-purple-600">${item.id || '-'}</div>
+            <div class="text-xs font-semibold text-purple-600">รหัส #${item.id || '-'}</div>
             <div class="font-semibold text-sm text-slate-800">${item.name}</div>
-            <div class="text-xs text-slate-500">หน่วยนับ: ${item.unit}</div>
+            <div class="text-xs text-slate-500">หน่วยนับ: ${item.unit || '-'}</div>
           </div>
           <div class="flex items-center space-x-2">
             <button onclick="updateQty('${item.id}', -1)" class="w-8 h-8 rounded-lg border bg-white text-slate-600 hover:bg-slate-100 flex items-center justify-center font-bold">-</button>
@@ -292,12 +284,21 @@
       });
     }
 
+    // แก้ไขฟังก์ชันค้นหารายการ (รองรับทั้งการแปลง ID ตัวเลข และชื่อเป็น String)
     function filterItems() {
-      const query = document.getElementById('searchInput').value.toLowerCase();
-      const filtered = materialsList.filter(i => 
-        (i.name && i.name.toLowerCase().includes(query)) || 
-        (i.id && i.id.toLowerCase().includes(query))
-      );
+      const query = document.getElementById('searchInput').value.trim().toLowerCase();
+      
+      if (!query) {
+        renderItems(materialsList);
+        return;
+      }
+
+      const filtered = materialsList.filter(item => {
+        const itemName = item.name ? String(item.name).toLowerCase() : "";
+        const itemId = item.id ? String(item.id).toLowerCase() : "";
+        return itemName.includes(query) || itemId.includes(query);
+      });
+
       renderItems(filtered);
     }
 
@@ -353,12 +354,11 @@
         return;
       }
 
-      // แปลงรายการที่เลือกเตรียมส่ง
       const itemsArray = [];
       let totalPieces = 0;
 
       selectedKeys.forEach(id => {
-        const itemObj = materialsList.find(m => m.id === id);
+        const itemObj = materialsList.find(m => String(m.id) === String(id));
         if (itemObj) {
           const qty = selectedCart[id];
           itemsArray.push({
@@ -378,7 +378,9 @@
         totalPieces: totalPieces
       };
 
-      // บันทึกลง Google Sheets
+      const submitBtn = document.getElementById('submitBtn');
+      submitBtn.disabled = true;
+
       fetch(GAS_WEB_APP_URL, {
         method: 'POST',
         headers: { 'Content-Type': 'text/plain;charset=utf-8' },
@@ -396,7 +398,8 @@
           alert('เกิดข้อผิดพลาด: ' + res.message);
         }
       })
-      .catch(err => alert('เกิดข้อผิดพลาดในการส่งข้อมูล: ' + err));
+      .catch(err => alert('เกิดข้อผิดพลาดในการส่งข้อมูล: ' + err))
+      .finally(() => submitBtn.disabled = false);
     }
 
     // --- Admin Dashboard Logics ---
@@ -415,7 +418,6 @@
       }
     }
 
-    // สลับเปิด-ปิดรับระบบสั่งซื้อ
     function toggleSystemStatus() {
       isSystemOpen = !isSystemOpen;
       const btn = document.getElementById('toggleSystemBtn');
@@ -452,7 +454,6 @@
       }
     }
 
-    // ดึงรายงานการสั่งซื้อทั้งหมดมาแสดงที่ Admin
     function fetchAdminOrders() {
       const tableBody = document.getElementById('adminOrdersTable');
       tableBody.innerHTML = `<tr><td colspan="7" class="text-center py-4 text-slate-400">กำลังโหลดข้อมูลการสั่งซื้อ...</td></tr>`;
@@ -462,7 +463,7 @@
         .then(res => {
           if (res.status === "success") {
             rawAdminOrders = res.data;
-            filterAdminOrders(); // กรองข้อมูลตาม Select
+            filterAdminOrders();
           } else {
             tableBody.innerHTML = `<tr><td colspan="7" class="text-center py-4 text-rose-500">เกิดข้อผิดพลาด: ${res.message}</td></tr>`;
           }
@@ -472,7 +473,6 @@
         });
     }
 
-    // กรองการสั่งซื้อรายแผนก
     function filterAdminOrders() {
       const selectedDept = document.getElementById('adminDeptFilter').value;
       if (selectedDept === 'ALL') {
@@ -515,7 +515,6 @@
       });
     }
 
-    // ลบรายการสั่งซื้อ (Admin)
     function deleteOrder(rowIndex) {
       if (!confirm(`คุณต้องการลบรายการแถวที่ ${rowIndex} ใช่หรือไม่?`)) return;
 
@@ -535,7 +534,6 @@
       });
     }
 
-    // เพิ่มรายการวัสดุใหม่เข้า MasterItems (Admin)
     function addNewItemToSheet() {
       const id = document.getElementById('newItemId').value.trim();
       const name = document.getElementById('newItemName').value.trim();
@@ -563,7 +561,7 @@
           document.getElementById('newItemId').value = '';
           document.getElementById('newItemName').value = '';
           document.getElementById('newItemUnit').value = '';
-          fetchMasterItems(); // รีโหลดรายการพัสดุใหม่
+          fetchMasterItems();
         } else {
           alert('เกิดข้อผิดพลาด: ' + res.message);
         }
