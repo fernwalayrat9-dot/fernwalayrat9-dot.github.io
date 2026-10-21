@@ -208,14 +208,6 @@
       </div>
     </div>
 
-    <!-- Special Requirement / Custom Item Input -->
-    <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 mb-6">
-      <h3 class="text-md font-bold text-slate-800 mb-2 flex items-center">
-        <i class="fa-solid fa-pen-to-square text-amber-500 mr-2"></i> กรณีไม่มีในรายการ (ระบุพัสดุพิเศษเพิ่มเติม)
-      </h3>
-      <textarea id="customRemarks" rows="2" placeholder="ระบุชื่อรายการ, หน่วยนับ และจำนวนที่ต้องการเพิ่มเติม (ถ้ามี)" class="w-full p-3 border border-slate-300 rounded-xl text-sm focus:ring-2 focus:ring-purple-600 outline-none"></textarea>
-    </div>
-
   </main>
 
   <!-- Sticky Bottom Bar -->
@@ -377,7 +369,6 @@
 
       const department = document.getElementById('userDepartment').value;
       const month = document.getElementById('orderMonth').value;
-      const customRemarks = document.getElementById('customRemarks').value;
 
       if (!department || !month) {
         alert('กรุณากรอกแผนกและรอบเดือนให้ครบถ้วน');
@@ -385,8 +376,8 @@
       }
 
       const selectedKeys = Object.keys(selectedCart);
-      if (selectedKeys.length === 0 && !customRemarks.trim()) {
-        alert('กรุณาเลือกรายการพัสดุอย่างน้อย 1 รายการ หรือระบุขอเพิ่มพิเศษ');
+      if (selectedKeys.length === 0) {
+        alert('กรุณาเลือกรายการพัสดุอย่างน้อย 1 รายการ');
         return;
       }
 
@@ -410,7 +401,7 @@
         department: department,
         round: month,
         items: itemsArray,
-        customRequest: customRemarks,
+        customRequest: "",
         totalPieces: totalPieces
       };
 
@@ -427,7 +418,6 @@
         if (res.status === "success") {
           alert('บันทึกความต้องการสั่งซื้อสำเร็จแล้ว!');
           selectedCart = {};
-          document.getElementById('customRemarks').value = '';
           calculateTotals();
           renderItems(materialsList);
         } else {
@@ -499,7 +489,7 @@
         .then(res => {
           if (res.status === "success") {
             rawAdminOrders = res.data;
-            populateMonthFilterOptions(rawAdminOrders); // สร้างตัวเลือกใน Dropdown รอบเดือน
+            populateMonthFilterOptions(rawAdminOrders);
             filterAdminOrders();
           } else {
             tableBody.innerHTML = `<tr><td colspan="7" class="text-center py-4 text-rose-500">เกิดข้อผิดพลาด: ${res.message}</td></tr>`;
@@ -510,12 +500,10 @@
         });
     }
 
-    // สร้างตัวเลือกใน Dropdown รอบเดือน อ้างอิงจากข้อมูลที่มีอยู่ใน Sheet
     function populateMonthFilterOptions(orders) {
       const monthSelect = document.getElementById('adminMonthFilter');
       const currentSelected = monthSelect.value;
       
-      // ดึงรายชื่อรอบเดือนที่ไม่ซ้ำกัน
       const uniqueMonths = [...new Set(orders.map(o => o.round).filter(r => r && r.trim() !== ''))];
 
       monthSelect.innerHTML = '<option value="ALL">-- แสดงทุกรอบเดือน --</option>';
@@ -526,13 +514,11 @@
         monthSelect.appendChild(option);
       });
 
-      // คงค่าเดิมที่เลือกไว้ก่อนหน้าถ้ามี
       if (uniqueMonths.includes(currentSelected)) {
         monthSelect.value = currentSelected;
       }
     }
 
-    // ฟังก์ชันกรองข้อมูลสั่งซื้อ (กรองทั้ง แผนก และ รอบเดือน ร่วมกัน)
     function filterAdminOrders() {
       const selectedDept = document.getElementById('adminDeptFilter').value;
       const selectedMonth = document.getElementById('adminMonthFilter').value;
