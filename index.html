@@ -13,7 +13,6 @@
   <style>
     body { font-family: 'Sarabun', sans-serif; }
     
-    /* ตั้งค่า CSS สำหรับสั่งพิมพ์ (Print Style) ให้เหมือนตารางในรูป */
     @media print {
       body * { visibility: hidden; }
       #printArea, #printArea * { visibility: visible; }
@@ -237,10 +236,10 @@
     </div>
   </div>
 
-  <!-- AREA สำหรับพิมพ์รายงานโดยเฉพาะ (ซ่อนไว้ปกติ จะแสดงเมื่อสั่งพิมพ์) -->
+  <!-- AREA สำหรับพิมพ์รายงานสรุปยอดรวม -->
   <div id="printArea" class="hidden">
-    <div style="font-family: 'Sarabun', sans-serif; max-w: 800px; margin: 0 auto;">
-      <div style="display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 15px; border-b: 2px solid #000; pb-2px;">
+    <div style="font-family: 'Sarabun', sans-serif; max-width: 800px; margin: 0 auto;">
+      <div style="display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 15px; border-bottom: 2px solid #000; padding-bottom: 5px;">
         <h2 style="font-size: 18px; font-weight: bold; margin: 0;" id="printTitle">รายการวัสดุที่สั่งซื้อ</h2>
         <span style="font-size: 14px; font-weight: bold;" id="printSubtitle"></span>
       </div>
@@ -254,7 +253,6 @@
           </tr>
         </thead>
         <tbody id="printTableBody">
-          <!-- ข้อมูลจะถูกฉีดเข้าตรงนี้โดย JS -->
         </tbody>
       </table>
     </div>
@@ -262,16 +260,14 @@
 
   <!-- JavaScript Logics -->
   <script>
-    // ** Web App URL จาก Google Apps Script **
     const GAS_WEB_APP_URL = "https://script.google.com/macros/s/AKfycbyLXu-xwMeHXpph1lRfisAas9ijKWc8QscAanWCpkLikQzsI-SZmQT-jRYh_Byi1q7TgA/exec";
 
     let materialsList = [];
     let selectedCart = {};
     let rawAdminOrders = [];
-    let currentFilteredOrders = []; // เก็บรายการที่ถูกกรองล่าสุด
+    let currentFilteredOrders = [];
     let isSystemOpen = true;
 
-    // คำนวณเดือนและวันตัดรอบอัตโนมัติตามวันที่ปัจจุบัน
     function setAutoCurrentMonth() {
       const thaiMonths = [
         "มกราคม", "กุมภาพันธ์", "มีนาคม", "เมษายน", "พฤษภาคม", "มิถุนายน",
@@ -295,13 +291,11 @@
       }
     }
 
-    // Initial Load
     document.addEventListener("DOMContentLoaded", () => {
       setAutoCurrentMonth();
       fetchMasterItems();
     });
 
-    // 1. ดึงรายการวัสดุจาก Google Sheets (MasterItems)
     function fetchMasterItems() {
       fetch(GAS_WEB_APP_URL)
         .then(res => res.json())
@@ -319,7 +313,6 @@
         });
     }
 
-    // Render Items to HTML
     function renderItems(items) {
       const container = document.getElementById('itemsContainer');
       container.innerHTML = '';
@@ -396,7 +389,6 @@
       document.getElementById('totalQuantity').innerText = totalQty;
     }
 
-    // 2. ส่งคำสั่งซื้อไปยัง Google Sheets (Orders)
     function submitOrder() {
       if (!isSystemOpen) {
         alert("ขณะนี้ระบบปิดรับคำสั่งซื้อชั่วคราว ไม่สามารถส่งรายการได้");
@@ -464,7 +456,6 @@
       .finally(() => submitBtn.disabled = false);
     }
 
-    // --- Admin Dashboard Logics ---
     function toggleAdminModal() {
       document.getElementById('adminModal').classList.toggle('hidden');
     }
@@ -569,7 +560,7 @@
         filtered = filtered.filter(o => o.round === selectedMonth);
       }
 
-      currentFilteredOrders = filtered; // บันทึกผลลัพธ์ไว้ใช้ตอนพิมพ์สรุป
+      currentFilteredOrders = filtered;
       renderAdminTable(filtered);
     }
 
@@ -658,24 +649,23 @@
       });
     }
 
-    // --- ฟังก์ชันการสร้างรายงานสรุปยอดรวม (สำหรับพิมพ์) ---
+    // --- ฟังก์ชันพิมพ์รายงานสรุปยอดรวม (ปรับปรุงการอ่านข้อความในรูปแบบ "ชื่อรายการ (จำนวน หน่วย)") ---
     function printSummaryReport() {
       if (!currentFilteredOrders || currentFilteredOrders.length === 0) {
         alert("ไม่มีข้อมูลรายการสั่งซื้อในตัวกรองปัจจุบัน");
         return;
       }
 
-      // 1. นำข้อมูลสั่งซื้อที่กรองไว้มาคำนวณรวมจำนวนพัสดุแต่ละชนิด (Sum by Item Name)
       const summaryMap = {};
 
       currentFilteredOrders.forEach(order => {
         if (order.itemsText) {
-          // แยกแต่ละบรรทัด (รูปแบบ: "- กระดาษ A4: 2 รีม")
           const lines = order.itemsText.split('\n');
           lines.forEach(line => {
-            const cleanLine = line.replace(/^- /, '').trim();
+            const cleanLine = line.trim();
             if (cleanLine) {
-              const match = cleanLine.match(/^(.+?):\s*(\d+)\s*(.*)\$/);
+              // ดึงตัวเลขและหน่วยนับจากวงเล็บท้ายข้อความ เช่น "เทปลบคำผิด FASTER (4 อัน)"
+              const match = cleanLine.match(/^(.+?)\s*\(\s*(\d+)\s*(.*?)\s*\)\$/);
               if (match) {
                 const name = match[1].trim();
                 const qty = parseInt(match[2], 10) || 0;
@@ -685,6 +675,13 @@
                   summaryMap[name] = { quantity: 0, unit: unit };
                 }
                 summaryMap[name].quantity += qty;
+              } else {
+                // หากไม่มีวงเล็บ ให้นับตามชื่อบรรทัด
+                if (!summaryMap[cleanLine]) {
+                  summaryMap[cleanLine] = { quantity: 1, unit: '-' };
+                } else {
+                  summaryMap[cleanLine].quantity += 1;
+                }
               }
             }
           });
@@ -702,7 +699,6 @@
         return;
       }
 
-      // 2. ตั้งชื่อหัวข้อตามแผนกและรอบเดือนที่เลือก
       const selectedDept = document.getElementById('adminDeptFilter').value;
       const selectedMonth = document.getElementById('adminMonthFilter').value;
 
@@ -721,7 +717,6 @@
       document.getElementById('printTitle').innerText = titleText;
       document.getElementById('printSubtitle').innerText = subtitleText;
 
-      // 3. แสดงผลในตารางพิมพ์
       const printTbody = document.getElementById('printTableBody');
       printTbody.innerHTML = '';
 
@@ -736,7 +731,6 @@
         printTbody.appendChild(tr);
       });
 
-      // 4. สั่งพิมพ์หน้าต่าง Print
       window.print();
     }
   </script>
