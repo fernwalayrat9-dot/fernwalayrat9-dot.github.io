@@ -31,6 +31,16 @@
 </head>
 <body class="bg-slate-50 min-h-screen text-slate-800 pb-28">
 
+  <!-- Loading Overlay Popup (ป๊อปอัปหมุนๆ ระหว่างประมวลผล) -->
+  <div id="loadingOverlay" class="hidden fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-[100] flex flex-col items-center justify-center transition-all">
+    <div class="bg-white p-6 rounded-2xl shadow-2xl flex flex-col items-center space-y-4 max-w-xs w-full mx-4">
+      <div class="relative w-12 h-12">
+        <div class="w-12 h-12 rounded-full border-4 border-purple-200 animate-spin border-t-purple-700"></div>
+      </div>
+      <p id="loadingText" class="text-sm font-semibold text-slate-700 text-center">กำลังประมวลผล กรุณารอสักครู่...</p>
+    </div>
+  </div>
+
   <!-- Header / Navbar -->
   <header class="bg-gradient-to-r from-purple-800 to-indigo-900 text-white shadow-lg sticky top-0 z-40 no-print">
     <div class="max-w-7xl mx-auto px-4 py-4 flex flex-col md:flex-row justify-between items-center gap-4">
@@ -268,6 +278,16 @@
     let currentFilteredOrders = [];
     let isSystemOpen = true;
 
+    // ฟังก์ชันควบคุมเปิด-ปิด Loading Popup
+    function showLoading(msg = "กำลังประมวลผล กรุณารอสักครู่...") {
+      document.getElementById('loadingText').innerText = msg;
+      document.getElementById('loadingOverlay').classList.remove('hidden');
+    }
+
+    function hideLoading() {
+      document.getElementById('loadingOverlay').classList.add('hidden');
+    }
+
     function setAutoCurrentMonth() {
       const thaiMonths = [
         "มกราคม", "กุมภาพันธ์", "มีนาคม", "เมษายน", "พฤษภาคม", "มิถุนายน",
@@ -297,6 +317,7 @@
     });
 
     function fetchMasterItems() {
+      showLoading("กำลังโหลดข้อมูลรายการวัสดุ...");
       fetch(GAS_WEB_APP_URL)
         .then(res => res.json())
         .then(res => {
@@ -310,7 +331,8 @@
         .catch(err => {
           console.error("Error loading items:", err);
           document.getElementById('itemsContainer').innerHTML = `<div class="col-span-full text-center py-8 text-rose-500">ไม่สามารถดึงข้อมูลรายการวัสดุได้ กรุณาตรวจสอบการเชื่อมต่อ</div>`;
-        });
+        })
+        .finally(() => hideLoading());
     }
 
     function renderItems(items) {
@@ -436,6 +458,8 @@
       const submitBtn = document.getElementById('submitBtn');
       submitBtn.disabled = true;
 
+      showLoading("กำลังส่งข้อมูลรายการสั่งซื้อ...");
+
       fetch(GAS_WEB_APP_URL, {
         method: 'POST',
         headers: { 'Content-Type': 'text/plain;charset=utf-8' },
@@ -453,7 +477,10 @@
         }
       })
       .catch(err => alert('เกิดข้อผิดพลาดในการส่งข้อมูล: ' + err))
-      .finally(() => submitBtn.disabled = false);
+      .finally(() => {
+        hideLoading();
+        submitBtn.disabled = false;
+      });
     }
 
     function toggleAdminModal() {
@@ -511,6 +538,8 @@
       const tableBody = document.getElementById('adminOrdersTable');
       tableBody.innerHTML = `<tr><td colspan="7" class="text-center py-4 text-slate-400">กำลังโหลดข้อมูลการสั่งซื้อ...</td></tr>`;
 
+      showLoading("กำลังโหลดข้อมูลสั่งซื้อฝั่ง Admin...");
+
       fetch(`${GAS_WEB_APP_URL}?action=getOrders`)
         .then(res => res.json())
         .then(res => {
@@ -524,7 +553,8 @@
         })
         .catch(err => {
           tableBody.innerHTML = `<tr><td colspan="7" class="text-center py-4 text-rose-500">ไม่สามารถโหลดข้อมูลได้</td></tr>`;
-        });
+        })
+        .finally(() => hideLoading());
     }
 
     function populateMonthFilterOptions(orders) {
@@ -599,6 +629,8 @@
     function deleteOrder(rowIndex) {
       if (!confirm(`คุณต้องการลบรายการแถวที่ ${rowIndex} ใช่หรือไม่?`)) return;
 
+      showLoading("กำลังลบรายการออกจากระบบ...");
+
       fetch(GAS_WEB_APP_URL, {
         method: 'POST',
         headers: { 'Content-Type': 'text/plain;charset=utf-8' },
@@ -612,7 +644,8 @@
         } else {
           alert('เกิดข้อผิดพลาด: ' + res.message);
         }
-      });
+      })
+      .finally(() => hideLoading());
     }
 
     function addNewItemToSheet() {
@@ -624,6 +657,8 @@
         alert('กรุณากรอกชื่อรายการและหน่วยนับ');
         return;
       }
+
+      showLoading("กำลังบันทึกพัสดุรายการใหม่...");
 
       fetch(GAS_WEB_APP_URL, {
         method: 'POST',
@@ -646,10 +681,10 @@
         } else {
           alert('เกิดข้อผิดพลาด: ' + res.message);
         }
-      });
+      })
+      .finally(() => hideLoading());
     }
 
-    // --- ฟังก์ชันพิมพ์รายงานสรุปยอดรวม (ปรับปรุงการอ่านข้อความในรูปแบบ "ชื่อรายการ (จำนวน หน่วย)") ---
     function printSummaryReport() {
       if (!currentFilteredOrders || currentFilteredOrders.length === 0) {
         alert("ไม่มีข้อมูลรายการสั่งซื้อในตัวกรองปัจจุบัน");
@@ -664,7 +699,6 @@
           lines.forEach(line => {
             const cleanLine = line.trim();
             if (cleanLine) {
-              // ดึงตัวเลขและหน่วยนับจากวงเล็บท้ายข้อความ เช่น "เทปลบคำผิด FASTER (4 อัน)"
               const match = cleanLine.match(/^(.+?)\s*\(\s*(\d+)\s*(.*?)\s*\)\$/);
               if (match) {
                 const name = match[1].trim();
@@ -676,7 +710,6 @@
                 }
                 summaryMap[name].quantity += qty;
               } else {
-                // หากไม่มีวงเล็บ ให้นับตามชื่อบรรทัด
                 if (!summaryMap[cleanLine]) {
                   summaryMap[cleanLine] = { quantity: 1, unit: '-' };
                 } else {
