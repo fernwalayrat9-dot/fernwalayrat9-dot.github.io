@@ -12,16 +12,28 @@
   <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <style>
     body { font-family: 'Sarabun', sans-serif; }
+    
+    /* ตั้งค่า CSS สำหรับสั่งพิมพ์ (Print Style) ให้เหมือนตารางในรูป */
     @media print {
+      body * { visibility: hidden; }
+      #printArea, #printArea * { visibility: visible; }
+      #printArea {
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 100%;
+        padding: 20px;
+        background: white;
+        color: black;
+      }
       .no-print { display: none !important; }
-      .print-only { display: block !important; }
     }
   </style>
 </head>
 <body class="bg-slate-50 min-h-screen text-slate-800 pb-28">
 
   <!-- Header / Navbar -->
-  <header class="bg-gradient-to-r from-purple-800 to-indigo-900 text-white shadow-lg sticky top-0 z-40">
+  <header class="bg-gradient-to-r from-purple-800 to-indigo-900 text-white shadow-lg sticky top-0 z-40 no-print">
     <div class="max-w-7xl mx-auto px-4 py-4 flex flex-col md:flex-row justify-between items-center gap-4">
       <div class="flex items-center space-x-3">
         <div class="p-3 bg-white/10 rounded-lg backdrop-blur-sm">
@@ -44,11 +56,11 @@
   </header>
 
   <!-- Banner เมื่อปิดรับระบบ -->
-  <div id="systemClosedBanner" class="hidden bg-rose-600 text-white text-center py-3 font-semibold shadow-md">
+  <div id="systemClosedBanner" class="hidden bg-rose-600 text-white text-center py-3 font-semibold shadow-md no-print">
     <i class="fa-solid fa-ban mr-2"></i> ขณะนี้ระบบปิดรับความต้องการสั่งซื้อวัสดุชั่วคราว
   </div>
 
-  <main class="max-w-7xl mx-auto px-4 py-6">
+  <main class="max-w-7xl mx-auto px-4 py-6 no-print">
 
     <!-- Admin Section Modal / Dashboard -->
     <div id="adminModal" class="hidden fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center p-4">
@@ -116,8 +128,8 @@
                 </div>
               </div>
 
-              <button onclick="window.print()" class="px-3 py-1.5 bg-slate-700 text-white text-xs rounded-lg hover:bg-slate-800 shrink-0">
-                <i class="fa-solid fa-print mr-1"></i> พิมพ์รายงาน
+              <button onclick="printSummaryReport()" class="px-3 py-1.5 bg-slate-700 text-white text-xs rounded-lg hover:bg-slate-800 shrink-0 font-medium transition shadow-sm">
+                <i class="fa-solid fa-print mr-1"></i> พิมพ์รายงานสรุป
               </button>
             </div>
 
@@ -225,6 +237,29 @@
     </div>
   </div>
 
+  <!-- AREA สำหรับพิมพ์รายงานโดยเฉพาะ (ซ่อนไว้ปกติ จะแสดงเมื่อสั่งพิมพ์) -->
+  <div id="printArea" class="hidden">
+    <div style="font-family: 'Sarabun', sans-serif; max-w: 800px; margin: 0 auto;">
+      <div style="display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 15px; border-b: 2px solid #000; pb-2px;">
+        <h2 style="font-size: 18px; font-weight: bold; margin: 0;" id="printTitle">รายการวัสดุที่สั่งซื้อ</h2>
+        <span style="font-size: 14px; font-weight: bold;" id="printSubtitle"></span>
+      </div>
+      <table style="width: 100%; border-collapse: collapse; text-align: left; font-size: 13px;">
+        <thead>
+          <tr style="background-color: #f2f2f2;">
+            <th style="border: 1px solid #000; padding: 6px 8px; text-align: center; width: 60px;">ลำดับ</th>
+            <th style="border: 1px solid #000; padding: 6px 8px;">รายการ</th>
+            <th style="border: 1px solid #000; padding: 6px 8px; text-align: center; width: 100px;">หน่วย</th>
+            <th style="border: 1px solid #000; padding: 6px 8px; text-align: center; width: 80px;">รวม</th>
+          </tr>
+        </thead>
+        <tbody id="printTableBody">
+          <!-- ข้อมูลจะถูกฉีดเข้าตรงนี้โดย JS -->
+        </tbody>
+      </table>
+    </div>
+  </div>
+
   <!-- JavaScript Logics -->
   <script>
     // ** Web App URL จาก Google Apps Script **
@@ -233,6 +268,7 @@
     let materialsList = [];
     let selectedCart = {};
     let rawAdminOrders = [];
+    let currentFilteredOrders = []; // เก็บรายการที่ถูกกรองล่าสุด
     let isSystemOpen = true;
 
     // คำนวณเดือนและวันตัดรอบอัตโนมัติตามวันที่ปัจจุบัน
@@ -533,6 +569,7 @@
         filtered = filtered.filter(o => o.round === selectedMonth);
       }
 
+      currentFilteredOrders = filtered; // บันทึกผลลัพธ์ไว้ใช้ตอนพิมพ์สรุป
       renderAdminTable(filtered);
     }
 
@@ -619,6 +656,88 @@
           alert('เกิดข้อผิดพลาด: ' + res.message);
         }
       });
+    }
+
+    // --- ฟังก์ชันการสร้างรายงานสรุปยอดรวม (สำหรับพิมพ์) ---
+    function printSummaryReport() {
+      if (!currentFilteredOrders || currentFilteredOrders.length === 0) {
+        alert("ไม่มีข้อมูลรายการสั่งซื้อในตัวกรองปัจจุบัน");
+        return;
+      }
+
+      // 1. นำข้อมูลสั่งซื้อที่กรองไว้มาคำนวณรวมจำนวนพัสดุแต่ละชนิด (Sum by Item Name)
+      const summaryMap = {};
+
+      currentFilteredOrders.forEach(order => {
+        if (order.itemsText) {
+          // แยกแต่ละบรรทัด (รูปแบบ: "- กระดาษ A4: 2 รีม")
+          const lines = order.itemsText.split('\n');
+          lines.forEach(line => {
+            const cleanLine = line.replace(/^- /, '').trim();
+            if (cleanLine) {
+              const match = cleanLine.match(/^(.+?):\s*(\d+)\s*(.*)\$/);
+              if (match) {
+                const name = match[1].trim();
+                const qty = parseInt(match[2], 10) || 0;
+                const unit = match[3].trim();
+
+                if (!summaryMap[name]) {
+                  summaryMap[name] = { quantity: 0, unit: unit };
+                }
+                summaryMap[name].quantity += qty;
+              }
+            }
+          });
+        }
+      });
+
+      const summaryList = Object.keys(summaryMap).map(name => ({
+        name: name,
+        quantity: summaryMap[name].quantity,
+        unit: summaryMap[name].unit
+      }));
+
+      if (summaryList.length === 0) {
+        alert("ไม่พบข้อมูลพัสดุที่สามารถสรุปยอดได้");
+        return;
+      }
+
+      // 2. ตั้งชื่อหัวข้อตามแผนกและรอบเดือนที่เลือก
+      const selectedDept = document.getElementById('adminDeptFilter').value;
+      const selectedMonth = document.getElementById('adminMonthFilter').value;
+
+      let titleText = "รายการวัสดุที่สั่งซื้อ";
+      if (selectedDept !== 'ALL') {
+        titleText += ` (${selectedDept})`;
+      } else {
+        titleText += ` (รวมทุกแผนก)`;
+      }
+
+      let subtitleText = "";
+      if (selectedMonth !== 'ALL') {
+        subtitleText = selectedMonth;
+      }
+
+      document.getElementById('printTitle').innerText = titleText;
+      document.getElementById('printSubtitle').innerText = subtitleText;
+
+      // 3. แสดงผลในตารางพิมพ์
+      const printTbody = document.getElementById('printTableBody');
+      printTbody.innerHTML = '';
+
+      summaryList.forEach((item, index) => {
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+          <td style="border: 1px solid #000; padding: 6px 8px; text-align: center;">${index + 1}</td>
+          <td style="border: 1px solid #000; padding: 6px 8px;">${item.name}</td>
+          <td style="border: 1px solid #000; padding: 6px 8px; text-align: center;">${item.unit || '-'}</td>
+          <td style="border: 1px solid #000; padding: 6px 8px; text-align: center; font-weight: bold;">${item.quantity}</td>
+        `;
+        printTbody.appendChild(tr);
+      });
+
+      // 4. สั่งพิมพ์หน้าต่าง Print
+      window.print();
     }
   </script>
 </body>
