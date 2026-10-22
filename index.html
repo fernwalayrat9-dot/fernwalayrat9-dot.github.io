@@ -14,16 +14,16 @@
     body { font-family: 'Sarabun', sans-serif; }
     
     @media print {
-      body * { visibility: hidden; }
-      #printArea, #printArea * { visibility: visible; }
+      body * { visibility: hidden !important; }
+      #printArea, #printArea * { visibility: visible !important; }
       #printArea {
-        position: absolute;
-        left: 0;
-        top: 0;
-        width: 100%;
-        padding: 20px;
-        background: white;
-        color: black;
+        position: absolute !important;
+        left: 0 !important;
+        top: 0 !important;
+        width: 100% !important;
+        display: block !important;
+        background: white !important;
+        color: black !important;
       }
       .no-print { display: none !important; }
     }
@@ -31,7 +31,7 @@
 </head>
 <body class="bg-slate-50 min-h-screen text-slate-800 pb-28">
 
-  <!-- Loading Overlay Popup (ป๊อปอัปหมุนๆ ระหว่างประมวลผล) -->
+  <!-- Loading Overlay Popup -->
   <div id="loadingOverlay" class="hidden fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-[100] flex flex-col items-center justify-center transition-all">
     <div class="bg-white p-6 rounded-2xl shadow-2xl flex flex-col items-center space-y-4 max-w-xs w-full mx-4">
       <div class="relative w-12 h-12">
@@ -151,8 +151,8 @@
                     <th class="p-3">แผนก/งาน</th>
                     <th class="p-3">รอบเดือน</th>
                     <th class="p-3">รายการพัสดุ</th>
-                    <th class="p-3">ขอเพิ่มพิเศษ</th>
-                    <th class="p-3 text-center">รวมชิ้น</th>
+                    <th class="p-3 text-center">จำนวน</th>
+                    <th class="p-3 text-center">หน่วยนับ</th>
                     <th class="p-3 text-center">จัดการ</th>
                   </tr>
                 </thead>
@@ -247,8 +247,8 @@
   </div>
 
   <!-- AREA สำหรับพิมพ์รายงานสรุปยอดรวม -->
-  <div id="printArea" class="hidden">
-    <div style="font-family: 'Sarabun', sans-serif; max-width: 800px; margin: 0 auto;">
+  <div id="printArea" style="display: none;">
+    <div style="font-family: 'Sarabun', sans-serif; max-width: 800px; margin: 0 auto; padding: 10px;">
       <div style="display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 15px; border-bottom: 2px solid #000; padding-bottom: 5px;">
         <h2 style="font-size: 18px; font-weight: bold; margin: 0;" id="printTitle">รายการวัสดุที่สั่งซื้อ</h2>
         <span style="font-size: 14px; font-weight: bold;" id="printSubtitle"></span>
@@ -278,7 +278,6 @@
     let currentFilteredOrders = [];
     let isSystemOpen = true;
 
-    // ฟังก์ชันควบคุมเปิด-ปิด Loading Popup
     function showLoading(msg = "กำลังประมวลผล กรุณารอสักครู่...") {
       document.getElementById('loadingText').innerText = msg;
       document.getElementById('loadingOverlay').classList.remove('hidden');
@@ -432,27 +431,22 @@
       }
 
       const itemsArray = [];
-      let totalPieces = 0;
 
       selectedKeys.forEach(id => {
         const itemObj = materialsList.find(m => String(m.id) === String(id));
         if (itemObj) {
-          const qty = selectedCart[id];
           itemsArray.push({
             name: itemObj.name,
-            quantity: qty,
+            quantity: selectedCart[id],
             unit: itemObj.unit
           });
-          totalPieces += qty;
         }
       });
 
       const payload = {
         department: department,
         round: month,
-        items: itemsArray,
-        customRequest: "",
-        totalPieces: totalPieces
+        items: itemsArray
       };
 
       const submitBtn = document.getElementById('submitBtn');
@@ -609,13 +603,26 @@
         
         let dateStr = order.timestamp ? new Date(order.timestamp).toLocaleString('th-TH') : '-';
         
+        // แยกตัวเลขและหน่วยออกจากคอลัมน์ F ที่รวมกันมา เช่น "1 อัน" -> qty = 1, unit = อัน
+        let rawQtyStr = String(order.quantityUnit || order.quantity || "");
+        let qtyNum = rawQtyStr;
+        let unitText = order.unit || "-";
+
+        let match = rawQtyStr.match(/^(\d+)\s*(.*)\$/);
+        if (match) {
+          qtyNum = match[1];
+          if (!order.unit && match[2]) {
+            unitText = match[2];
+          }
+        }
+        
         tr.innerHTML = `
           <td class="p-3 text-xs">${dateStr}</td>
           <td class="p-3 font-semibold text-slate-800">${order.department || '-'}</td>
           <td class="p-3 text-xs font-medium text-purple-700">${order.round || '-'}</td>
-          <td class="p-3 text-xs whitespace-pre-line">${order.itemsText || '-'}</td>
-          <td class="p-3 text-xs text-amber-700 whitespace-pre-line">${order.customRequest || '-'}</td>
-          <td class="p-3 text-center font-bold text-purple-700">${order.totalPieces || 0}</td>
+          <td class="p-3 text-xs font-medium text-slate-800">${order.itemName || '-'}</td>
+          <td class="p-3 text-center font-bold text-purple-700">${qtyNum}</td>
+          <td class="p-3 text-center text-xs text-slate-500">${unitText}</td>
           <td class="p-3 text-center">
             <button onclick="deleteOrder(${order.rowIndex})" class="text-rose-600 hover:text-rose-800 text-xs px-2 py-1 rounded bg-rose-50 hover:bg-rose-100">
               <i class="fa-solid fa-trash"></i> ลบ
@@ -627,7 +634,7 @@
     }
 
     function deleteOrder(rowIndex) {
-      if (!confirm(`คุณต้องการลบรายการแถวที่ ${rowIndex} ใช่หรือไม่?`)) return;
+      if (!confirm(`คุณต้องการลบรายการนี้ใช่หรือไม่?`)) return;
 
       showLoading("กำลังลบรายการออกจากระบบ...");
 
@@ -694,30 +701,24 @@
       const summaryMap = {};
 
       currentFilteredOrders.forEach(order => {
-        if (order.itemsText) {
-          const lines = order.itemsText.split('\n');
-          lines.forEach(line => {
-            const cleanLine = line.trim();
-            if (cleanLine) {
-              const match = cleanLine.match(/^(.+?)\s*\(\s*(\d+)\s*(.*?)\s*\)\$/);
-              if (match) {
-                const name = match[1].trim();
-                const qty = parseInt(match[2], 10) || 0;
-                const unit = match[3].trim();
+        const name = order.itemName;
+        let rawQtyStr = String(order.quantityUnit || order.quantity || "0");
+        let qtyNum = parseInt(rawQtyStr, 10) || 0;
+        let unitText = order.unit || '-';
 
-                if (!summaryMap[name]) {
-                  summaryMap[name] = { quantity: 0, unit: unit };
-                }
-                summaryMap[name].quantity += qty;
-              } else {
-                if (!summaryMap[cleanLine]) {
-                  summaryMap[cleanLine] = { quantity: 1, unit: '-' };
-                } else {
-                  summaryMap[cleanLine].quantity += 1;
-                }
-              }
-            }
-          });
+        let match = rawQtyStr.match(/^(\d+)\s*(.*)\$/);
+        if (match) {
+          qtyNum = parseInt(match[1], 10) || 0;
+          if (!order.unit && match[2]) {
+            unitText = match[2];
+          }
+        }
+
+        if (name) {
+          if (!summaryMap[name]) {
+            summaryMap[name] = { quantity: 0, unit: unitText };
+          }
+          summaryMap[name].quantity += qtyNum;
         }
       });
 
