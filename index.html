@@ -13,6 +13,16 @@
   <style>
     body { font-family: 'Sarabun', sans-serif; }
     
+    /* ซ่อนลูกศรขึ้น-ลง ของ input type number เพื่อความสวยงาม */
+    input[type=number]::-webkit-inner-spin-button, 
+    input[type=number]::-webkit-outer-spin-button { 
+      -webkit-appearance: none; 
+      margin: 0; 
+    }
+    input[type=number] {
+      -moz-appearance: textfield;
+    }
+
     @media print {
       body * { visibility: hidden !important; }
       #printArea, #printArea * { visibility: visible !important; }
@@ -353,9 +363,9 @@
             <div class="font-semibold text-sm text-slate-800">${item.name}</div>
             <div class="text-xs text-slate-500">หน่วยนับ: ${item.unit || '-'}</div>
           </div>
-          <div class="flex items-center space-x-2">
+          <div class="flex items-center space-x-1">
             <button onclick="updateQty('${item.id}', -1)" class="w-8 h-8 rounded-lg border bg-white text-slate-600 hover:bg-slate-100 flex items-center justify-center font-bold">-</button>
-            <span id="qty-${item.id}" class="w-8 text-center font-bold text-sm text-slate-800">${qty}</span>
+            <input type="number" id="qty-${item.id}" value="${qty}" min="0" oninput="handleDirectInput('${item.id}', this.value)" class="w-12 h-8 text-center font-bold text-sm border rounded-lg focus:ring-2 focus:ring-purple-600 outline-none bg-white">
             <button onclick="updateQty('${item.id}', 1)" class="w-8 h-8 rounded-lg border bg-purple-700 text-white hover:bg-purple-800 flex items-center justify-center font-bold">+</button>
           </div>
         `;
@@ -395,8 +405,27 @@
         selectedCart[id] = current;
       }
 
-      const qtyEl = document.getElementById(`qty-${id}`);
-      if (qtyEl) qtyEl.innerText = current;
+      const qtyInput = document.getElementById(`qty-${id}`);
+      if (qtyInput) qtyInput.value = current;
+
+      calculateTotals();
+    }
+
+    function handleDirectInput(id, value) {
+      if (!isSystemOpen) {
+        alert("ขณะนี้ระบบปิดรับคำสั่งซื้อชั่วคราว");
+        return;
+      }
+      let val = parseInt(value, 10);
+      if (isNaN(val) || val < 0) {
+        val = 0;
+      }
+
+      if (val === 0) {
+        delete selectedCart[id];
+      } else {
+        selectedCart[id] = val;
+      }
 
       calculateTotals();
     }
@@ -576,7 +605,6 @@
 
       let filtered = rawAdminOrders;
 
-      // กรองตามแผนกแบบยืดหยุ่น (แก้ปัญหาชื่อแผนกไม่ตรงกันเป๊ะ)
       if (selectedDept !== 'ALL') {
         filtered = filtered.filter(o => {
           const sheetDept = o.department ? String(o.department).trim() : "";
@@ -585,7 +613,6 @@
         });
       }
 
-      // กรองตามรอบเดือน
       if (selectedMonth !== 'ALL') {
         filtered = filtered.filter(o => {
           const sheetRound = o.round ? String(o.round).trim() : "";
@@ -739,8 +766,9 @@
       document.getElementById('printTitle').innerText = titleText;
       document.getElementById('printSubtitle').innerText = subtitleText;
 
-      const printTbody = document.getElementById('printTableBody');
-      printTbody.innerHTML = '';
+      const printTbody = document.getElementById('printTableBox') || document.getElementById('printTableBody');
+      const printTbodyEl = document.getElementById('printTableBody');
+      printTbodyEl.innerHTML = '';
 
       summaryList.forEach((item, index) => {
         const tr = document.createElement('tr');
@@ -750,7 +778,7 @@
           <td style="border: 1px solid #000; padding: 6px 8px; text-align: center;">${item.unit || '-'}</td>
           <td style="border: 1px solid #000; padding: 6px 8px; text-align: center; font-weight: bold;">${item.quantity}</td>
         `;
-        printTbody.appendChild(tr);
+        printTbodyEl.appendChild(tr);
       });
 
       window.print();
