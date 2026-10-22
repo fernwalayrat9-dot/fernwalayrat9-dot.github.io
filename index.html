@@ -576,12 +576,22 @@
 
       let filtered = rawAdminOrders;
 
+      // กรองตามแผนกแบบยืดหยุ่น (แก้ปัญหาชื่อแผนกไม่ตรงกันเป๊ะ)
       if (selectedDept !== 'ALL') {
-        filtered = filtered.filter(o => o.department === selectedDept);
+        filtered = filtered.filter(o => {
+          const sheetDept = o.department ? String(o.department).trim() : "";
+          const filterDept = selectedDept.trim();
+          return sheetDept.includes(filterDept) || filterDept.includes(sheetDept);
+        });
       }
 
+      // กรองตามรอบเดือน
       if (selectedMonth !== 'ALL') {
-        filtered = filtered.filter(o => o.round === selectedMonth);
+        filtered = filtered.filter(o => {
+          const sheetRound = o.round ? String(o.round).trim() : "";
+          const filterRound = selectedMonth.trim();
+          return sheetRound === filterRound;
+        });
       }
 
       currentFilteredOrders = filtered;
@@ -603,26 +613,13 @@
         
         let dateStr = order.timestamp ? new Date(order.timestamp).toLocaleString('th-TH') : '-';
         
-        // แยกตัวเลขและหน่วยออกจากคอลัมน์ F ที่รวมกันมา เช่น "1 อัน" -> qty = 1, unit = อัน
-        let rawQtyStr = String(order.quantityUnit || order.quantity || "");
-        let qtyNum = rawQtyStr;
-        let unitText = order.unit || "-";
-
-        let match = rawQtyStr.match(/^(\d+)\s*(.*)\$/);
-        if (match) {
-          qtyNum = match[1];
-          if (!order.unit && match[2]) {
-            unitText = match[2];
-          }
-        }
-        
         tr.innerHTML = `
           <td class="p-3 text-xs">${dateStr}</td>
           <td class="p-3 font-semibold text-slate-800">${order.department || '-'}</td>
           <td class="p-3 text-xs font-medium text-purple-700">${order.round || '-'}</td>
           <td class="p-3 text-xs font-medium text-slate-800">${order.itemName || '-'}</td>
-          <td class="p-3 text-center font-bold text-purple-700">${qtyNum}</td>
-          <td class="p-3 text-center text-xs text-slate-500">${unitText}</td>
+          <td class="p-3 text-center font-bold text-purple-700">${order.quantity || 0}</td>
+          <td class="p-3 text-center text-xs text-slate-500">${order.unit || '-'}</td>
           <td class="p-3 text-center">
             <button onclick="deleteOrder(${order.rowIndex})" class="text-rose-600 hover:text-rose-800 text-xs px-2 py-1 rounded bg-rose-50 hover:bg-rose-100">
               <i class="fa-solid fa-trash"></i> ลบ
@@ -702,23 +699,14 @@
 
       currentFilteredOrders.forEach(order => {
         const name = order.itemName;
-        let rawQtyStr = String(order.quantityUnit || order.quantity || "0");
-        let qtyNum = parseInt(rawQtyStr, 10) || 0;
-        let unitText = order.unit || '-';
-
-        let match = rawQtyStr.match(/^(\d+)\s*(.*)\$/);
-        if (match) {
-          qtyNum = parseInt(match[1], 10) || 0;
-          if (!order.unit && match[2]) {
-            unitText = match[2];
-          }
-        }
+        const qty = parseInt(order.quantity, 10) || 0;
+        const unit = order.unit || '-';
 
         if (name) {
           if (!summaryMap[name]) {
-            summaryMap[name] = { quantity: 0, unit: unitText };
+            summaryMap[name] = { quantity: 0, unit: unit };
           }
-          summaryMap[name].quantity += qtyNum;
+          summaryMap[name].quantity += qty;
         }
       });
 
