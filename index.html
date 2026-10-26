@@ -230,6 +230,25 @@
           </div>
         </div>
 
+        <!-- ช่องกรอกข้อมูลผู้ลงนามทั้ง 3 กรอบ -->
+        <div class="p-4 bg-purple-50 border-b grid grid-cols-1 md:grid-cols-3 gap-3 text-xs">
+          <div>
+            <label class="font-bold text-purple-900 block mb-1"><i class="fa-solid fa-user-pen mr-1"></i>1. ผู้ดำเนินการ:</label>
+            <input type="text" id="inputSignName1" value="นายกลกิจ เลาฮารีกิจ" placeholder="ชื่อ-นามสกุล" class="w-full p-1.5 border rounded bg-white mb-1">
+            <input type="text" id="inputSignPos1" value="ชผ.ผสน.กฟส.ลส." placeholder="ตำแหน่ง" class="w-full p-1.5 border rounded bg-white">
+          </div>
+          <div>
+            <label class="font-bold text-purple-900 block mb-1"><i class="fa-solid fa-user-pen mr-1"></i>2. ผู้บังคับบัญชาชั้นต้น:</label>
+            <input type="text" id="inputSignName2" value="นางสาวพรศิริ เมฆสวี" placeholder="ชื่อ-นามสกุล" class="w-full p-1.5 border rounded bg-white mb-1">
+            <input type="text" id="inputSignPos2" value="หน.ผสน.กฟส.ลส." placeholder="ตำแหน่ง" class="w-full p-1.5 border rounded bg-white">
+          </div>
+          <div>
+            <label class="font-bold text-purple-900 block mb-1"><i class="fa-solid fa-user-pen mr-1"></i>3. หัวหน้าหน่วยงาน:</label>
+            <input type="text" id="inputSignName3" value="นางสาวปริศนา นิยม" placeholder="ชื่อ-นามสกุล" class="w-full p-1.5 border rounded bg-white mb-1">
+            <input type="text" id="inputSignPos3" value="ชจก.(ล) รักษาการแทน ผจก.กฟส.ลส." placeholder="ตำแหน่ง" class="w-full p-1.5 border rounded bg-white">
+          </div>
+        </div>
+
         <div class="px-4 py-2 bg-slate-100 border-b flex justify-between items-center text-xs">
           <div class="font-bold text-slate-700">รูปแบบภาษีมูลค่าเพิ่ม:</div>
           <select id="vatTypeSelect" onchange="calculateCompareTotals()" class="p-1.5 border rounded bg-white font-medium">
@@ -451,9 +470,9 @@
           <p style="margin: 0 0 15px 0;">จากรหัสบัญชี ๕๓๐๓๐๐๑๐ โดยใช้งบทำการ.J๓๑๓๑๐๑๐๑</p>
 
           <div style="text-align: center; margin-top: 25px;">
-            <p style="margin: 0;">ลงชื่อ..........................ผู้บังคับบัญชาชั้นต้น</p>
-            <p style="margin: 2px 0 0 0;">( นางสาวพรศิริ เมฆสวี )</p>
-            <p style="margin: 2px 0 0 0;">ตำแหน่ง หน.ผสน.กฟส.ลส.</p>
+            <p style="margin: 0;">ลงชื่อ.........................ผู้บังคับบัญชาชั้นต้น</p>
+            <p style="margin: 2px 0 0 0;" id="signName2">( นางสาวพรศิริ เมฆสวี )</p>
+            <p style="margin: 2px 0 0 0;" id="signPos2">ตำแหน่ง หน.ผสน.กฟส.ลส.</p>
             <p style="margin: 2px 0 0 0;">วันที่ <span class="printCurrentDate"></span></p>
           </div>
         </div>
@@ -462,17 +481,17 @@
         <div style="display: flex; flex-direction: column; justify-content: space-between; gap: 8px;">
           
           <div style="border: 1px solid #000; padding: 8px; text-align: center;">
-            <p style="margin: 0 0 15px 0; text-align: left;">ลงชื่อ..........................ผู้ดำเนินการ</p>
-            <p style="margin: 0;">( นายกลกิจ เลาอารีกิจ )</p>
-            <p style="margin: 2px 0 0 0;">ตำแหน่ง ชผ.ผสน.กฟส.ลส.</p>
+            <p style="margin: 0 0 15px 0; text-align: left;">ลงชื่อ.........................ผู้ดำเนินการ</p>
+            <p style="margin: 0;" id="signName1">( นายกลกิจ เลาอารีกิจ )</p>
+            <p style="margin: 2px 0 0 0;" id="signPos1">ตำแหน่ง ชผ.ผสน.กฟส.ลส.</p>
             <p style="margin: 2px 0 0 0;">วันที่ <span class="printCurrentDate"></span></p>
           </div>
 
           <div style="border: 1px solid #000; padding: 8px; text-align: center;">
             <p style="margin: 0 0 3px 0; text-align: left;">(๓) - เห็นชอบและอนุมัติ</p>
-            <p style="margin: 15px 0 0 0;">ลงชื่อ..........................หัวหน้าหน่วยงาน</p>
-            <p style="margin: 2px 0 0 0;">( นางสาวปริศนา นิยม )</p>
-            <p style="margin: 2px 0 0 0;">ตำแหน่ง ชจก.(ล) รักษาการแทน ผจก.กฟส.ลส.</p>
+            <p style="margin: 15px 0 0 0;">ลงชื่อ.........................หัวหน้าหน่วยงาน</p>
+            <p style="margin: 2px 0 0 0;" id="signName3">( นางสาวปริศนา นิยม )</p>
+            <p style="margin: 2px 0 0 0;" id="signPos3">ตำแหน่ง ชจก.(ล) รักษาการแทน ผจก.กฟส.ลส.</p>
             <p style="margin: 2px 0 0 0;">วันที่ <span class="printCurrentDate"></span></p>
           </div>
 
@@ -1105,6 +1124,21 @@
       const docDate = document.getElementById('docDateText').value.trim();
       const billInfo = document.getElementById('billDocInfo').value.trim() || "-";
       const vatType = document.getElementById('vatTypeSelect').value;
+
+      // ดึงข้อมูลผู้ลงนามทั้ง 3 ช่อง
+      const signName1 = document.getElementById('inputSignName1').value.trim();
+      const signPos1 = document.getElementById('inputSignPos1').value.trim();
+      const signName2 = document.getElementById('inputSignName2').value.trim();
+      const signPos2 = document.getElementById('inputSignPos2').value.trim();
+      const signName3 = document.getElementById('inputSignName3').value.trim();
+      const signPos3 = document.getElementById('inputSignPos3').value.trim();
+
+      document.getElementById('signName1').innerText = signName1 ? `( ${signName1} )` : "";
+      document.getElementById('signPos1').innerText = signPos1 ? `ตำแหน่ง ${signPos1}` : "";
+      document.getElementById('signName2').innerText = signName2 ? `( ${signName2} )` : "";
+      document.getElementById('signPos2').innerText = signPos2 ? `ตำแหน่ง ${signPos2}` : "";
+      document.getElementById('signName3').innerText = signName3 ? `( ${signName3} )` : "";
+      document.getElementById('signPos3').innerText = signPos3 ? `ตำแหน่ง ${signPos3}` : "";
 
       document.getElementById('peaFormDeptText').innerText = selectedDept !== 'ALL' ? selectedDept : "กฟส.หลังสวน";
       document.getElementById('peaFormDeptText2').innerText = selectedDept !== 'ALL' ? selectedDept : "กฟส.หลังสวนและ กฟส.ในสังกัด";
