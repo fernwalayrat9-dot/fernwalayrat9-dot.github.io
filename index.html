@@ -4,29 +4,19 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>ระบบสั่งซื้อวัสดุสำนักงาน - กฟส.หลังสวน</title>
-  <!-- Tailwind CSS CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
-  <!-- FontAwesome Icons -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-  <!-- Google Font (Sarabun) -->
   <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <style>
     body { font-family: 'Sarabun', sans-serif; }
-    
-    /* ซ่อนลูกศรขึ้น-ลง ของ input type number */
     input[type=number]::-webkit-inner-spin-button, 
-    input[type=number]::-webkit-outer-spin-button { 
-      -webkit-appearance: none; 
-      margin: 0; 
-    }
-    input[type=number] {
-      -moz-appearance: textfield;
-    }
-
+    input[type=number]::-webkit-outer-spin-button { -webkit-appearance: none; margin: 0; }
+    input[type=number] { -moz-appearance: textfield; }
+    
     @media print {
       body * { visibility: hidden !important; }
-      #printArea, #printArea * { visibility: visible !important; }
-      #printArea {
+      #peaFormArea, #peaFormArea * { visibility: visible !important; }
+      #peaFormArea {
         position: absolute !important;
         left: 0 !important;
         top: 0 !important;
@@ -41,17 +31,15 @@
 </head>
 <body class="bg-slate-50 min-h-screen text-slate-800 pb-28">
 
-  <!-- Loading Overlay Popup -->
+  <!-- Loading Overlay -->
   <div id="loadingOverlay" class="hidden fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-[100] flex flex-col items-center justify-center transition-all">
     <div class="bg-white p-6 rounded-2xl shadow-2xl flex flex-col items-center space-y-4 max-w-xs w-full mx-4">
-      <div class="relative w-12 h-12">
-        <div class="w-12 h-12 rounded-full border-4 border-purple-200 animate-spin border-t-purple-700"></div>
-      </div>
+      <div class="w-12 h-12 rounded-full border-4 border-purple-200 animate-spin border-t-purple-700"></div>
       <p id="loadingText" class="text-sm font-semibold text-slate-700 text-center">กำลังประมวลผล กรุณารอสักครู่...</p>
     </div>
   </div>
 
-  <!-- Header / Navbar -->
+  <!-- Navbar -->
   <header class="bg-gradient-to-r from-purple-800 to-indigo-900 text-white shadow-lg sticky top-0 z-40 no-print">
     <div class="max-w-7xl mx-auto px-4 py-4 flex flex-col md:flex-row justify-between items-center gap-4">
       <div class="flex items-center space-x-3">
@@ -74,22 +62,19 @@
     </div>
   </header>
 
-  <!-- Banner เมื่อปิดรับระบบ -->
   <div id="systemClosedBanner" class="hidden bg-rose-600 text-white text-center py-3 font-semibold shadow-md no-print">
     <i class="fa-solid fa-ban mr-2"></i> ขณะนี้ระบบปิดรับความต้องการสั่งซื้อวัสดุชั่วคราว
   </div>
 
   <main class="max-w-7xl mx-auto px-4 py-6 no-print">
-
-    <!-- Admin Section Modal / Dashboard -->
+    <!-- Admin Modal -->
     <div id="adminModal" class="hidden fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-      <div class="bg-white rounded-2xl shadow-2xl max-w-5xl w-full max-h-[90vh] flex flex-col overflow-hidden">
+      <div class="bg-white rounded-2xl shadow-2xl max-w-6xl w-full max-h-[90vh] flex flex-col overflow-hidden">
         <div class="p-4 bg-slate-800 text-white flex justify-between items-center">
           <h2 class="font-bold text-lg"><i class="fa-solid fa-sliders mr-2"></i>เมนูผู้ดูแลระบบ (Admin)</h2>
           <button onclick="toggleAdminModal()" class="text-slate-400 hover:text-white"><i class="fa-solid fa-xmark text-xl"></i></button>
         </div>
         
-        <!-- Login Password Check -->
         <div id="adminLoginArea" class="p-8 text-center">
           <i class="fa-solid fa-lock text-4xl text-slate-300 mb-3"></i>
           <h3 class="font-semibold text-slate-700 mb-2">กรุณาใส่รหัสผ่านผู้ดูแลระบบ</h3>
@@ -99,17 +84,12 @@
           </div>
         </div>
 
-        <!-- Admin Content Panel -->
         <div id="adminPanel" class="hidden flex-1 overflow-y-auto p-6 space-y-6">
-          
-          <!-- Top Bar Admin Actions -->
           <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 border-b pb-4">
             <div class="flex space-x-2">
               <button onclick="switchAdminTab('orders')" id="tabOrdersBtn" class="px-4 py-2 rounded-lg font-medium text-sm bg-purple-100 text-purple-800">รายงานสั่งซื้อ</button>
               <button onclick="switchAdminTab('addItem')" id="tabAddItemBtn" class="px-4 py-2 rounded-lg font-medium text-sm text-slate-600 hover:bg-slate-100">เพิ่มรายการพัสดุใหม่</button>
             </div>
-            
-            <!-- ปุ่ม เปิด-ปิด การรับรายการสั่งซื้อ -->
             <div class="flex items-center gap-3 bg-slate-100 px-4 py-2 rounded-xl border">
               <span class="text-xs font-bold text-slate-700">สถานะเปิดรับรายการ:</span>
               <button id="toggleSystemBtn" onclick="toggleSystemStatus()" class="px-3 py-1 bg-emerald-600 text-white text-xs font-semibold rounded-lg transition">
@@ -118,13 +98,10 @@
             </div>
           </div>
 
-          <!-- Tab: Orders Report -->
+          <!-- Orders Report Tab -->
           <div id="adminOrdersTab" class="space-y-4">
-            
-            <!-- ตัวกรองตามแผนก และ ตัวกรองตามรอบเดือน -->
             <div class="flex flex-col lg:flex-row justify-between items-center gap-3 bg-slate-50 p-3 rounded-xl border">
               <div class="flex flex-col sm:flex-row items-center gap-2 w-full lg:w-auto">
-                <!-- กรองตามแผนก -->
                 <div class="flex items-center space-x-2 w-full sm:w-auto">
                   <label class="text-xs font-bold text-slate-600 whitespace-nowrap"><i class="fa-solid fa-filter mr-1"></i>แผนก:</label>
                   <select id="adminDeptFilter" onchange="filterAdminOrders()" class="p-2 border rounded-lg text-xs bg-white focus:ring-2 focus:ring-purple-600 outline-none w-full sm:w-60">
@@ -138,7 +115,6 @@
                   </select>
                 </div>
 
-                <!-- กรองตามรอบเดือน -->
                 <div class="flex items-center space-x-2 w-full sm:w-auto">
                   <label class="text-xs font-bold text-slate-600 whitespace-nowrap"><i class="fa-solid fa-calendar-days mr-1"></i>รอบเดือน:</label>
                   <select id="adminMonthFilter" onchange="filterAdminOrders()" class="p-2 border rounded-lg text-xs bg-white focus:ring-2 focus:ring-purple-600 outline-none w-full sm:w-56">
@@ -148,18 +124,15 @@
               </div>
 
               <div class="flex items-center gap-2 shrink-0">
-                <!-- ปุ่มลบหลายรายการ (แสดงเมื่อมีการติ๊กเลือก) -->
                 <button id="deleteSelectedBtn" onclick="deleteSelectedOrders()" class="hidden px-3 py-1.5 bg-rose-600 text-white text-xs rounded-lg hover:bg-rose-700 font-medium transition shadow-sm">
-                  <i class="fa-solid fa-trash-can mr-1"></i> ลบรายการที่เลือก (<span id="selectedDeleteCount">0</span>)
+                  <i class="fa-solid fa-trash-can mr-1"></i> ลบที่เลือก (<span id="selectedDeleteCount">0</span>)
                 </button>
-
-                <button onclick="printSummaryReport()" class="px-3 py-1.5 bg-slate-700 text-white text-xs rounded-lg hover:bg-slate-800 font-medium transition shadow-sm">
-                  <i class="fa-solid fa-print mr-1"></i> พิมพ์รายงานสรุป
+                <button onclick="openCompareModal()" class="px-3 py-1.5 bg-indigo-600 text-white text-xs rounded-lg hover:bg-indigo-700 font-medium transition shadow-sm">
+                  <i class="fa-solid fa-scale-balanced mr-1"></i> ตรวจรับ & ใบวางบิล
                 </button>
               </div>
             </div>
 
-            <!-- ตารางรายการสั่งซื้อ -->
             <div class="overflow-x-auto border rounded-xl">
               <table class="w-full text-sm text-left text-slate-600">
                 <thead class="text-xs uppercase bg-slate-100 text-slate-700">
@@ -183,7 +156,7 @@
             </div>
           </div>
 
-          <!-- Tab: Add New Material Item -->
+          <!-- Add Item Tab -->
           <div id="adminAddItemTab" class="hidden max-w-lg mx-auto bg-slate-50 p-6 rounded-xl border space-y-4">
             <h4 class="font-bold text-slate-800">เพิ่มวัสดุใหม่ลง MasterItems</h4>
             <div>
@@ -206,7 +179,75 @@
       </div>
     </div>
 
-    <!-- User Section: Order Form Header -->
+    <!-- MODAL ตรวจรับพัสดุ & เปรียบเทียบใบวางบิล -->
+    <div id="compareModal" class="hidden fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-[60] flex items-center justify-center p-4">
+      <div class="bg-white rounded-2xl shadow-2xl max-w-5xl w-full max-h-[90vh] flex flex-col overflow-hidden">
+        <div class="p-4 bg-indigo-900 text-white flex justify-between items-center">
+          <h2 class="font-bold text-base md:text-lg flex items-center">
+            <i class="fa-solid fa-file-invoice-dollar mr-2 text-amber-300"></i> ตรวจรับพัสดุ & เปรียบเทียบใบวางบิล
+          </h2>
+          <button onclick="closeCompareModal()" class="text-slate-300 hover:text-white"><i class="fa-solid fa-xmark text-xl"></i></button>
+        </div>
+
+        <div class="p-4 bg-slate-50 border-b grid grid-cols-1 md:grid-cols-3 gap-3 text-xs">
+          <div>
+            <label class="font-bold text-slate-700 block mb-1">เลขที่หนังสือ / วันที่สั่งซื้อ:</label>
+            <input type="text" id="docDateText" placeholder="เช่น ๑๗ สิงหาคม ๒๕๖๙" class="w-full p-2 border rounded bg-white">
+          </div>
+          <div>
+            <label class="font-bold text-slate-700 block mb-1">ใบเสร็จ/ใบส่งของ (เล่ม/เลขที่/ลงวันที่):</label>
+            <input type="text" id="billDocInfo" placeholder="เช่น ใบเสร็จเล่มที่ ๓๕ เลขที่ ๓ ลงวันที่ ๑๗ ส.ค. ๖๙" class="w-full p-2 border rounded bg-white">
+          </div>
+          <div>
+            <label class="font-bold text-slate-700 block mb-1">รวมเป็นเงินภาษีมูลค่าเพิ่ม:</label>
+            <select id="vatTypeSelect" onchange="calculateCompareTotals()" class="w-full p-2 border rounded bg-white font-medium">
+              <option value="included">รวมภาษีมูลค่าเพิ่ม (VAT Included)</option>
+              <option value="excluded">ไม่รวมภาษีมูลค่าเพิ่ม (VAT Excluded)</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="flex-1 overflow-y-auto p-4">
+          <table class="w-full text-xs text-left text-slate-600 border border-collapse">
+            <thead class="bg-slate-100 text-slate-700 uppercase font-bold border-b">
+              <tr>
+                <th class="p-2 border text-center">ลำดับ</th>
+                <th class="p-2 border">รายการพัสดุ</th>
+                <th class="p-2 border text-center">สั่งซื้อ</th>
+                <th class="p-2 border text-center">สถานะตรวจรับ</th>
+                <th class="p-2 border text-center w-20">รับจริง</th>
+                <th class="p-2 border text-center">หน่วย</th>
+                <th class="p-2 border text-center w-28">ราคา/หน่วย (บาท)</th>
+                <th class="p-2 border text-right w-28">จำนวนเงิน (บาท)</th>
+              </tr>
+            </thead>
+            <tbody id="compareTableBody">
+              <tr><td colspan="8" class="text-center py-4 text-slate-400">กรุณาเลือกตัวกรองแผนกหรือรอบเดือน...</td></tr>
+            </tbody>
+            <tfoot class="bg-slate-50 font-bold border-t">
+              <tr>
+                <td colspan="7" class="p-3 text-right">รวมเป็นเงินทั้งสิ้น (บาท):</td>
+                <td class="p-3 text-right text-purple-900 text-sm font-extrabold" id="grandTotalText">0.00</td>
+              </tr>
+              <tr>
+                <td colspan="8" class="p-2 text-right text-slate-600 font-normal italic" id="bahtTextThai">(-ศูนย์บาทถ้วน-)</td>
+              </tr>
+            </tfoot>
+          </table>
+        </div>
+
+        <div class="p-4 bg-slate-100 border-t flex justify-between items-center">
+          <div id="amountWarning" class="text-xs font-bold text-amber-700 flex items-center">
+            <i class="fa-solid fa-circle-info mr-1"></i> วงเงินไม่เกิน 10,000 บาท (ออกรายงานขอความเห็นชอบได้)
+          </div>
+          <button onclick="generatePeaReport()" class="px-5 py-2 bg-emerald-700 hover:bg-emerald-800 text-white font-semibold rounded-xl text-sm transition shadow flex items-center gap-2">
+            <i class="fa-solid fa-print"></i> พิมพ์รายงานขอซื้อขอจ้าง
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- User Section -->
     <div id="order-form" class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 mb-6">
       <h2 class="text-lg font-bold text-slate-800 mb-4 flex items-center">
         <i class="fa-solid fa-clipboard-user text-purple-700 mr-2"></i> ข้อมูลผู้ส่งรายการสั่งซื้อ
@@ -231,7 +272,7 @@
       </div>
     </div>
 
-    <!-- Search & Catalog -->
+    <!-- Catalog -->
     <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 mb-6">
       <div class="flex flex-col md:flex-row justify-between items-center gap-4 mb-6">
         <h2 class="text-lg font-bold text-slate-800 flex items-center">
@@ -242,13 +283,10 @@
           <i class="fa-solid fa-magnifying-glass absolute left-3 top-2.5 text-slate-400 text-sm"></i>
         </div>
       </div>
-
-      <!-- Item List Container -->
       <div id="itemsContainer" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
         <div class="col-span-full text-center py-8 text-slate-400">กำลังโหลดรายการวัสดุจากระบบ...</div>
       </div>
     </div>
-
   </main>
 
   <!-- Sticky Bottom Bar -->
@@ -266,29 +304,127 @@
     </div>
   </div>
 
-  <!-- AREA สำหรับพิมพ์รายงานสรุปยอดรวม -->
-  <div id="printArea" style="display: none;">
-    <div style="font-family: 'Sarabun', sans-serif; max-width: 800px; margin: 0 auto; padding: 10px;">
-      <div style="display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 15px; border-bottom: 2px solid #000; padding-bottom: 5px;">
-        <h2 style="font-size: 18px; font-weight: bold; margin: 0;" id="printTitle">รายการวัสดุที่สั่งซื้อ</h2>
-        <span style="font-size: 14px; font-weight: bold;" id="printSubtitle"></span>
+  <!-- AREA สำหรับพิมพ์รายงานขอซื้อขอจ้าง กฟภ. (วงเงินไม่เกิน 10,000 บาท) -->
+  <div id="peaFormArea" style="display: none;">
+    <div style="font-family: 'Sarabun', sans-serif; max-width: 750px; margin: 0 auto; padding: 20px; color: #000; line-height: 1.4; font-size: 13px;">
+      
+      <!-- Logo & Header -->
+      <div style="display: flex; align-items: center; margin-bottom: 10px;">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/d/d4/Provincial_Electricity_Authority_Logo.svg/1200px-Provincial_Electricity_Authority_Logo.svg.png" style="width: 70px; height: auto; margin-right: 15px;" alt="PEA Logo">
+        <div>
+          <h2 style="font-size: 16px; font-weight: bold; margin: 0;">การไฟฟ้าส่วนภูมิภาค</h2>
+          <p style="font-size: 11px; margin: 0; letter-spacing: 0.5px;">PROVINCIAL ELECTRICITY AUTHORITY</p>
+        </div>
       </div>
-      <table style="width: 100%; border-collapse: collapse; text-align: left; font-size: 13px;">
+
+      <!-- Header Info -->
+      <div style="margin-bottom: 15px;">
+        <table style="width: 100%; border: none; font-size: 13px;">
+          <tr>
+            <td style="width: 50%;"><strong>จาก</strong> <span id="peaFormFrom">ผสน.กฟส.ลส.</span></td>
+            <td style="width: 50%;"><strong>ถึง</strong> <span id="peaFormTo">กฟส.ลส.</span></td>
+          </tr>
+          <tr>
+            <td><strong>เลขที่</strong> <span id="peaFormNo">-</span></td>
+            <td><strong>วันที่</strong> <span id="peaFormDate">-</span></td>
+          </tr>
+          <tr>
+            <td colspan="2" style="padding-top: 5px;">
+              <strong>เรื่อง</strong> รายงานขอความเห็นชอบการจัดซื้อจัดจ้างพัสดุ ที่เกี่ยวกับค่าใช้จ่ายในการบริหารงานที่มีวงเงินการจัดซื้อจัดจ้างครั้งหนึ่งไม่เกิน ๑๐,๐๐๐ บาท
+            </td>
+          </tr>
+        </table>
+      </div>
+
+      <p style="margin: 5px 0 10px 0;"><strong>เรียน</strong> ผจก.กฟส.ลส. ผ่าน ชผจก.(ล) กฟส.ลส.</p>
+
+      <p style="text-indent: 40px; margin-bottom: 10px;">
+        (๑) ด้วย <span id="peaFormDeptText">ผสน.กฟส.ลส.</span> ได้ดำเนินการจัดซื้อจัดจ้าง วัสดุสำนักงาน เพื่อใช้สำหรับงานด้านเอกสาร ของ <span id="peaFormDeptText2">กฟส.หลังสวนและ กฟส.ในสังกัด</span> จำนวน <span id="peaFormItemCount">0</span> รายการ เป็นจำนวนเงินทั้งสิ้น <span id="peaFormTotalAmount">-</span> บาท <span id="peaFormTotalBahtText">(-)</span> โดยมีรายละเอียดดังต่อไปนี้
+      </p>
+
+      <!-- Table -->
+      <table style="width: 100%; border-collapse: collapse; margin-bottom: 10px; font-size: 12px;">
         <thead>
-          <tr style="background-color: #f2f2f2;">
-            <th style="border: 1px solid #000; padding: 6px 8px; text-align: center; width: 60px;">ลำดับ</th>
-            <th style="border: 1px solid #000; padding: 6px 8px;">รายการ</th>
-            <th style="border: 1px solid #000; padding: 6px 8px; text-align: center; width: 100px;">หน่วย</th>
-            <th style="border: 1px solid #000; padding: 6px 8px; text-align: center; width: 80px;">รวม</th>
+          <tr style="background-color: #fff;">
+            <th style="border: 1px solid #000; padding: 5px; text-align: center; width: 40px;">ที่</th>
+            <th style="border: 1px solid #000; padding: 5px; text-align: center;">รายการพัสดุ/งานจ้าง</th>
+            <th style="border: 1px solid #000; padding: 5px; text-align: center; width: 100px;">จำนวน/ปริมาณงาน</th>
+            <th style="border: 1px solid #000; padding: 5px; text-align: center; width: 90px;">จำนวนเงิน (บาท)</th>
+            <th style="border: 1px solid #000; padding: 5px; text-align: center; width: 170px;">ใบเสร็จรับเงิน/ใบส่งของเล่มที่/เลขที่/ลงวันที่</th>
           </tr>
         </thead>
-        <tbody id="printTableBody">
+        <tbody id="peaFormTableBody">
         </tbody>
+        <tfoot>
+          <tr>
+            <td colspan="3" style="border: 1px solid #000; padding: 5px;">
+              รวมเป็นเงิน (<span id="vatMarkBox">/</span> รวม <span style="display:inline-block; width:12px; height:12px; border:1px solid #000; margin-left:5px;"></span> ไม่รวม ภาษีมูลค่าเพิ่ม)
+            </td>
+            <td style="border: 1px solid #000; padding: 5px; text-align: right; font-weight: bold;" id="peaFormSumAmount">0.-</td>
+            <td style="border: 1px solid #000; padding: 5px;" id="peaFormBillInfoCell">-</td>
+          </tr>
+          <tr>
+            <td colspan="5" style="border: 1px solid #000; padding: 5px; text-align: center; font-weight: bold;" id="peaFormSumBahtText">
+              ( - )
+            </td>
+          </tr>
+        </tfoot>
       </table>
+
+      <!-- Content text -->
+      <p style="text-indent: 40px; margin-bottom: 10px;">
+        ทั้งนี้ การดำเนินการจัดซื้อจัดจ้างดังกล่าว เป็นการดำเนินการตามหนังสือคณะกรรมการวินิจฉัยปัญหาการจัดซื้อจัดจ้างและการบริหารพัสดุภาคครุฑ กรมบัญชีกลาง ที่ กค (กวจ) ๐๔๐๕.๒/ว ๑๑๙ ลงวันที่ ๗ มีนาคม ๒๕๖๑ เรื่อง แนวทางการปฏิบัติในการดำเนินการจัดหาพัสดุที่เกี่ยวกับค่าใช้จ่ายในการบริหารงาน ค่าใช้จ่ายในการฝึกอบรม การจัดงาน และการประชุมของหน่วยงานของรัฐ ที่มีวงเงินการจัดซื้อจัดจ้างครั้งหนึ่งไม่เกิน ๑๐,๐๐๐ บาท ตาราง ๑ ลำดับที่...๑๓...
+      </p>
+
+      <p style="text-indent: 40px; margin-bottom: 25px;">
+        จึงเรียนมาเพื่อโปรดพิจารณาให้ความเห็นชอบและให้ถือรายงานนี้เป็นหลักฐานการตรวจรับพัสดุ โดยอนุโลม พร้อมอนุมัติเบิกจ่ายเงินต่อไป
+      </p>
+
+      <!-- Signatures Grid -->
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; font-size: 11px;">
+        
+        <!-- Left Box (2) -->
+        <div style="border: 1px solid #000; padding: 10px;">
+          <p style="margin: 0 0 5px 0;">(๒) เรียน ผจก.กฟส.ลส.</p>
+          <p style="margin: 0 0 5px 15px;">เพื่อโปรดพิจารณา</p>
+          <p style="margin: 0 0 3px 30px;">๑.ให้ความเห็นชอบการจัดซื้อจัดจ้างดังกล่าวข้างต้น</p>
+          <p style="margin: 0 0 3px 30px;">๒.อนุมัติให้จ่ายเงิน จำนวน <span id="peaSignAmount">๙,๓๑๕.-</span> บาท</p>
+          <p style="margin: 0 0 10px 40px;" id="peaSignBahtText">(เก้าพันสามร้อยสิบห้าบาทถ้วน)</p>
+          <p style="margin: 0 0 20px 0;">จากรหัสบัญชี ๕๓๐๓๐๐๑๐ โดยใช้งบทำการ.ป๓๑๓๑๐๑๐๐</p>
+
+          <div style="text-align: center; margin-top: 30px;">
+            <p style="margin: 0;">ลงชื่อ..........................................................ผู้บังคับบัญชาชั้นต้น</p>
+            <p style="margin: 3px 0 0 0;">( นางสาวพรศิริ เมฆสวี )</p>
+            <p style="margin: 3px 0 0 0;">ตำแหน่ง หน.ผสน.กฟส.ลส.</p>
+            <p style="margin: 3px 0 0 0;">วันที่ <span class="printCurrentDate">๑๗ สิงหาคม ๒๕๖๙</span></p>
+          </div>
+        </div>
+
+        <!-- Right Box Stack (1) and (3) -->
+        <div style="display: flex; flex-col; justify-content: space-between; gap: 10px;">
+          
+          <div style="border: 1px solid #000; padding: 10px; text-align: center;">
+            <p style="margin: 0 0 20px 0; text-align: left;">ลงชื่อ..........................................................ผู้ดำเนินการ</p>
+            <p style="margin: 0;">( นายกลกิจ เลาฮารีจี )</p>
+            <p style="margin: 3px 0 0 0;">ตำแหน่ง ชผ.ผสน.กฟส.ลส.</p>
+            <p style="margin: 3px 0 0 0;">วันที่ <span class="printCurrentDate">๑๗ สิงหาคม ๒๕๖๙</span></p>
+          </div>
+
+          <div style="border: 1px solid #000; padding: 10px; text-align: center;">
+            <p style="margin: 0 0 5px 0; text-align: left;">(๓) - เห็นชอบและอนุมัติ</p>
+            <p style="margin: 20px 0 0 0;">ลงชื่อ..........................................................หัวหน้าหน่วยงาน</p>
+            <p style="margin: 3px 0 0 0;">( นางสาวปริศนา นิยม )</p>
+            <p style="margin: 3px 0 0 0;">ตำแหน่ง ชผจก.(ล) รักษาการแทน ผจก.กฟส.ลส.</p>
+            <p style="margin: 3px 0 0 0;">วันที่ <span class="printCurrentDate">๑๗ สิงหาคม ๒๕๖๙</span></p>
+          </div>
+
+        </div>
+
+      </div>
+
     </div>
   </div>
 
-  <!-- JavaScript Logics -->
   <script>
     const GAS_WEB_APP_URL = "https://script.google.com/macros/s/AKfycbyLXu-xwMeHXpph1lRfisAas9ijKWc8QscAanWCpkLikQzsI-SZmQT-jRYh_Byi1q7TgA/exec";
 
@@ -296,6 +432,7 @@
     let selectedCart = {};
     let rawAdminOrders = [];
     let currentFilteredOrders = [];
+    let compareItemsList = [];
     let isSystemOpen = true;
 
     function showLoading(msg = "กำลังประมวลผล กรุณารอสักครู่...") {
@@ -308,26 +445,12 @@
     }
 
     function setAutoCurrentMonth() {
-      const thaiMonths = [
-        "มกราคม", "กุมภาพันธ์", "มีนาคม", "เมษายน", "พฤษภาคม", "มิถุนายน",
-        "กรกฎาคม", "สิงหาคม", "กันยายน", "ตุลาคม", "พฤศจิกายน", "ธันวาคม"
-      ];
-      const thaiShortMonths = [
-        "ม.ค.", "ก.พ.", "มี.ค.", "เม.ย.", "พ.ค.", "มิ.ย.",
-        "ก.ค.", "ส.ค.", "ก.ย.", "ต.ค.", "พ.ย.", "ธ.ค."
-      ];
-
+      const thaiMonths = ["มกราคม", "กุมภาพันธ์", "มีนาคม", "เมษายน", "พฤษภาคม", "มิถุนายน", "กรกฎาคม", "สิงหาคม", "กันยายน", "ตุลาคม", "พฤศจิกายน", "ธันวาคม"];
+      const thaiShortMonths = ["ม.ค.", "ก.พ.", "มี.ค.", "เม.ย.", "พ.ค.", "มิ.ย.", "ก.ค.", "ส.ค.", "ก.ย.", "ต.ค.", "พ.ย.", "ธ.ค."];
       const now = new Date();
-      const currentMonthName = thaiMonths[now.getMonth()];
-      const currentShortMonthName = thaiShortMonths[now.getMonth()];
-      const currentYear = now.getFullYear();
-
-      const formattedText = `ประจำเดือน ${currentMonthName} ${currentYear} (ตัดรอบ 15 ${currentShortMonthName})`;
-
+      const formattedText = `ประจำเดือน ${thaiMonths[now.getMonth()]} ${now.getFullYear()} (ตัดรอบ 15 ${thaiShortMonths[now.getMonth()]})`;
       const monthInput = document.getElementById('orderMonth');
-      if (monthInput) {
-        monthInput.value = formattedText;
-      }
+      if (monthInput) monthInput.value = formattedText;
     }
 
     document.addEventListener("DOMContentLoaded", () => {
@@ -343,26 +466,19 @@
           if (res.status === "success") {
             materialsList = res.data;
             renderItems(materialsList);
-          } else {
-            alert("เกิดข้อผิดพลาดในการโหลดข้อมูล: " + res.message);
-          }
+          } else { alert("เกิดข้อผิดพลาดในการโหลดข้อมูล: " + res.message); }
         })
-        .catch(err => {
-          console.error("Error loading items:", err);
-          document.getElementById('itemsContainer').innerHTML = `<div class="col-span-full text-center py-8 text-rose-500">ไม่สามารถดึงข้อมูลรายการวัสดุได้ กรุณาตรวจสอบการเชื่อมต่อ</div>`;
-        })
+        .catch(err => { document.getElementById('itemsContainer').innerHTML = `<div class="col-span-full text-center py-8 text-rose-500">ไม่สามารถดึงข้อมูลรายการวัสดุได้</div>`; })
         .finally(() => hideLoading());
     }
 
     function renderItems(items) {
       const container = document.getElementById('itemsContainer');
       container.innerHTML = '';
-
       if (!items || items.length === 0) {
         container.innerHTML = `<div class="col-span-full text-center py-8 text-slate-400">ไม่พบรายการวัสดุในระบบ</div>`;
         return;
       }
-
       items.forEach(item => {
         const qty = selectedCart[item.id] || 0;
         const card = document.createElement('div');
@@ -385,58 +501,31 @@
 
     function filterItems() {
       const query = document.getElementById('searchInput').value.trim().toLowerCase();
-      
-      if (!query) {
-        renderItems(materialsList);
-        return;
-      }
-
+      if (!query) { renderItems(materialsList); return; }
       const filtered = materialsList.filter(item => {
         const itemName = item.name ? String(item.name).toLowerCase() : "";
         const itemId = item.id ? String(item.id).toLowerCase() : "";
         return itemName.includes(query) || itemId.includes(query);
       });
-
       renderItems(filtered);
     }
 
     function updateQty(id, change) {
-      if (!isSystemOpen) {
-        alert("ขณะนี้ระบบปิดรับคำสั่งซื้อชั่วคราว");
-        return;
-      }
+      if (!isSystemOpen) { alert("ขณะนี้ระบบปิดรับคำสั่งซื้อชั่วคราว"); return; }
       let current = selectedCart[id] || 0;
       current += change;
       if (current < 0) current = 0;
-
-      if (current === 0) {
-        delete selectedCart[id];
-      } else {
-        selectedCart[id] = current;
-      }
-
+      if (current === 0) { delete selectedCart[id]; } else { selectedCart[id] = current; }
       const qtyInput = document.getElementById(`qty-${id}`);
       if (qtyInput) qtyInput.value = current;
-
       calculateTotals();
     }
 
     function handleDirectInput(id, value) {
-      if (!isSystemOpen) {
-        alert("ขณะนี้ระบบปิดรับคำสั่งซื้อชั่วคราว");
-        return;
-      }
+      if (!isSystemOpen) { alert("ขณะนี้ระบบปิดรับคำสั่งซื้อชั่วคราว"); return; }
       let val = parseInt(value, 10);
-      if (isNaN(val) || val < 0) {
-        val = 0;
-      }
-
-      if (val === 0) {
-        delete selectedCart[id];
-      } else {
-        selectedCart[id] = val;
-      }
-
+      if (isNaN(val) || val < 0) val = 0;
+      if (val === 0) { delete selectedCart[id]; } else { selectedCart[id] = val; }
       calculateTotals();
     }
 
@@ -444,53 +533,29 @@
       const selectedKeys = Object.keys(selectedCart);
       let totalQty = 0;
       selectedKeys.forEach(k => totalQty += selectedCart[k]);
-
       document.getElementById('selectedCount').innerText = selectedKeys.length;
       document.getElementById('totalQuantity').innerText = totalQty;
     }
 
     function submitOrder() {
-      if (!isSystemOpen) {
-        alert("ขณะนี้ระบบปิดรับคำสั่งซื้อชั่วคราว ไม่สามารถส่งรายการได้");
-        return;
-      }
-
+      if (!isSystemOpen) { alert("ขณะนี้ระบบปิดรับคำสั่งซื้อชั่วคราว"); return; }
       const department = document.getElementById('userDepartment').value;
       const month = document.getElementById('orderMonth').value;
-
-      if (!department || !month) {
-        alert('กรุณากรอกแผนกและรอบเดือนให้ครบถ้วน');
-        return;
-      }
-
+      if (!department || !month) { alert('กรุณากรอกแผนกและรอบเดือนให้ครบถ้วน'); return; }
       const selectedKeys = Object.keys(selectedCart);
-      if (selectedKeys.length === 0) {
-        alert('กรุณาเลือกรายการพัสดุอย่างน้อย 1 รายการ');
-        return;
-      }
+      if (selectedKeys.length === 0) { alert('กรุณาเลือกรายการพัสดุอย่างน้อย 1 รายการ'); return; }
 
-      const itemsArray = [];
-
+      let itemsArray = [];
       selectedKeys.forEach(id => {
         const itemObj = materialsList.find(m => String(m.id) === String(id));
         if (itemObj) {
-          itemsArray.push({
-            name: itemObj.name,
-            quantity: selectedCart[id],
-            unit: itemObj.unit
-          });
+          itemsArray.push({ name: itemObj.name, quantity: selectedCart[id], unit: itemObj.unit });
         }
       });
 
-      const payload = {
-        department: department,
-        round: month,
-        items: itemsArray
-      };
-
+      const payload = { department: department, round: month, items: itemsArray };
       const submitBtn = document.getElementById('submitBtn');
       submitBtn.disabled = true;
-
       showLoading("กำลังส่งข้อมูลรายการสั่งซื้อ...");
 
       fetch(GAS_WEB_APP_URL, {
@@ -505,20 +570,13 @@
           selectedCart = {};
           calculateTotals();
           renderItems(materialsList);
-        } else {
-          alert('เกิดข้อผิดพลาด: ' + res.message);
-        }
+        } else { alert('เกิดข้อผิดพลาด: ' + res.message); }
       })
       .catch(err => alert('เกิดข้อผิดพลาดในการส่งข้อมูล: ' + err))
-      .finally(() => {
-        hideLoading();
-        submitBtn.disabled = false;
-      });
+      .finally(() => { hideLoading(); submitBtn.disabled = false; });
     }
 
-    function toggleAdminModal() {
-      document.getElementById('adminModal').classList.toggle('hidden');
-    }
+    function toggleAdminModal() { document.getElementById('adminModal').classList.toggle('hidden'); }
 
     function checkAdminAuth() {
       const pass = document.getElementById('adminPass').value;
@@ -526,9 +584,7 @@
         document.getElementById('adminLoginArea').classList.add('hidden');
         document.getElementById('adminPanel').classList.remove('hidden');
         fetchAdminOrders();
-      } else {
-        alert('รหัสผ่านไม่ถูกต้อง');
-      }
+      } else { alert('รหัสผ่านไม่ถูกต้อง'); }
     }
 
     function toggleSystemStatus() {
@@ -536,7 +592,6 @@
       const btn = document.getElementById('toggleSystemBtn');
       const banner = document.getElementById('systemClosedBanner');
       const submitBtn = document.getElementById('submitBtn');
-
       if (isSystemOpen) {
         btn.className = "px-3 py-1 bg-emerald-600 text-white text-xs font-semibold rounded-lg transition";
         btn.innerHTML = `<i class="fa-solid fa-toggle-on mr-1"></i> เปิดรับรายการ`;
@@ -570,7 +625,6 @@
     function fetchAdminOrders() {
       const tableBody = document.getElementById('adminOrdersTable');
       tableBody.innerHTML = `<tr><td colspan="8" class="text-center py-4 text-slate-400">กำลังโหลดข้อมูลการสั่งซื้อ...</td></tr>`;
-
       showLoading("กำลังโหลดข้อมูลสั่งซื้อฝั่ง Admin...");
 
       fetch(`${GAS_WEB_APP_URL}?action=getOrders`)
@@ -584,18 +638,14 @@
             tableBody.innerHTML = `<tr><td colspan="8" class="text-center py-4 text-rose-500">เกิดข้อผิดพลาด: ${res.message}</td></tr>`;
           }
         })
-        .catch(err => {
-          tableBody.innerHTML = `<tr><td colspan="8" class="text-center py-4 text-rose-500">ไม่สามารถโหลดข้อมูลได้</td></tr>`;
-        })
+        .catch(err => { tableBody.innerHTML = `<tr><td colspan="8" class="text-center py-4 text-rose-500">ไม่สามารถโหลดข้อมูลได้</td></tr>`; })
         .finally(() => hideLoading());
     }
 
     function populateMonthFilterOptions(orders) {
       const monthSelect = document.getElementById('adminMonthFilter');
       const currentSelected = monthSelect.value;
-      
       const uniqueMonths = [...new Set(orders.map(o => o.round).filter(r => r && r.trim() !== ''))];
-
       monthSelect.innerHTML = '<option value="ALL">-- แสดงทุกรอบเดือน --</option>';
       uniqueMonths.forEach(m => {
         const option = document.createElement('option');
@@ -603,16 +653,12 @@
         option.textContent = m;
         monthSelect.appendChild(option);
       });
-
-      if (uniqueMonths.includes(currentSelected)) {
-        monthSelect.value = currentSelected;
-      }
+      if (uniqueMonths.includes(currentSelected)) monthSelect.value = currentSelected;
     }
 
     function filterAdminOrders() {
       const selectedDept = document.getElementById('adminDeptFilter').value;
       const selectedMonth = document.getElementById('adminMonthFilter').value;
-
       let filtered = rawAdminOrders;
 
       if (selectedDept !== 'ALL') {
@@ -638,8 +684,6 @@
     function renderAdminTable(orders) {
       const tableBody = document.getElementById('adminOrdersTable');
       tableBody.innerHTML = '';
-
-      // Reset Checkbox ทั้งหมด
       document.getElementById('selectAllCheckbox').checked = false;
       updateDeleteButtonUI();
 
@@ -651,9 +695,7 @@
       orders.forEach(order => {
         const tr = document.createElement('tr');
         tr.className = "border-b hover:bg-slate-50";
-        
         let dateStr = order.timestamp ? new Date(order.timestamp).toLocaleString('th-TH') : '-';
-        
         tr.innerHTML = `
           <td class="p-3 text-center">
             <input type="checkbox" class="row-checkbox w-4 h-4 text-purple-600 rounded focus:ring-purple-500 cursor-pointer" value="${order.rowIndex}" onchange="updateDeleteButtonUI()">
@@ -684,7 +726,6 @@
       const selected = document.querySelectorAll('.row-checkbox:checked');
       const deleteBtn = document.getElementById('deleteSelectedBtn');
       const countSpan = document.getElementById('selectedDeleteCount');
-
       if (selected.length > 0) {
         deleteBtn.classList.remove('hidden');
         countSpan.innerText = selected.length;
@@ -697,42 +738,26 @@
     function deleteSelectedOrders() {
       const selectedCheckboxes = document.querySelectorAll('.row-checkbox:checked');
       const selectedRowIndexes = Array.from(selectedCheckboxes).map(cb => cb.value);
-
-      if (selectedRowIndexes.length === 0) {
-        alert('กรุณาเลือกรายการที่ต้องการลบอย่างน้อย 1 รายการ');
-        return;
-      }
-
+      if (selectedRowIndexes.length === 0) { alert('กรุณาเลือกรายการที่ต้องการลบอย่างน้อย 1 รายการ'); return; }
       if (!confirm(`คุณต้องการลบรายการที่เลือกทั้งหมด ${selectedRowIndexes.length} รายการใช่หรือไม่?`)) return;
 
-      showLoading(`กำลังลบ ${selectedRowIndexes.length} รายการออกจากระบบ...`);
-
+      showLoading(`กำลังลบ ${selectedRowIndexes.length} รายการ...`);
       fetch(GAS_WEB_APP_URL, {
         method: 'POST',
         headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-        body: JSON.stringify({
-          action: 'deleteMultipleOrders',
-          rowIndexes: selectedRowIndexes
-        })
+        body: JSON.stringify({ action: 'deleteMultipleOrders', rowIndexes: selectedRowIndexes })
       })
       .then(res => res.json())
       .then(res => {
-        if (res.status === "success") {
-          alert('ลบรายการที่เลือกเรียบร้อย');
-          fetchAdminOrders();
-        } else {
-          alert('เกิดข้อผิดพลาด: ' + res.message);
-        }
+        if (res.status === "success") { alert('ลบรายการที่เลือกเรียบร้อย'); fetchAdminOrders(); }
+        else { alert('เกิดข้อผิดพลาด: ' + res.message); }
       })
-      .catch(err => alert('เกิดข้อผิดพลาดในการลบรายการ: ' + err))
       .finally(() => hideLoading());
     }
 
     function deleteOrder(rowIndex) {
       if (!confirm(`คุณต้องการลบรายการนี้ใช่หรือไม่?`)) return;
-
-      showLoading("กำลังลบรายการออกจากระบบ...");
-
+      showLoading("กำลังลบรายการ...");
       fetch(GAS_WEB_APP_URL, {
         method: 'POST',
         headers: { 'Content-Type': 'text/plain;charset=utf-8' },
@@ -740,12 +765,8 @@
       })
       .then(res => res.json())
       .then(res => {
-        if (res.status === "success") {
-          alert('ลบรายการเรียบร้อย');
-          fetchAdminOrders();
-        } else {
-          alert('เกิดข้อผิดพลาด: ' + res.message);
-        }
+        if (res.status === "success") { alert('ลบรายการเรียบร้อย'); fetchAdminOrders(); }
+        else { alert('เกิดข้อผิดพลาด: ' + res.message); }
       })
       .finally(() => hideLoading());
     }
@@ -754,23 +775,13 @@
       const id = document.getElementById('newItemId').value.trim();
       const name = document.getElementById('newItemName').value.trim();
       const unit = document.getElementById('newItemUnit').value.trim();
-
-      if (!name || !unit) {
-        alert('กรุณากรอกชื่อรายการและหน่วยนับ');
-        return;
-      }
+      if (!name || !unit) { alert('กรุณากรอกชื่อรายการและหน่วยนับ'); return; }
 
       showLoading("กำลังบันทึกพัสดุรายการใหม่...");
-
       fetch(GAS_WEB_APP_URL, {
         method: 'POST',
         headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-        body: JSON.stringify({
-          action: 'addItem',
-          id: id,
-          name: name,
-          unit: unit
-        })
+        body: JSON.stringify({ action: 'addItem', id: id, name: name, unit: unit })
       })
       .then(res => res.json())
       .then(res => {
@@ -780,75 +791,241 @@
           document.getElementById('newItemName').value = '';
           document.getElementById('newItemUnit').value = '';
           fetchMasterItems();
-        } else {
-          alert('เกิดข้อผิดพลาด: ' + res.message);
-        }
+        } else { alert('เกิดข้อผิดพลาด: ' + res.message); }
       })
       .finally(() => hideLoading());
     }
 
-    function printSummaryReport() {
+    /* --- LOGICS สำหรับการตรวจรับ & เปรียบเทียบใบวางบิล --- */
+
+    function openCompareModal() {
       if (!currentFilteredOrders || currentFilteredOrders.length === 0) {
-        alert("ไม่มีข้อมูลรายการสั่งซื้อในตัวกรองปัจจุบัน");
+        alert("ไม่มีข้อมูลรายการสั่งซื้อในตัวกรองปัจจุบัน กรุณาเลือกตัวกรองแผนกหรือรอบเดือน");
         return;
       }
 
+      // สรุปยอดรวมจำนวนสั่งซื้อตามชื่อรายการ
       const summaryMap = {};
-
       currentFilteredOrders.forEach(order => {
         const name = order.itemName;
         const qty = parseInt(order.quantity, 10) || 0;
         const unit = order.unit || '-';
-
         if (name) {
           if (!summaryMap[name]) {
-            summaryMap[name] = { quantity: 0, unit: unit };
+            summaryMap[name] = { orderedQty: 0, unit: unit };
           }
-          summaryMap[name].quantity += qty;
+          summaryMap[name].orderedQty += qty;
         }
       });
 
-      const summaryList = Object.keys(summaryMap).map(name => ({
+      compareItemsList = Object.keys(summaryMap).map(name => ({
         name: name,
-        quantity: summaryMap[name].quantity,
-        unit: summaryMap[name].unit
+        orderedQty: summaryMap[name].orderedQty,
+        receivedQty: summaryMap[name].orderedQty, // ค่าเริ่มต้น ให้เท่ากับสั่งซื้อ
+        isMatch: true,
+        unit: summaryMap[name].unit,
+        unitPrice: 0,
+        totalAmount: 0
       }));
 
-      if (summaryList.length === 0) {
-        alert("ไม่พบข้อมูลพัสดุที่สามารถสรุปยอดได้");
-        return;
+      document.getElementById('compareModal').classList.remove('hidden');
+      renderCompareTable();
+    }
+
+    function closeCompareModal() {
+      document.getElementById('compareModal').classList.add('hidden');
+    }
+
+    function renderCompareTable() {
+      const tbody = document.getElementById('compareTableBody');
+      tbody.innerHTML = '';
+
+      compareItemsList.forEach((item, index) => {
+        const tr = document.createElement('tr');
+        tr.className = "border-b hover:bg-slate-50";
+        tr.innerHTML = `
+          <td class="p-2 border text-center font-semibold">${index + 1}</td>
+          <td class="p-2 border font-medium text-slate-800">${item.name}</td>
+          <td class="p-2 border text-center font-bold text-slate-600">${item.orderedQty}</td>
+          <td class="p-2 border text-center">
+            <select onchange="handleMatchChange(${index}, this.value)" class="p-1 border rounded text-xs bg-white font-medium">
+              <option value="true" ${item.isMatch ? 'selected' : ''}>✔ ตรงตามสั่ง</option>
+              <option value="false" ${!item.isMatch ? 'selected' : ''}>❌ ไม่ตรง/รับไม่ครบ</option>
+            </select>
+          </td>
+          <td class="p-2 border text-center">
+            <input type="number" value="${item.receivedQty}" min="0" 
+              ${item.isMatch ? 'disabled class="w-16 p-1 border rounded text-center bg-slate-100 font-bold text-slate-500 cursor-not-allowed"' : 'class="w-16 p-1 border rounded text-center bg-white font-bold text-purple-700 outline-none focus:ring-2 focus:ring-purple-600"'}
+              oninput="handleReceivedQtyInput(${index}, this.value)">
+          </td>
+          <td class="p-2 border text-center text-slate-500">${item.unit || '-'}</td>
+          <td class="p-2 border text-center">
+            <input type="number" step="0.01" value="${item.unitPrice || ''}" placeholder="0.00" 
+              oninput="handleUnitPriceInput(${index}, this.value)"
+              class="w-24 p-1 border rounded text-right bg-white font-semibold outline-none focus:ring-2 focus:ring-purple-600">
+          </td>
+          <td class="p-2 border text-right font-bold text-slate-800" id="itemTotal-${index}">
+            ${(item.totalAmount || 0).toLocaleString('th-TH', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+          </td>
+        `;
+        tbody.appendChild(tr);
+      });
+
+      calculateCompareTotals();
+    }
+
+    function handleMatchChange(index, value) {
+      const isMatch = (value === 'true');
+      compareItemsList[index].isMatch = isMatch;
+      if (isMatch) {
+        compareItemsList[index].receivedQty = compareItemsList[index].orderedQty;
+      }
+      renderCompareTable();
+    }
+
+    function handleReceivedQtyInput(index, val) {
+      let q = parseInt(val, 10);
+      if (isNaN(q) || q < 0) q = 0;
+      compareItemsList[index].receivedQty = q;
+      updateItemTotal(index);
+    }
+
+    function handleUnitPriceInput(index, val) {
+      let p = parseFloat(val);
+      if (isNaN(p) || p < 0) p = 0;
+      compareItemsList[index].unitPrice = p;
+      updateItemTotal(index);
+    }
+
+    function updateItemTotal(index) {
+      const item = compareItemsList[index];
+      item.totalAmount = item.receivedQty * item.unitPrice;
+      const el = document.getElementById(`itemTotal-${index}`);
+      if (el) {
+        el.innerText = item.totalAmount.toLocaleString('th-TH', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+      }
+      calculateCompareTotals();
+    }
+
+    function calculateCompareTotals() {
+      let grandTotal = 0;
+      compareItemsList.forEach(item => {
+        grandTotal += (item.totalAmount || 0);
+      });
+
+      document.getElementById('grandTotalText').innerText = grandTotal.toLocaleString('th-TH', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+
+      const bahtText = ArabicToThaiBaht(grandTotal);
+      document.getElementById('bahtTextThai').innerText = `(${bahtText})`;
+
+      const warningEl = document.getElementById('amountWarning');
+      if (grandTotal > 10000) {
+        warningEl.className = "text-xs font-bold text-rose-600 flex items-center";
+        warningEl.innerHTML = `<i class="fa-solid fa-triangle-exclamation mr-1"></i> วงเงินเกิน 10,000 บาท (ต้องใช้แบบฟอร์มจัดซื้อจัดจ้างวิธีเฉพาะเจาะจง)`;
+      } else {
+        warningEl.className = "text-xs font-bold text-emerald-700 flex items-center";
+        warningEl.innerHTML = `<i class="fa-solid fa-circle-check mr-1"></i> วงเงินไม่เกิน 10,000 บาท (ใช้แบบฟอร์มขอความเห็นชอบได้ปกติ)`;
+      }
+    }
+
+    /* แปลงตัวเลขเป็นตัวอักษรเงินบาทไทย */
+    function ArabicToThaiBaht(numbers) {
+      numbers = Number(numbers).toFixed(2);
+      const numberArray = numbers.split('.');
+      let baht = numberArray[0];
+      let satang = numberArray[1];
+
+      if (Number(numbers) === 0) return 'ศูนย์บาทถ้วน';
+
+      const thaiNumbers = ["ศูนย์", "หนึ่ง", "สอง", "สาม", "สี่", "ห้า", "หก", "เจ็ด", "แปด", "เก้า"];
+      const thaiDigits = ["", "สิบ", "ร้อย", "พัน", "หมื่น", "แสน", "ล้าน"];
+
+      function readNumber(numStr) {
+        let text = "";
+        const len = numStr.length;
+        for (let i = 0; i < len; i++) {
+          let digit = parseInt(numStr.charAt(i), 10);
+          let pos = len - i - 1;
+          if (digit !== 0) {
+            if (pos === 1 && digit === 1) text += "สิบ";
+            else if (pos === 1 && digit === 2) text += "ยี่สิบ";
+            else if (pos === 0 && digit === 1 && len > 1) text += "เอ็ด";
+            else text += thaiNumbers[digit] + thaiDigits[pos];
+          }
+        }
+        return text;
+      }
+
+      let bahtText = readNumber(baht) + "บาท";
+      let satangText = "";
+      if (parseInt(satang, 10) === 0) {
+        satangText = "ถ้วน";
+      } else {
+        satangText = readNumber(satang) + "สตางค์";
+      }
+      return bahtText + satangText;
+    }
+
+    /* สลับแปลงเลขตัวเลขอารบิกเป็นเลขไทยสำหรับฟอร์ม กฟภ. */
+    function toThaiDigits(numStr) {
+      const thaiDigits = ['๐', '๑', '๒', '๓', '๔', '๕', '๖', '๗', '๘', '๙'];
+      return String(numStr).replace(/[0-9]/g, function(w) {
+        return thaiDigits[parseInt(w, 10)];
+      });
+    }
+
+    function generatePeaReport() {
+      let grandTotal = 0;
+      compareItemsList.forEach(item => grandTotal += (item.totalAmount || 0));
+
+      if (grandTotal > 10000) {
+        alert("คำเตือน: วงเงินการสั่งซื้อเกิน 10,000 บาท ระเบียบการจัดซื้อจัดจ้างจะต้องใช้อีกแบบฟอร์มหนึ่งครับ");
       }
 
       const selectedDept = document.getElementById('adminDeptFilter').value;
-      const selectedMonth = document.getElementById('adminMonthFilter').value;
+      const docDate = document.getElementById('docDateText').value.trim() || "๑๗ สิงหาคม ๒๕๖๙";
+      const billInfo = document.getElementById('billDocInfo').value.trim() || "-";
+      const vatType = document.getElementById('vatTypeSelect').value;
 
-      let titleText = "รายการวัสดุที่สั่งซื้อ";
-      if (selectedDept !== 'ALL') {
-        titleText += ` (${selectedDept})`;
-      } else {
-        titleText += ` (รวมทุกแผนก)`;
-      }
+      document.getElementById('peaFormDeptText').innerText = selectedDept !== 'ALL' ? selectedDept : "กฟส.หลังสวน";
+      document.getElementById('peaFormDeptText2').innerText = selectedDept !== 'ALL' ? selectedDept : "กฟส.หลังสวนและ กฟส.ในสังกัด";
+      document.getElementById('peaFormDate').innerText = docDate;
+      document.getElementById('peaFormItemCount').innerText = toThaiDigits(compareItemsList.length);
 
-      let subtitleText = "";
-      if (selectedMonth !== 'ALL') {
-        subtitleText = selectedMonth;
-      }
+      const formattedTotal = grandTotal.toLocaleString('th-TH', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+      const thaiTotalStr = toThaiDigits(formattedTotal) + '.-';
+      const bahtTextStr = `(${ArabicToThaiBaht(grandTotal)})`;
 
-      document.getElementById('printTitle').innerText = titleText;
-      document.getElementById('printSubtitle').innerText = subtitleText;
+      document.getElementById('peaFormTotalAmount').innerText = thaiTotalStr;
+      document.getElementById('peaFormTotalBahtText').innerText = bahtTextStr;
+      document.getElementById('peaFormSumAmount').innerText = thaiTotalStr;
+      document.getElementById('peaFormSumBahtText').innerText = bahtTextStr;
+      document.getElementById('peaSignAmount').innerText = thaiTotalStr;
+      document.getElementById('peaSignBahtText').innerText = bahtTextStr;
 
-      const printTbodyEl = document.getElementById('printTableBody');
-      printTbodyEl.innerHTML = '';
+      document.getElementById('vatMarkBox').innerText = vatType === 'included' ? '/' : ' ';
+      document.getElementById('peaFormBillInfoCell').innerText = billInfo;
 
-      summaryList.forEach((item, index) => {
+      const dates = document.querySelectorAll('.printCurrentDate');
+      dates.forEach(d => d.innerText = docDate);
+
+      // Render Table Rows in PEA Form
+      const peaTbody = document.getElementById('peaFormTableBody');
+      peaTbody.innerHTML = '';
+
+      compareItemsList.forEach((item, index) => {
         const tr = document.createElement('tr');
+        const itemAmtFormatted = (item.totalAmount || 0).toLocaleString('th-TH', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+        const qtyStr = `${toThaiDigits(item.receivedQty)} ${item.unit || ''}`;
+
         tr.innerHTML = `
-          <td style="border: 1px solid #000; padding: 6px 8px; text-align: center;">${index + 1}</td>
-          <td style="border: 1px solid #000; padding: 6px 8px;">${item.name}</td>
-          <td style="border: 1px solid #000; padding: 6px 8px; text-align: center;">${item.unit || '-'}</td>
-          <td style="border: 1px solid #000; padding: 6px 8px; text-align: center; font-weight: bold;">${item.quantity}</td>
+          <td style="border: 1px solid #000; padding: 4px; text-align: center;">${toThaiDigits(index + 1)}</td>
+          <td style="border: 1px solid #000; padding: 4px;">${item.name}</td>
+          <td style="border: 1px solid #000; padding: 4px; text-align: center;">${qtyStr}</td>
+          <td style="border: 1px solid #000; padding: 4px; text-align: right;">${toThaiDigits(itemAmtFormatted)}.-</td>
+          <td style="border: 1px solid #000; padding: 4px; text-align: center;">${index === 0 ? billInfo : ''}</td>
         `;
-        printTbodyEl.appendChild(tr);
+        peaTbody.appendChild(tr);
       });
 
       window.print();
