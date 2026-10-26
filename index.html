@@ -38,28 +38,16 @@
       margin: 10mm 15mm 10mm 15mm;
     }
 
+    /* แก้ไข CSS Print ให้เสถียร ไม่เกิดหน้าขาวว่างเปล่า */
     @media print {
-      body * { visibility: hidden !important; }
       .no-print { display: none !important; }
+      header, footer, nav, main { display: none !important; }
       
-      #printArea, #printArea * { visibility: visible !important; }
       #printArea {
-        position: absolute !important;
-        left: 0 !important;
-        top: 0 !important;
-        width: 100% !important;
-        background: white !important;
-        color: black !important;
+        display: block !important;
       }
-
-      #peaFormArea, #peaFormArea * { visibility: visible !important; }
       #peaFormArea {
-        position: absolute !important;
-        left: 0 !important;
-        top: 0 !important;
-        width: 100% !important;
-        background: white !important;
-        color: black !important;
+        display: block !important;
       }
     }
   </style>
@@ -1162,6 +1150,11 @@
     }
 
     function generatePeaReport() {
+      if (!compareItemsList || compareItemsList.length === 0) {
+        alert("กรุณาเปิดเมนู 'ตรวจรับ & ใบวางบิล' เพื่อคำนวณและกรอกราคาก่อนพิมพ์รายงานครับ");
+        return;
+      }
+
       let grandTotal = 0;
       compareItemsList.forEach(item => grandTotal += (item.totalAmount || 0));
 
@@ -1178,6 +1171,11 @@
     }
 
     function downloadWordReport() {
+      if (!compareItemsList || compareItemsList.length === 0) {
+        alert("กรุณาเปิดเมนู 'ตรวจรับ & ใบวางบิล' เพื่อคำนวณและกรอกราคาก่อนดาวน์โหลดครับ");
+        return;
+      }
+
       preparePeaReportData();
 
       const content = document.getElementById('peaFormArea').innerHTML;
@@ -1186,7 +1184,7 @@
           <meta charset='utf-8'>
           <title>รายงานขอซื้อขอจ้าง</title>
           <style>
-            @page { size: A4; margin: 8mm 10mm 8mm 10mm; }
+            @page { size: A4; margin: 10mm 15mm 10mm 15mm; }
             body { font-family: 'TH Sarabun PSK', 'TH SarabunIT๙', sans-serif; font-size: 15pt; }
             table { border-collapse: collapse; width: 100%; }
             th, td { font-family: 'TH Sarabun PSK', 'TH SarabunIT๙', sans-serif; font-size: 15pt; }
