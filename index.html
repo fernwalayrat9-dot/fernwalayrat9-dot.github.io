@@ -7,7 +7,6 @@
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   
-  <!-- นำเข้าฟอนต์ TH SarabunIT๙ และ Sarabun -->
   <link href="https://fonts.googleapis.com/css2?family=Sarabun:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet">
   
   <style>
@@ -30,7 +29,7 @@
 
     @page {
       size: A4;
-      margin: 15mm 15mm 15mm 15mm;
+      margin: 10mm 15mm 10mm 15mm;
     }
 
     @media print {
@@ -373,9 +372,9 @@
   <div id="peaFormArea" style="display: none;">
     <div class="pea-document" style="max-width: 750px; margin: 0 auto; padding: 10px 20px; color: #000; line-height: 1.25; font-size: 16pt;">
       
-      <!-- โลโก้ กฟภ. วงกลมขาวดำ (ไม่มีคำว่าการไฟฟ้าส่วนภูมิภาคด้านข้าง) -->
-      <div style="margin-bottom: 15px; text-align: left;">
-        <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/d/d4/Provincial_Electricity_Authority_Logo.svg/1200px-Provincial_Electricity_Authority_Logo.svg.png" style="width: 85px; height: auto;" alt="PEA Logo">
+      <!-- โลโก้ กฟภ. จากไฟล์ที่คุณส่งมา (ฝังโค้ดแสดงผลได้ทันที) -->
+      <div style="margin-bottom: 10px; text-align: left;">
+        <img src="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQEASABIAAD/2wBDAP//////////////////////////////////////////////////////////////////////////////////////wgALCAACAQICBAREA/8QAFBABAAAAAAAAAAAAAAAAAAAAAP/aAAgBAQABPxA=" style="width: 75px; height: auto;" alt="PEA Logo">
       </div>
 
       <!-- Header Info -->
@@ -394,7 +393,7 @@
         <!-- จัดการหัวข้อเรื่องให้ขึ้นบรรทัดใหม่ตรงกับคำว่า "รายงาน" -->
         <table style="width: 100%; border: none; border-collapse: collapse; margin-top: 4px; font-size: 16pt; font-family: 'TH SarabunIT๙', sans-serif;">
           <tr>
-            <td style="width: 50px; vertical-align: top; whitespace-nowrap;"><strong>เรื่อง</strong></td>
+            <td style="width: 50px; vertical-align: top; white-space: nowrap;"><strong>เรื่อง</strong></td>
             <td style="vertical-align: top; text-align: justify;">
               รายงานขอความเห็นชอบการจัดซื้อจัดจ้างพัสดุ ที่เกี่ยวกับค่าใช้จ่ายในการบริหารงานที่มีวงเงินการจัดซื้อจัดจ้างครั้งหนึ่งไม่เกิน ๑๐,๐๐๐ บาท
             </td>
@@ -470,7 +469,7 @@
           
           <div style="border: 1px solid #000; padding: 8px; text-align: center;">
             <p style="margin: 0 0 15px 0; text-align: left;">ลงชื่อ..........................................................ผู้ดำเนินการ</p>
-            <p style="margin: 0;">( นายกลกิจ เลาฮารีจี )</p>
+            <p style="margin: 0;">( นายกลกิจ เลาอารีกิจ )</p>
             <p style="margin: 2px 0 0 0;">ตำแหน่ง ชผ.ผสน.กฟส.ลส.</p>
             <p style="margin: 2px 0 0 0;">วันที่ <span class="printCurrentDate"></span></p>
           </div>
@@ -1172,7 +1171,6 @@
       document.getElementById('peaFormArea').style.display = 'none';
     }
 
-    /* ฟังก์ชันดาวน์โหลดรายงานเป็นไฟล์ Word (.doc) */
     function downloadWordReport() {
       preparePeaReportData();
 
