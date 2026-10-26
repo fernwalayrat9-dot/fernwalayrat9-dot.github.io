@@ -38,15 +38,15 @@
       margin: 10mm 15mm 10mm 15mm;
     }
 
-    /* แก้ไข CSS Print ให้เสถียร ไม่เกิดหน้าขาวว่างเปล่า */
+    /* CSS Print: ซ่อนทุกอย่างเป็นค่าเริ่มต้น แล้วเปิดแสดงเฉพาะพื้นที่ที่ต้องการพิมพ์จริงผ่าน Class ควบคุม */
     @media print {
+      body * { display: none !important; }
       .no-print { display: none !important; }
-      header, footer, nav, main { display: none !important; }
       
-      #printArea {
+      body.printing-summary #printArea {
         display: block !important;
       }
-      #peaFormArea {
+      body.printing-pea #peaFormArea {
         display: block !important;
       }
     }
@@ -230,22 +230,22 @@
           </div>
         </div>
 
-        <!-- ช่องกรอกข้อมูลผู้ลงนามทั้ง 3 กรอบ -->
+        <!-- ช่องกรอกข้อมูลผู้ลงนามทั้ง 3 กรอบ (ตั้งค่าเริ่มต้นเป็นช่องว่าง พร้อม Placeholder ตัวอย่าง) -->
         <div class="p-4 bg-purple-50 border-b grid grid-cols-1 md:grid-cols-3 gap-3 text-xs">
           <div>
             <label class="font-bold text-purple-900 block mb-1"><i class="fa-solid fa-user-pen mr-1"></i>1. ผู้ดำเนินการ:</label>
-            <input type="text" id="inputSignName1" value="นายกลกิจ เลาฮารีกิจ" placeholder="ชื่อ-นามสกุล" class="w-full p-1.5 border rounded bg-white mb-1">
-            <input type="text" id="inputSignPos1" value="ชผ.ผสน.กฟส.ลส." placeholder="ตำแหน่ง" class="w-full p-1.5 border rounded bg-white">
+            <input type="text" id="inputSignName1" placeholder="เช่น นายกลกิจ เลาฮารีกิจ" class="w-full p-1.5 border rounded bg-white mb-1">
+            <input type="text" id="inputSignPos1" placeholder="เช่น ชผ.ผสน.กฟส.ลส." class="w-full p-1.5 border rounded bg-white">
           </div>
           <div>
             <label class="font-bold text-purple-900 block mb-1"><i class="fa-solid fa-user-pen mr-1"></i>2. ผู้บังคับบัญชาชั้นต้น:</label>
-            <input type="text" id="inputSignName2" value="นางสาวพรศิริ เมฆสวี" placeholder="ชื่อ-นามสกุล" class="w-full p-1.5 border rounded bg-white mb-1">
-            <input type="text" id="inputSignPos2" value="หน.ผสน.กฟส.ลส." placeholder="ตำแหน่ง" class="w-full p-1.5 border rounded bg-white">
+            <input type="text" id="inputSignName2" placeholder="เช่น นางสาวพรศิริ เมฆสวี" class="w-full p-1.5 border rounded bg-white mb-1">
+            <input type="text" id="inputSignPos2" placeholder="เช่น หน.ผสน.กฟส.ลส." class="w-full p-1.5 border rounded bg-white">
           </div>
           <div>
             <label class="font-bold text-purple-900 block mb-1"><i class="fa-solid fa-user-pen mr-1"></i>3. หัวหน้าหน่วยงาน:</label>
-            <input type="text" id="inputSignName3" value="นางสาวปริศนา นิยม" placeholder="ชื่อ-นามสกุล" class="w-full p-1.5 border rounded bg-white mb-1">
-            <input type="text" id="inputSignPos3" value="ชจก.(ล) รักษาการแทน ผจก.กฟส.ลส." placeholder="ตำแหน่ง" class="w-full p-1.5 border rounded bg-white">
+            <input type="text" id="inputSignName3" placeholder="เช่น นางสาวปริศนา นิยม" class="w-full p-1.5 border rounded bg-white mb-1">
+            <input type="text" id="inputSignPos3" placeholder="เช่น ชจก.(ล) รักษาการแทน ผจก.กฟส.ลส." class="w-full p-1.5 border rounded bg-white">
           </div>
         </div>
 
@@ -467,12 +467,12 @@
           <p style="margin: 0 0 2px 25px;">๑.ให้ความเห็นชอบการจัดซื้อจัดจ้างดังกล่าวข้างต้น</p>
           <p style="margin: 0 0 2px 25px;">๒.อนุมัติให้จ่ายเงิน จำนวน <span id="peaSignAmount"></span> บาท</p>
           <p style="margin: 0 0 6px 35px;" id="peaSignBahtText"></p>
-          <p style="margin: 0 0 15px 0;">จากรหัสบัญชี ๕๓๐๓๐๐๑๐ โดยใช้งบทำการ.J๓๑๓๑๐๑๐๑</p>
+          <p style="margin: 0 0 15px 0;">จากรหัสบัญชี ๕๓๐๓๐๐๑๐ โดยใช้งบทำการ.ป๓๑๓๑๐๑๐๑</p>
 
           <div style="text-align: center; margin-top: 25px;">
-            <p style="margin: 0;">ลงชื่อ.........................ผู้บังคับบัญชาชั้นต้น</p>
-            <p style="margin: 2px 0 0 0;" id="signName2">( นางสาวพรศิริ เมฆสวี )</p>
-            <p style="margin: 2px 0 0 0;" id="signPos2">ตำแหน่ง หน.ผสน.กฟส.ลส.</p>
+            <p style="margin: 0;">ลงชื่อ.................................ผู้บังคับบัญชาชั้นต้น</p>
+            <p style="margin: 2px 0 0 0;" id="signName2"></p>
+            <p style="margin: 2px 0 0 0;" id="signPos2"></p>
             <p style="margin: 2px 0 0 0;">วันที่ <span class="printCurrentDate"></span></p>
           </div>
         </div>
@@ -481,17 +481,17 @@
         <div style="display: flex; flex-direction: column; justify-content: space-between; gap: 8px;">
           
           <div style="border: 1px solid #000; padding: 8px; text-align: center;">
-            <p style="margin: 0 0 15px 0; text-align: left;">ลงชื่อ.........................ผู้ดำเนินการ</p>
-            <p style="margin: 0;" id="signName1">( นายกลกิจ เลาอารีกิจ )</p>
-            <p style="margin: 2px 0 0 0;" id="signPos1">ตำแหน่ง ชผ.ผสน.กฟส.ลส.</p>
+            <p style="margin: 0 0 15px 0; text-align: left;">ลงชื่อ.................................ผู้ดำเนินการ</p>
+            <p style="margin: 0;" id="signName1"></p>
+            <p style="margin: 2px 0 0 0;" id="signPos1"></p>
             <p style="margin: 2px 0 0 0;">วันที่ <span class="printCurrentDate"></span></p>
           </div>
 
           <div style="border: 1px solid #000; padding: 8px; text-align: center;">
             <p style="margin: 0 0 3px 0; text-align: left;">(๓) - เห็นชอบและอนุมัติ</p>
-            <p style="margin: 15px 0 0 0;">ลงชื่อ.........................หัวหน้าหน่วยงาน</p>
-            <p style="margin: 2px 0 0 0;" id="signName3">( นางสาวปริศนา นิยม )</p>
-            <p style="margin: 2px 0 0 0;" id="signPos3">ตำแหน่ง ชจก.(ล) รักษาการแทน ผจก.กฟส.ลส.</p>
+            <p style="margin: 15px 0 0 0;">ลงชื่อ.................................หัวหน้าหน่วยงาน</p>
+            <p style="margin: 2px 0 0 0;" id="signName3"></p>
+            <p style="margin: 2px 0 0 0;" id="signPos3"></p>
             <p style="margin: 2px 0 0 0;">วันที่ <span class="printCurrentDate"></span></p>
           </div>
 
@@ -933,10 +933,10 @@
         printTbodyEl.appendChild(tr);
       });
 
-      document.getElementById('printArea').style.display = 'block';
-      document.getElementById('peaFormArea').style.display = 'none';
+      document.body.classList.add('printing-summary');
+      document.body.classList.remove('printing-pea');
       window.print();
-      document.getElementById('printArea').style.display = 'none';
+      document.body.classList.remove('printing-summary');
     }
 
     /* --- LOGICS สำหรับการตรวจรับ & เปรียบเทียบใบวางบิล --- */
@@ -1125,7 +1125,7 @@
       const billInfo = document.getElementById('billDocInfo').value.trim() || "-";
       const vatType = document.getElementById('vatTypeSelect').value;
 
-      // ดึงข้อมูลผู้ลงนามทั้ง 3 ช่อง
+      // ดึงข้อมูลผู้ลงนามทั้ง 3 ช่อง (ถ้าไม่ได้กรอก จะเว้นว่างไว้)
       const signName1 = document.getElementById('inputSignName1').value.trim();
       const signPos1 = document.getElementById('inputSignPos1').value.trim();
       const signName2 = document.getElementById('inputSignName2').value.trim();
@@ -1198,10 +1198,10 @@
 
       preparePeaReportData();
 
-      document.getElementById('peaFormArea').style.display = 'block';
-      document.getElementById('printArea').style.display = 'none';
+      document.body.classList.add('printing-pea');
+      document.body.classList.remove('printing-summary');
       window.print();
-      document.getElementById('peaFormArea').style.display = 'none';
+      document.body.classList.remove('printing-pea');
     }
 
     function downloadWordReport() {
