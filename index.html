@@ -11,10 +11,15 @@
   
   <style>
     @font-face {
-      font-family: 'TH SarabunIT๙';
-      src: local('TH SarabunIT9'), local('THSarabunIT9'),
-           url('https://cdn.jsdelivr.net/gh/thailand-font/THSarabunIT9@master/fonts/THSarabunIT9.woff2') format('woff2');
+      font-family: 'TH Sarabun PSK';
+      src: local('TH Sarabun PSK'), local('THSarabunPSK');
       font-weight: normal;
+      font-style: normal;
+    }
+    @font-face {
+      font-family: 'TH Sarabun PSK';
+      src: local('TH Sarabun PSK Bold'), local('THSarabunPSK-Bold');
+      font-weight: bold;
       font-style: normal;
     }
 
@@ -24,13 +29,13 @@
     input[type=number] { -moz-appearance: textfield; }
     
     .pea-document {
-      font-family: 'TH SarabunIT๙', 'Sarabun', sans-serif !important;
+      font-family: 'TH Sarabun PSK', 'TH SarabunIT๙', 'Sarabun', sans-serif !important;
       font-size: 15pt !important;
     }
 
     @page {
       size: A4;
-      margin: 0cm 2.25cm 0.5cm 3.17cm;
+      margin: 10mm 15mm 10mm 15mm;
     }
 
     @media print {
@@ -349,7 +354,7 @@
 
   <!-- AREA พิมพ์รายงานส่งร้าน (แบบสรุปยอด) -->
   <div id="printArea" style="display: none;">
-    <div style="font-family: 'TH SarabunIT๙', 'Sarabun', sans-serif; max-width: 800px; margin: 0 auto; padding: 10px;">
+    <div style="font-family: 'TH Sarabun PSK', 'TH SarabunIT๙', 'Sarabun', sans-serif; max-width: 800px; margin: 0 auto; padding: 10px;">
       <div style="display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 15px; border-bottom: 2px solid #000; padding-bottom: 5px;">
         <h2 style="font-size: 22px; font-weight: bold; margin: 0;" id="printTitle">รายการวัสดุที่สั่งซื้อ</h2>
         <span style="font-size: 16px; font-weight: bold;" id="printSubtitle"></span>
@@ -380,7 +385,7 @@
 
       <!-- Header Info -->
       <div style="margin-bottom: 10px;">
-        <table style="width: 100%; border: none; border-collapse: collapse; font-size: 15pt; font-family: 'TH SarabunIT๙', sans-serif;">
+        <table style="width: 100%; border: none; border-collapse: collapse; font-size: 15pt; font-family: 'TH Sarabun PSK', 'TH SarabunIT๙', sans-serif;">
           <tr>
             <td style="width: 50%; vertical-align: top;"><strong>จาก</strong> <span id="peaFormFrom">ผสน.กฟส.ลส.</span></td>
             <td style="width: 50%; vertical-align: top;"><strong>ถึง</strong> <span id="peaFormTo">กฟส.ลส.</span></td>
@@ -392,11 +397,11 @@
         </table>
         
         <!-- จัดการหัวข้อเรื่องให้ขึ้นบรรทัดใหม่ตรงกับคำว่า "รายงาน" -->
-        <table style="width: 100%; border: none; border-collapse: collapse; margin-top: 4px; font-size: 15pt; font-family: 'TH SarabunIT๙', sans-serif;">
+        <table style="width: 100%; border: none; border-collapse: collapse; margin-top: 4px; font-size: 15pt; font-family: 'TH Sarabun PSK', 'TH SarabunIT๙', sans-serif;">
           <tr>
             <td style="width: 50px; vertical-align: top; white-space: nowrap;"><strong>เรื่อง</strong></td>
             <td style="vertical-align: top; text-align: justify;">
-              รายงานขอความเห็นชอบการจัดซื้อจัดจ้างพัสดุ ที่เกี่ยวกับค่าใช้จ่ายในการบริหารงานที่มีวงเงินการจัดซื้อจัดจ้างครั้งหนึ่งไม่เกิน ๑๐,๐๐๐ บาท
+              รายงานขอความเห็นชอบการจัดซื้อจัดจ้างพัสดุที่เกี่ยวกับค่าใช้จ่ายในการบริหารงานที่มีวงเงินการจัดซื้อจัดจ้างครั้งหนึ่งไม่เกิน ๑๐,๐๐๐ บาท
             </td>
           </tr>
         </table>
@@ -409,7 +414,7 @@
       </p>
 
       <!-- Table -->
-      <table style="width: 100%; border-collapse: collapse; margin-bottom: 10px; font-size: 15pt; font-family: 'TH SarabunIT๙', sans-serif;">
+      <table style="width: 100%; border-collapse: collapse; margin-bottom: 10px; font-size: 15pt; font-family: 'TH Sarabun PSK', 'TH SarabunIT๙', sans-serif;">
         <thead>
           <tr style="background-color: #fff;">
             <th style="border: 1px solid #000; padding: 4px; text-align: center; width: 35px;">ที่</th>
@@ -438,7 +443,7 @@
 
       <!-- Content text -->
       <p style="text-indent: 2.5em; margin-bottom: 8px; text-align: justify; font-size: 15pt;">
-        ทั้งนี้ การดำเนินการจัดซื้อจัดจ้างดังกล่าว เป็นการดำเนินการตามหนังสือคณะกรรมการวินิจฉัยปัญหาการจัดซื้อจัดจ้างและการบริหารพัสดุภาคครุฑ กรมบัญชีกลาง ที่ กค (กวจ) ๐๔๐๕.๒/ว ๑๑๙ ลงวันที่ ๗ มีนาคม ๒๕๖๑ เรื่อง แนวทางการปฏิบัติในการดำเนินการจัดหาพัสดุที่เกี่ยวกับค่าใช้จ่ายในการบริหารงาน ค่าใช้จ่ายในการฝึกอบรม การจัดงาน และการประชุมของหน่วยงานของรัฐ ที่มีวงเงินการจัดซื้อจัดจ้างครั้งหนึ่งไม่เกิน ๑๐,๐๐๐ บาท ตาราง ๑ ลำดับที่...๑๓...
+        ทั้งนี้ การดำเนินการจัดซื้อจัดจ้างดังกล่าว เป็นการดำเนินการตามหนังสือคณะกรรมการวินิจฉัยปัญหาการจัดซื้อจัดจ้างและการบริหารพัสดุภาคครุฑ กรมบัญชีกลาง ที่ กค (กวจ) ๐๔๐๕.๒/ว.๑๑๙ ลงวันที่ ๗ มีนาคม ๒๕๖๑ เรื่อง แนวทางการปฏิบัติในการดำเนินการจัดหาพัสดุที่เกี่ยวกับค่าใช้จ่ายในการบริหารงาน ค่าใช้จ่ายในการฝึกอบรม การจัดงาน และการประชุมของหน่วยงานของรัฐ ที่มีวงเงินการจัดซื้อจัดจ้างครั้งหนึ่งไม่เกิน ๑๐,๐๐๐ บาท ตาราง ๑ ลำดับที่...๑๓...
       </p>
 
       <p style="text-indent: 2.5em; margin-bottom: 20px; text-align: justify; font-size: 15pt;">
@@ -446,7 +451,7 @@
       </p>
 
       <!-- Signatures Grid -->
-      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; font-size: 15pt; font-family: 'TH SarabunIT๙', sans-serif;">
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; font-size: 15pt; font-family: 'TH Sarabun PSK', 'TH SarabunIT๙', sans-serif;">
         
         <!-- Left Box (2) -->
         <div style="border: 1px solid #000; padding: 8px;">
@@ -455,10 +460,10 @@
           <p style="margin: 0 0 2px 25px;">๑.ให้ความเห็นชอบการจัดซื้อจัดจ้างดังกล่าวข้างต้น</p>
           <p style="margin: 0 0 2px 25px;">๒.อนุมัติให้จ่ายเงิน จำนวน <span id="peaSignAmount"></span> บาท</p>
           <p style="margin: 0 0 6px 35px;" id="peaSignBahtText"></p>
-          <p style="margin: 0 0 15px 0;">จากรหัสบัญชี ๕๓๐๓๐๐๑๐ โดยใช้งบทำการ.ป๓๑๓๑๐๑๐๑</p>
+          <p style="margin: 0 0 15px 0;">จากรหัสบัญชี ๕๓๐๓๐๐๑๐ โดยใช้งบทำการ.J๓๑๓๑๐๑๐๑</p>
 
           <div style="text-align: center; margin-top: 25px;">
-            <p style="margin: 0;">ลงชื่อ..........................................................ผู้บังคับบัญชาชั้นต้น</p>
+            <p style="margin: 0;">ลงชื่อ...................................ผู้บังคับบัญชาชั้นต้น</p>
             <p style="margin: 2px 0 0 0;">( นางสาวพรศิริ เมฆสวี )</p>
             <p style="margin: 2px 0 0 0;">ตำแหน่ง หน.ผสน.กฟส.ลส.</p>
             <p style="margin: 2px 0 0 0;">วันที่ <span class="printCurrentDate"></span></p>
@@ -469,17 +474,17 @@
         <div style="display: flex; flex-direction: column; justify-content: space-between; gap: 8px;">
           
           <div style="border: 1px solid #000; padding: 8px; text-align: center;">
-            <p style="margin: 0 0 15px 0; text-align: left;">ลงชื่อ..........................................................ผู้ดำเนินการ</p>
-            <p style="margin: 0;">( นายกลกิจ เลาฮารีกิจ )</p>
+            <p style="margin: 0 0 15px 0; text-align: left;">ลงชื่อ...................................ผู้ดำเนินการ</p>
+            <p style="margin: 0;">( นายกลกิจ เลาอารีกิจ )</p>
             <p style="margin: 2px 0 0 0;">ตำแหน่ง ชผ.ผสน.กฟส.ลส.</p>
             <p style="margin: 2px 0 0 0;">วันที่ <span class="printCurrentDate"></span></p>
           </div>
 
           <div style="border: 1px solid #000; padding: 8px; text-align: center;">
             <p style="margin: 0 0 3px 0; text-align: left;">(๓) - เห็นชอบและอนุมัติ</p>
-            <p style="margin: 15px 0 0 0;">ลงชื่อ..........................................................หัวหน้าหน่วยงาน</p>
+            <p style="margin: 15px 0 0 0;">ลงชื่อ...................................หัวหน้าหน่วยงาน</p>
             <p style="margin: 2px 0 0 0;">( นางสาวปริศนา นิยม )</p>
-            <p style="margin: 2px 0 0 0;">ตำแหน่ง ชผจก.(ล) รักษาการแทน ผจก.กฟส.ลส.</p>
+            <p style="margin: 2px 0 0 0;">ตำแหน่ง ชจก.(ล) รักษาการแทน ผจก.กฟส.ลส.</p>
             <p style="margin: 2px 0 0 0;">วันที่ <span class="printCurrentDate"></span></p>
           </div>
 
@@ -769,7 +774,7 @@
           <td class="p-3 font-semibold text-slate-800">${order.department || '-'}</td>
           <td class="p-3 text-xs font-medium text-purple-700">${order.round || '-'}</td>
           <td class="p-3 text-xs font-medium text-slate-800">${order.itemName || '-'}</td>
-          <td class="p-3 text-center font-bold text-purple-700">${order.quantity || 0}</td>
+          <td class="p-3 text-center font-bold text-purple-700">${toThaiDigits(order.quantity || 0)}</td>
           <td class="p-3 text-center text-xs text-slate-500">${order.unit || '-'}</td>
           <td class="p-3 text-center">
             <button onclick="deleteOrder(${order.rowIndex})" class="text-rose-600 hover:text-rose-800 text-xs px-2 py-1 rounded bg-rose-50 hover:bg-rose-100">
@@ -913,10 +918,10 @@
       summaryList.forEach((item, index) => {
         const tr = document.createElement('tr');
         tr.innerHTML = `
-          <td style="border: 1px solid #000; padding: 6px 8px; text-align: center;">${index + 1}</td>
+          <td style="border: 1px solid #000; padding: 6px 8px; text-align: center;">${toThaiDigits(index + 1)}</td>
           <td style="border: 1px solid #000; padding: 6px 8px;">${item.name}</td>
           <td style="border: 1px solid #000; padding: 6px 8px; text-align: center;">${item.unit || '-'}</td>
-          <td style="border: 1px solid #000; padding: 6px 8px; text-align: center; font-weight: bold;">${item.quantity}</td>
+          <td style="border: 1px solid #000; padding: 6px 8px; text-align: center; font-weight: bold;">${toThaiDigits(item.quantity)}</td>
         `;
         printTbodyEl.appendChild(tr);
       });
@@ -1181,10 +1186,10 @@
           <meta charset='utf-8'>
           <title>รายงานขอซื้อขอจ้าง</title>
           <style>
-            @page { size: A4; margin: 0.5cm 2.25cm 0.5cm 3.17cm; }
-            body { font-family: 'TH SarabunIT9', 'TH Sarabun PSK', sans-serif; font-size: 15pt; }
+            @page { size: A4; margin: 10mm 15mm 10mm 15mm; }
+            body { font-family: 'TH Sarabun PSK', 'TH SarabunIT๙', sans-serif; font-size: 15pt; }
             table { border-collapse: collapse; width: 100%; }
-            th, td { font-family: 'TH SarabunIT9', 'TH Sarabun PSK', sans-serif; font-size: 15pt; }
+            th, td { font-family: 'TH Sarabun PSK', 'TH SarabunIT๙', sans-serif; font-size: 15pt; }
           </style>
         </head>
         <body>`;
