@@ -377,7 +377,6 @@
 
   <!-- AREA สำหรับพิมพ์รายงานขอซื้อขอจ้าง กฟภ. (วงเงินไม่เกิน 10,000 บาท) -->
   <div id="peaFormArea" style="display: none;">
-    <!-- ปรับ max-width เป็น 100% และลด padding เพื่อขยายพื้นที่ตัวหนังสือให้กว้างขึ้น -->
     <div class="pea-document" style="max-width: 100%; margin: 0 auto; padding: 4px 6px; color: #000; line-height: 1.25; font-size: 15pt;">
       
       <!-- โลโก้ กฟภ. (ขนาดกว้าง 3.94 ซม., สูง 2.96 ซม.) -->
@@ -656,14 +655,13 @@
       .finally(() => hideLoading());
     }
 
-    // Admin & compare functions placeholder or remaining scripts...
     function toggleAdminModal() {
       const modal = document.getElementById('adminModal');
       modal.classList.toggle('hidden');
     }
     function checkAdminAuth() {
       const pass = document.getElementById('adminPass').value;
-      if (pass === "1234") { // เปลี่ยนรหัสผ่านแอดมินตามต้องการ
+      if (pass === "1234") {
         document.getElementById('adminLoginArea').classList.add('hidden');
         document.getElementById('adminPanel').classList.remove('hidden');
         loadAdminOrders();
@@ -790,7 +788,6 @@
         return;
       }
       
-      // รวมรายการสินค้าที่สั่งซื้อตามแผนก/รอบเดือนเพื่อตรวจรับ
       let itemMap = {};
       currentFilteredOrders.forEach(o => {
         let key = o.itemName + "_" + (o.unit || "");
@@ -808,6 +805,7 @@
           name: itemMap[k].name,
           unit: itemMap[k].unit,
           orderedQty: itemMap[k].totalQty,
+          receivedStatus: "ครบถ้วน",
           receivedQty: itemMap[k].totalQty,
           pricePerUnit: 0
         });
@@ -829,7 +827,13 @@
             <td class="p-2 border text-center">${item.no}</td>
             <td class="p-2 border">${item.name}</td>
             <td class="p-2 border text-center font-semibold">${item.orderedQty}</td>
-            <td class="p-2 border text-center"><span class="px-2 py-0.5 bg-emerald-100 text-emerald-800 rounded text-[10px]">ครบถ้วน</span></td>
+            <td class="p-2 border text-center">
+              <select onchange="updateCompareItem(${index}, 'receivedStatus', this.value)" class="p-1 border rounded text-xs bg-white">
+                <option value="ครบถ้วน" ${item.receivedStatus === 'ครบถ้วน' ? 'selected' : ''}>ครบถ้วน</option>
+                <option value="ไม่ครบ" ${item.receivedStatus === 'ไม่ครบ' ? 'selected' : ''}>ไม่ครบ</option>
+                <option value="เกิน" ${item.receivedStatus === 'เกิน' ? 'selected' : ''}>เกิน</option>
+              </select>
+            </td>
             <td class="p-2 border text-center">
               <input type="number" value="${item.receivedQty}" onchange="updateCompareItem(${index}, 'receivedQty', this.value)" class="w-16 p-1 border rounded text-center">
             </td>
@@ -844,9 +848,13 @@
       calculateCompareTotals();
     }
     function updateCompareItem(index, field, val) {
-      let num = parseFloat(val);
-      if (isNaN(num) || num < 0) num = 0;
-      compareItemsList[index][field] = num;
+      if (field === 'receivedStatus') {
+        compareItemsList[index][field] = val;
+      } else {
+        let num = parseFloat(val);
+        if (isNaN(num) || num < 0) num = 0;
+        compareItemsList[index][field] = num;
+      }
       let amount = compareItemsList[index].receivedQty * compareItemsList[index].pricePerUnit;
       document.getElementById(`amt_${index}`).innerText = amount.toFixed(2);
       calculateCompareTotals();
@@ -860,12 +868,10 @@
       document.getElementById('bahtTextThai').innerText = `(-${ArabicNumberToText(grandTotal)}-)`;
     }
     function ArabicNumberToText(amount) {
-      // ฟังก์ชันแปลงเลขเป็นตัวอักษรไทยอย่างง่าย
       if (amount === 0) return "ศูนย์บาทถ้วน";
-      return "บาทถ้วน"; // สามารถใส่ฟังก์ชันแปลงบาทไทยแบบสมบูรณ์ได้ตามต้องการ
+      return "บาทถ้วน";
     }
     function generatePeaReport() {
-      // เตรียมข้อมูลใส่ฟอร์ม PEA และพิมพ์
       document.getElementById('peaFormFrom').innerText = document.getElementById('adminDeptFilter').value !== 'ALL' ? document.getElementById('adminDeptFilter').value : "ผสน.กฟส.ลส.";
       document.getElementById('peaFormNo').innerText = document.getElementById('docNoInput').value || "-";
       document.getElementById('peaFormDate').innerText = document.getElementById('docDateText').value || "-";
