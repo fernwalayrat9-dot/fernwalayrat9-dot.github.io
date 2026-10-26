@@ -6,13 +6,33 @@
   <title>ระบบสั่งซื้อวัสดุสำนักงาน - กฟส.หลังสวน</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-  <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  
+  <!-- นำเข้าฟอนต์ TH SarabunIT๙ และ Sarabun -->
+  <link href="https://fonts.googleapis.com/css2?family=Sarabun:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet">
+  
   <style>
+    @font-face {
+      font-family: 'TH SarabunIT๙';
+      src: local('TH SarabunIT9'), local('THSarabunIT9'),
+           url('https://cdn.jsdelivr.net/gh/thailand-font/THSarabunIT9@master/fonts/THSarabunIT9.woff2') format('woff2');
+      font-weight: normal;
+      font-style: normal;
+    }
+
     body { font-family: 'Sarabun', sans-serif; }
     input[type=number]::-webkit-inner-spin-button, 
     input[type=number]::-webkit-outer-spin-button { -webkit-appearance: none; margin: 0; }
     input[type=number] { -moz-appearance: textfield; }
     
+    .pea-document {
+      font-family: 'TH SarabunIT๙', 'Sarabun', sans-serif !important;
+    }
+
+    @page {
+      size: A4;
+      margin: 15mm 15mm 15mm 15mm;
+    }
+
     @media print {
       body * { visibility: hidden !important; }
       .no-print { display: none !important; }
@@ -204,20 +224,25 @@
 
         <div class="p-4 bg-slate-50 border-b grid grid-cols-1 md:grid-cols-3 gap-3 text-xs">
           <div>
-            <label class="font-bold text-slate-700 block mb-1">เลขที่หนังสือ / วันที่สั่งซื้อ:</label>
-            <input type="text" id="docDateText" placeholder="เช่น ๑๗ สิงหาคม ๒๕๖๙" class="w-full p-2 border rounded bg-white">
+            <label class="font-bold text-slate-700 block mb-1">เลขที่หนังสือ (ถ้ามี):</label>
+            <input type="text" id="docNoInput" placeholder="เว้นว่างไว้ได้" class="w-full p-2 border rounded bg-white">
+          </div>
+          <div>
+            <label class="font-bold text-slate-700 block mb-1">วันที่ออกหนังสือ (ถ้ามี):</label>
+            <input type="text" id="docDateText" placeholder="เช่น ๑๗ สิงหาคม ๒๕๖๙ (เว้นว่างไว้ได้)" class="w-full p-2 border rounded bg-white">
           </div>
           <div>
             <label class="font-bold text-slate-700 block mb-1">ใบเสร็จ/ใบส่งของ (เล่ม/เลขที่/ลงวันที่):</label>
             <input type="text" id="billDocInfo" placeholder="เช่น ใบเสร็จเล่มที่ ๓๕ เลขที่ ๓ ลงวันที่ ๑๗ ส.ค. ๖๙" class="w-full p-2 border rounded bg-white">
           </div>
-          <div>
-            <label class="font-bold text-slate-700 block mb-1">รวมเป็นเงินภาษีมูลค่าเพิ่ม:</label>
-            <select id="vatTypeSelect" onchange="calculateCompareTotals()" class="w-full p-2 border rounded bg-white font-medium">
-              <option value="included">รวมภาษีมูลค่าเพิ่ม (VAT Included)</option>
-              <option value="excluded">ไม่รวมภาษีมูลค่าเพิ่ม (VAT Excluded)</option>
-            </select>
-          </div>
+        </div>
+
+        <div class="px-4 py-2 bg-slate-100 border-b flex justify-between items-center text-xs">
+          <div class="font-bold text-slate-700">รูปแบบภาษีมูลค่าเพิ่ม:</div>
+          <select id="vatTypeSelect" onchange="calculateCompareTotals()" class="p-1.5 border rounded bg-white font-medium">
+            <option value="included">รวมภาษีมูลค่าเพิ่ม (VAT Included)</option>
+            <option value="excluded">ไม่รวมภาษีมูลค่าเพิ่ม (VAT Excluded)</option>
+          </select>
         </div>
 
         <div class="flex-1 overflow-y-auto p-4">
@@ -249,13 +274,18 @@
           </table>
         </div>
 
-        <div class="p-4 bg-slate-100 border-t flex justify-between items-center">
+        <div class="p-4 bg-slate-100 border-t flex flex-col sm:flex-row justify-between items-center gap-3">
           <div id="amountWarning" class="text-xs font-bold text-amber-700 flex items-center">
             <i class="fa-solid fa-circle-info mr-1"></i> วงเงินไม่เกิน 10,000 บาท (ออกรายงานขอความเห็นชอบได้)
           </div>
-          <button onclick="generatePeaReport()" class="px-5 py-2 bg-emerald-700 hover:bg-emerald-800 text-white font-semibold rounded-xl text-sm transition shadow flex items-center gap-2">
-            <i class="fa-solid fa-print"></i> พิมพ์รายงานขอซื้อขอจ้าง
-          </button>
+          <div class="flex items-center gap-2">
+            <button onclick="downloadWordReport()" class="px-4 py-2 bg-blue-700 hover:bg-blue-800 text-white font-semibold rounded-xl text-xs transition shadow flex items-center gap-1.5">
+              <i class="fa-solid fa-file-word"></i> ดาวน์โหลด Word (.doc)
+            </button>
+            <button onclick="generatePeaReport()" class="px-4 py-2 bg-emerald-700 hover:bg-emerald-800 text-white font-semibold rounded-xl text-xs transition shadow flex items-center gap-1.5">
+              <i class="fa-solid fa-print"></i> พิมพ์ / ดาวน์โหลด PDF
+            </button>
+          </div>
         </div>
       </div>
     </div>
@@ -317,14 +347,14 @@
     </div>
   </div>
 
-  <!-- AREA สำหรับพิมพ์รายงานส่งร้าน (แบบสรุปยอด) -->
+  <!-- AREA พิมพ์รายงานส่งร้าน (แบบสรุปยอด) -->
   <div id="printArea" style="display: none;">
-    <div style="font-family: 'Sarabun', sans-serif; max-width: 800px; margin: 0 auto; padding: 10px;">
+    <div style="font-family: 'TH SarabunIT๙', 'Sarabun', sans-serif; max-width: 800px; margin: 0 auto; padding: 10px;">
       <div style="display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 15px; border-bottom: 2px solid #000; padding-bottom: 5px;">
-        <h2 style="font-size: 18px; font-weight: bold; margin: 0;" id="printTitle">รายการวัสดุที่สั่งซื้อ</h2>
-        <span style="font-size: 14px; font-weight: bold;" id="printSubtitle"></span>
+        <h2 style="font-size: 22px; font-weight: bold; margin: 0;" id="printTitle">รายการวัสดุที่สั่งซื้อ</h2>
+        <span style="font-size: 16px; font-weight: bold;" id="printSubtitle"></span>
       </div>
-      <table style="width: 100%; border-collapse: collapse; text-align: left; font-size: 13px;">
+      <table style="width: 100%; border-collapse: collapse; text-align: left; font-size: 15px;">
         <thead>
           <tr style="background-color: #f2f2f2;">
             <th style="border: 1px solid #000; padding: 6px 8px; text-align: center; width: 60px;">ลำดับ</th>
@@ -341,109 +371,120 @@
 
   <!-- AREA สำหรับพิมพ์รายงานขอซื้อขอจ้าง กฟภ. (วงเงินไม่เกิน 10,000 บาท) -->
   <div id="peaFormArea" style="display: none;">
-    <div style="font-family: 'Sarabun', sans-serif; max-width: 750px; margin: 0 auto; padding: 20px; color: #000; line-height: 1.4; font-size: 13px;">
+    <div class="pea-document" style="max-width: 750px; margin: 0 auto; padding: 10px 20px; color: #000; line-height: 1.25; font-size: 16pt;">
       
-      <div style="display: flex; align-items: center; margin-bottom: 10px;">
-        <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/d/d4/Provincial_Electricity_Authority_Logo.svg/1200px-Provincial_Electricity_Authority_Logo.svg.png" style="width: 70px; height: auto; margin-right: 15px;" alt="PEA Logo">
-        <div>
-          <h2 style="font-size: 16px; font-weight: bold; margin: 0;">การไฟฟ้าส่วนภูมิภาค</h2>
-          <p style="font-size: 11px; margin: 0; letter-spacing: 0.5px;">PROVINCIAL ELECTRICITY AUTHORITY</p>
-        </div>
+      <!-- โลโก้ กฟภ. วงกลมขาวดำ (ไม่มีคำว่าการไฟฟ้าส่วนภูมิภาคด้านข้าง) -->
+      <div style="margin-bottom: 15px; text-align: left;">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/d/d4/Provincial_Electricity_Authority_Logo.svg/1200px-Provincial_Electricity_Authority_Logo.svg.png" style="width: 85px; height: auto;" alt="PEA Logo">
       </div>
 
-      <div style="margin-bottom: 15px;">
-        <table style="width: 100%; border: none; font-size: 13px;">
+      <!-- Header Info -->
+      <div style="margin-bottom: 10px;">
+        <table style="width: 100%; border: none; border-collapse: collapse; font-size: 16pt; font-family: 'TH SarabunIT๙', sans-serif;">
           <tr>
-            <td style="width: 50%;"><strong>จาก</strong> <span id="peaFormFrom">ผสน.กฟส.ลส.</span></td>
-            <td style="width: 50%;"><strong>ถึง</strong> <span id="peaFormTo">กฟส.ลส.</span></td>
+            <td style="width: 50%; vertical-align: top;"><strong>จาก</strong> <span id="peaFormFrom">ผสน.กฟส.ลส.</span></td>
+            <td style="width: 50%; vertical-align: top;"><strong>ถึง</strong> <span id="peaFormTo">กฟส.ลส.</span></td>
           </tr>
           <tr>
-            <td><strong>เลขที่</strong> <span id="peaFormNo">-</span></td>
-            <td><strong>วันที่</strong> <span id="peaFormDate">-</span></td>
+            <td style="vertical-align: top;"><strong>เลขที่</strong> <span id="peaFormNo"></span></td>
+            <td style="vertical-align: top;"><strong>วันที่</strong> <span id="peaFormDate"></span></td>
           </tr>
+        </table>
+        
+        <!-- จัดการหัวข้อเรื่องให้ขึ้นบรรทัดใหม่ตรงกับคำว่า "รายงาน" -->
+        <table style="width: 100%; border: none; border-collapse: collapse; margin-top: 4px; font-size: 16pt; font-family: 'TH SarabunIT๙', sans-serif;">
           <tr>
-            <td colspan="2" style="padding-top: 5px;">
-              <strong>เรื่อง</strong> รายงานขอความเห็นชอบการจัดซื้อจัดจ้างพัสดุ ที่เกี่ยวกับค่าใช้จ่ายในการบริหารงานที่มีวงเงินการจัดซื้อจัดจ้างครั้งหนึ่งไม่เกิน ๑๐,๐๐๐ บาท
+            <td style="width: 50px; vertical-align: top; whitespace-nowrap;"><strong>เรื่อง</strong></td>
+            <td style="vertical-align: top; text-align: justify;">
+              รายงานขอความเห็นชอบการจัดซื้อจัดจ้างพัสดุ ที่เกี่ยวกับค่าใช้จ่ายในการบริหารงานที่มีวงเงินการจัดซื้อจัดจ้างครั้งหนึ่งไม่เกิน ๑๐,๐๐๐ บาท
             </td>
           </tr>
         </table>
       </div>
 
-      <p style="margin: 5px 0 10px 0;"><strong>เรียน</strong> ผจก.กฟส.ลส. ผ่าน ชผจก.(ล) กฟส.ลส.</p>
+      <p style="margin: 5px 0 10px 0; font-size: 16pt;"><strong>เรียน</strong> ผจก.กฟส.ลส. ผ่าน ชผจก.(ล) กฟส.ลส.</p>
 
-      <p style="text-indent: 40px; margin-bottom: 10px;">
-        (๑) ด้วย <span id="peaFormDeptText">ผสน.กฟส.ลส.</span> ได้ดำเนินการจัดซื้อจัดจ้าง วัสดุสำนักงาน เพื่อใช้สำหรับงานด้านเอกสาร ของ <span id="peaFormDeptText2">กฟส.หลังสวนและ กฟส.ในสังกัด</span> จำนวน <span id="peaFormItemCount">0</span> รายการ เป็นจำนวนเงินทั้งสิ้น <span id="peaFormTotalAmount">-</span> บาท <span id="peaFormTotalBahtText">(-)</span> โดยมีรายละเอียดดังต่อไปนี้
+      <p style="text-indent: 2.5em; margin-bottom: 10px; text-align: justify; font-size: 16pt;">
+        (๑) ด้วย <span id="peaFormDeptText">ผสน.กฟส.ลส.</span> ได้ดำเนินการจัดซื้อจัดจ้าง วัสดุสำนักงาน เพื่อใช้สำหรับงานด้านเอกสาร ของ <span id="peaFormDeptText2">กฟส.หลังสวนและ กฟส.ในสังกัด</span> จำนวน <span id="peaFormItemCount">๐</span> รายการ เป็นจำนวนเงินทั้งสิ้น <span id="peaFormTotalAmount"></span> บาท <span id="peaFormTotalBahtText"></span> โดยมีรายละเอียดดังต่อไปนี้
       </p>
 
-      <table style="width: 100%; border-collapse: collapse; margin-bottom: 10px; font-size: 12px;">
+      <!-- Table -->
+      <table style="width: 100%; border-collapse: collapse; margin-bottom: 10px; font-size: 15pt; font-family: 'TH SarabunIT๙', sans-serif;">
         <thead>
           <tr style="background-color: #fff;">
-            <th style="border: 1px solid #000; padding: 5px; text-align: center; width: 40px;">ที่</th>
-            <th style="border: 1px solid #000; padding: 5px; text-align: center;">รายการพัสดุ/งานจ้าง</th>
-            <th style="border: 1px solid #000; padding: 5px; text-align: center; width: 100px;">จำนวน/ปริมาณงาน</th>
-            <th style="border: 1px solid #000; padding: 5px; text-align: center; width: 90px;">จำนวนเงิน (บาท)</th>
-            <th style="border: 1px solid #000; padding: 5px; text-align: center; width: 170px;">ใบเสร็จรับเงิน/ใบส่งของเล่มที่/เลขที่/ลงวันที่</th>
+            <th style="border: 1px solid #000; padding: 4px; text-align: center; width: 35px;">ที่</th>
+            <th style="border: 1px solid #000; padding: 4px; text-align: center;">รายการพัสดุ/งานจ้าง</th>
+            <th style="border: 1px solid #000; padding: 4px; text-align: center; width: 110px;">จำนวน/ปริมาณงาน</th>
+            <th style="border: 1px solid #000; padding: 4px; text-align: center; width: 100px;">จำนวนเงิน (บาท)</th>
+            <th style="border: 1px solid #000; padding: 4px; text-align: center; width: 180px;">ใบเสร็จรับเงิน/ใบส่งของเล่มที่/เลขที่/ลงวันที่</th>
           </tr>
         </thead>
         <tbody id="peaFormTableBody">
         </tbody>
         <tfoot>
           <tr>
-            <td colspan="3" style="border: 1px solid #000; padding: 5px;">
-              รวมเป็นเงิน (<span id="vatMarkBox">/</span> รวม <span style="display:inline-block; width:12px; height:12px; border:1px solid #000; margin-left:5px;"></span> ไม่รวม ภาษีมูลค่าเพิ่ม)
+            <td colspan="3" style="border: 1px solid #000; padding: 4px;">
+              รวมเป็นเงิน (<span id="vatMarkBox">/</span> รวม <span style="display:inline-block; width:10px; height:10px; border:1px solid #000; margin-left:3px;"></span> ไม่รวม ภาษีมูลค่าเพิ่ม)
             </td>
-            <td style="border: 1px solid #000; padding: 5px; text-align: right; font-weight: bold;" id="peaFormSumAmount">0.-</td>
-            <td style="border: 1px solid #000; padding: 5px;" id="peaFormBillInfoCell">-</td>
+            <td style="border: 1px solid #000; padding: 4px; text-align: right; font-weight: bold;" id="peaFormSumAmount"></td>
+            <td style="border: 1px solid #000; padding: 4px;" id="peaFormBillInfoCell"></td>
           </tr>
           <tr>
-            <td colspan="5" style="border: 1px solid #000; padding: 5px; text-align: center; font-weight: bold;" id="peaFormSumBahtText">
-              ( - )
+            <td colspan="5" style="border: 1px solid #000; padding: 4px; text-align: center; font-weight: bold;" id="peaFormSumBahtText">
             </td>
           </tr>
         </tfoot>
       </table>
 
-      <p style="text-indent: 40px; margin-bottom: 10px;">
+      <!-- Content text -->
+      <p style="text-indent: 2.5em; margin-bottom: 8px; text-align: justify; font-size: 16pt;">
         ทั้งนี้ การดำเนินการจัดซื้อจัดจ้างดังกล่าว เป็นการดำเนินการตามหนังสือคณะกรรมการวินิจฉัยปัญหาการจัดซื้อจัดจ้างและการบริหารพัสดุภาคครุฑ กรมบัญชีกลาง ที่ กค (กวจ) ๐๔๐๕.๒/ว ๑๑๙ ลงวันที่ ๗ มีนาคม ๒๕๖๑ เรื่อง แนวทางการปฏิบัติในการดำเนินการจัดหาพัสดุที่เกี่ยวกับค่าใช้จ่ายในการบริหารงาน ค่าใช้จ่ายในการฝึกอบรม การจัดงาน และการประชุมของหน่วยงานของรัฐ ที่มีวงเงินการจัดซื้อจัดจ้างครั้งหนึ่งไม่เกิน ๑๐,๐๐๐ บาท ตาราง ๑ ลำดับที่...๑๓...
       </p>
 
-      <p style="text-indent: 40px; margin-bottom: 25px;">
+      <p style="text-indent: 2.5em; margin-bottom: 20px; text-align: justify; font-size: 16pt;">
         จึงเรียนมาเพื่อโปรดพิจารณาให้ความเห็นชอบและให้ถือรายงานนี้เป็นหลักฐานการตรวจรับพัสดุ โดยอนุโลม พร้อมอนุมัติเบิกจ่ายเงินต่อไป
       </p>
 
-      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; font-size: 11px;">
-        <div style="border: 1px solid #000; padding: 10px;">
-          <p style="margin: 0 0 5px 0;">(๒) เรียน ผจก.กฟส.ลส.</p>
-          <p style="margin: 0 0 5px 15px;">เพื่อโปรดพิจารณา</p>
-          <p style="margin: 0 0 3px 30px;">๑.ให้ความเห็นชอบการจัดซื้อจัดจ้างดังกล่าวข้างต้น</p>
-          <p style="margin: 0 0 3px 30px;">๒.อนุมัติให้จ่ายเงิน จำนวน <span id="peaSignAmount">๙,๓๑๕.-</span> บาท</p>
-          <p style="margin: 0 0 10px 40px;" id="peaSignBahtText">(เก้าพันสามร้อยสิบห้าบาทถ้วน)</p>
-          <p style="margin: 0 0 20px 0;">จากรหัสบัญชี ๕๓๐๓๐๐๑๐ โดยใช้งบทำการ.ป๓๑๓๑๐๑๐๐</p>
+      <!-- Signatures Grid -->
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; font-size: 14pt; font-family: 'TH SarabunIT๙', sans-serif;">
+        
+        <!-- Left Box (2) -->
+        <div style="border: 1px solid #000; padding: 8px;">
+          <p style="margin: 0 0 3px 0;">(๒) เรียน ผจก.กฟส.ลส.</p>
+          <p style="margin: 0 0 3px 15px;">เพื่อโปรดพิจารณา</p>
+          <p style="margin: 0 0 2px 25px;">๑.ให้ความเห็นชอบการจัดซื้อจัดจ้างดังกล่าวข้างต้น</p>
+          <p style="margin: 0 0 2px 25px;">๒.อนุมัติให้จ่ายเงิน จำนวน <span id="peaSignAmount"></span> บาท</p>
+          <p style="margin: 0 0 6px 35px;" id="peaSignBahtText"></p>
+          <p style="margin: 0 0 15px 0;">จากรหัสบัญชี ๕๓๐๓๐๐๑๐ โดยใช้งบทำการ.ป๓๑๓๑๐๑๐๐</p>
 
-          <div style="text-align: center; margin-top: 30px;">
+          <div style="text-align: center; margin-top: 25px;">
             <p style="margin: 0;">ลงชื่อ..........................................................ผู้บังคับบัญชาชั้นต้น</p>
-            <p style="margin: 3px 0 0 0;">( นางสาวพรศิริ เมฆสวี )</p>
-            <p style="margin: 3px 0 0 0;">ตำแหน่ง หน.ผสน.กฟส.ลส.</p>
-            <p style="margin: 3px 0 0 0;">วันที่ <span class="printCurrentDate">๑๗ สิงหาคม ๒๕๖๙</span></p>
+            <p style="margin: 2px 0 0 0;">( นางสาวพรศิริ เมฆสวี )</p>
+            <p style="margin: 2px 0 0 0;">ตำแหน่ง หน.ผสน.กฟส.ลส.</p>
+            <p style="margin: 2px 0 0 0;">วันที่ <span class="printCurrentDate"></span></p>
           </div>
         </div>
 
-        <div style="display: flex; flex-col; justify-content: space-between; gap: 10px;">
-          <div style="border: 1px solid #000; padding: 10px; text-align: center;">
-            <p style="margin: 0 0 20px 0; text-align: left;">ลงชื่อ..........................................................ผู้ดำเนินการ</p>
+        <!-- Right Box Stack (1) and (3) -->
+        <div style="display: flex; flex-direction: column; justify-content: space-between; gap: 8px;">
+          
+          <div style="border: 1px solid #000; padding: 8px; text-align: center;">
+            <p style="margin: 0 0 15px 0; text-align: left;">ลงชื่อ..........................................................ผู้ดำเนินการ</p>
             <p style="margin: 0;">( นายกลกิจ เลาฮารีจี )</p>
-            <p style="margin: 3px 0 0 0;">ตำแหน่ง ชผ.ผสน.กฟส.ลส.</p>
-            <p style="margin: 3px 0 0 0;">วันที่ <span class="printCurrentDate">๑๗ สิงหาคม ๒๕๖๙</span></p>
+            <p style="margin: 2px 0 0 0;">ตำแหน่ง ชผ.ผสน.กฟส.ลส.</p>
+            <p style="margin: 2px 0 0 0;">วันที่ <span class="printCurrentDate"></span></p>
           </div>
 
-          <div style="border: 1px solid #000; padding: 10px; text-align: center;">
-            <p style="margin: 0 0 5px 0; text-align: left;">(๓) - เห็นชอบและอนุมัติ</p>
-            <p style="margin: 20px 0 0 0;">ลงชื่อ..........................................................หัวหน้าหน่วยงาน</p>
-            <p style="margin: 3px 0 0 0;">( นางสาวปริศนา นิยม )</p>
-            <p style="margin: 3px 0 0 0;">ตำแหน่ง ชผจก.(ล) รักษาการแทน ผจก.กฟส.ลส.</p>
-            <p style="margin: 3px 0 0 0;">วันที่ <span class="printCurrentDate">๑๗ สิงหาคม ๒๕๖๙</span></p>
+          <div style="border: 1px solid #000; padding: 8px; text-align: center;">
+            <p style="margin: 0 0 3px 0; text-align: left;">(๓) - เห็นชอบและอนุมัติ</p>
+            <p style="margin: 15px 0 0 0;">ลงชื่อ..........................................................หัวหน้าหน่วยงาน</p>
+            <p style="margin: 2px 0 0 0;">( นางสาวปริศนา นิยม )</p>
+            <p style="margin: 2px 0 0 0;">ตำแหน่ง ชผจก.(ล) รักษาการแทน ผจก.กฟส.ลส.</p>
+            <p style="margin: 2px 0 0 0;">วันที่ <span class="printCurrentDate"></span></p>
           </div>
+
         </div>
+
       </div>
 
     </div>
@@ -820,7 +861,7 @@
       .finally(() => hideLoading());
     }
 
-    /* --- พิมพ์รายงานสรุปส่งร้าน (แบบเดิม) --- */
+    /* --- พิมพ์รายงานสรุปส่งร้าน --- */
     function printSummaryReport() {
       if (!currentFilteredOrders || currentFilteredOrders.length === 0) {
         alert("ไม่มีข้อมูลรายการสั่งซื้อในตัวกรองปัจจุบัน");
@@ -880,7 +921,6 @@
         printTbodyEl.appendChild(tr);
       });
 
-      // สั่งให้พิมพ์เฉพาะ printArea
       document.getElementById('printArea').style.display = 'block';
       document.getElementById('peaFormArea').style.display = 'none';
       window.print();
@@ -1056,38 +1096,38 @@
     }
 
     function toThaiDigits(numStr) {
+      if (!numStr && numStr !== 0) return '';
       const thaiDigits = ['๐', '๑', '๒', '๓', '๔', '๕', '๖', '๗', '๘', '๙'];
       return String(numStr).replace(/[0-9]/g, function(w) {
         return thaiDigits[parseInt(w, 10)];
       });
     }
 
-    function generatePeaReport() {
+    function preparePeaReportData() {
       let grandTotal = 0;
       compareItemsList.forEach(item => grandTotal += (item.totalAmount || 0));
 
-      if (grandTotal > 10000) {
-        alert("คำเตือน: วงเงินการสั่งซื้อเกิน 10,000 บาท ระเบียบการจัดซื้อจัดจ้างจะต้องใช้อีกแบบฟอร์มหนึ่งครับ");
-      }
-
       const selectedDept = document.getElementById('adminDeptFilter').value;
-      const docDate = document.getElementById('docDateText').value.trim() || "๑๗ สิงหาคม ๒๕๖๙";
+      const docNo = document.getElementById('docNoInput').value.trim();
+      const docDate = document.getElementById('docDateText').value.trim();
       const billInfo = document.getElementById('billDocInfo').value.trim() || "-";
       const vatType = document.getElementById('vatTypeSelect').value;
 
       document.getElementById('peaFormDeptText').innerText = selectedDept !== 'ALL' ? selectedDept : "กฟส.หลังสวน";
       document.getElementById('peaFormDeptText2').innerText = selectedDept !== 'ALL' ? selectedDept : "กฟส.หลังสวนและ กฟส.ในสังกัด";
-      document.getElementById('peaFormDate').innerText = docDate;
+      
+      document.getElementById('peaFormNo').innerText = docNo ? toThaiDigits(docNo) : "";
+      document.getElementById('peaFormDate').innerText = docDate ? toThaiDigits(docDate) : "";
       document.getElementById('peaFormItemCount').innerText = toThaiDigits(compareItemsList.length);
 
       const formattedTotal = grandTotal.toLocaleString('th-TH', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-      const thaiTotalStr = toThaiDigits(formattedTotal) + '.-';
-      const bahtTextStr = `(${ArabicToThaiBaht(grandTotal)})`;
+      const thaiTotalStr = grandTotal > 0 ? (toThaiDigits(formattedTotal) + '.-') : "";
+      const bahtTextStr = grandTotal > 0 ? `(${ArabicToThaiBaht(grandTotal)})` : "";
 
       document.getElementById('peaFormTotalAmount').innerText = thaiTotalStr;
       document.getElementById('peaFormTotalBahtText').innerText = bahtTextStr;
       document.getElementById('peaFormSumAmount').innerText = thaiTotalStr;
-      document.getElementById('peaFormSumBahtText').innerText = bahtTextStr;
+      document.getElementById('peaFormSumBahtText').innerText = bahtTextStr ? `(${ArabicToThaiBaht(grandTotal)})` : "";
       document.getElementById('peaSignAmount').innerText = thaiTotalStr;
       document.getElementById('peaSignBahtText').innerText = bahtTextStr;
 
@@ -1095,7 +1135,7 @@
       document.getElementById('peaFormBillInfoCell').innerText = billInfo;
 
       const dates = document.querySelectorAll('.printCurrentDate');
-      dates.forEach(d => d.innerText = docDate);
+      dates.forEach(d => d.innerText = docDate ? toThaiDigits(docDate) : "");
 
       const peaTbody = document.getElementById('peaFormTableBody');
       peaTbody.innerHTML = '';
@@ -1114,12 +1154,56 @@
         `;
         peaTbody.appendChild(tr);
       });
+    }
 
-      // สั่งให้พิมพ์เฉพาะ peaFormArea
+    function generatePeaReport() {
+      let grandTotal = 0;
+      compareItemsList.forEach(item => grandTotal += (item.totalAmount || 0));
+
+      if (grandTotal > 10000) {
+        alert("คำเตือน: วงเงินการสั่งซื้อเกิน 10,000 บาท ระเบียบการจัดซื้อจัดจ้างจะต้องใช้อีกแบบฟอร์มหนึ่งครับ");
+      }
+
+      preparePeaReportData();
+
       document.getElementById('peaFormArea').style.display = 'block';
       document.getElementById('printArea').style.display = 'none';
       window.print();
       document.getElementById('peaFormArea').style.display = 'none';
+    }
+
+    /* ฟังก์ชันดาวน์โหลดรายงานเป็นไฟล์ Word (.doc) */
+    function downloadWordReport() {
+      preparePeaReportData();
+
+      const content = document.getElementById('peaFormArea').innerHTML;
+      const header = `<html xmlns:o='urn:schemas-microsoft-com:office:office' xmlns:w='urn:schemas-microsoft-com:office:word' xmlns='http://www.w3.org/TR/REC-html40'>
+        <head>
+          <meta charset='utf-8'>
+          <title>รายงานขอซื้อขอจ้าง</title>
+          <style>
+            @page { size: A4; margin: 2cm; }
+            body { font-family: 'TH SarabunIT9', 'TH Sarabun PSK', sans-serif; font-size: 16pt; }
+            table { border-collapse: collapse; width: 100%; }
+            th, td { font-family: 'TH SarabunIT9', 'TH Sarabun PSK', sans-serif; }
+          </style>
+        </head>
+        <body>`;
+      const footer = "</body></html>";
+      const sourceHTML = header + content + footer;
+
+      const blob = new Blob(['\ufeff', sourceHTML], {
+        type: 'application/msword'
+      });
+
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `รายงานขอซื้อขอจ้าง_วงเงินไม่เกิน_10000.doc`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
     }
   </script>
 </body>
