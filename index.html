@@ -15,17 +15,27 @@
     
     @media print {
       body * { visibility: hidden !important; }
+      .no-print { display: none !important; }
+      
+      #printArea, #printArea * { visibility: visible !important; }
+      #printArea {
+        position: absolute !important;
+        left: 0 !important;
+        top: 0 !important;
+        width: 100% !important;
+        background: white !important;
+        color: black !important;
+      }
+
       #peaFormArea, #peaFormArea * { visibility: visible !important; }
       #peaFormArea {
         position: absolute !important;
         left: 0 !important;
         top: 0 !important;
         width: 100% !important;
-        display: block !important;
         background: white !important;
         color: black !important;
       }
-      .no-print { display: none !important; }
     }
   </style>
 </head>
@@ -123,9 +133,12 @@
                 </div>
               </div>
 
-              <div class="flex items-center gap-2 shrink-0">
+              <div class="flex flex-wrap items-center gap-2 shrink-0">
                 <button id="deleteSelectedBtn" onclick="deleteSelectedOrders()" class="hidden px-3 py-1.5 bg-rose-600 text-white text-xs rounded-lg hover:bg-rose-700 font-medium transition shadow-sm">
                   <i class="fa-solid fa-trash-can mr-1"></i> ลบที่เลือก (<span id="selectedDeleteCount">0</span>)
+                </button>
+                <button onclick="printSummaryReport()" class="px-3 py-1.5 bg-slate-700 text-white text-xs rounded-lg hover:bg-slate-800 font-medium transition shadow-sm">
+                  <i class="fa-solid fa-print mr-1"></i> พิมพ์รายงานส่งร้าน
                 </button>
                 <button onclick="openCompareModal()" class="px-3 py-1.5 bg-indigo-600 text-white text-xs rounded-lg hover:bg-indigo-700 font-medium transition shadow-sm">
                   <i class="fa-solid fa-scale-balanced mr-1"></i> ตรวจรับ & ใบวางบิล
@@ -304,11 +317,32 @@
     </div>
   </div>
 
+  <!-- AREA สำหรับพิมพ์รายงานส่งร้าน (แบบสรุปยอด) -->
+  <div id="printArea" style="display: none;">
+    <div style="font-family: 'Sarabun', sans-serif; max-width: 800px; margin: 0 auto; padding: 10px;">
+      <div style="display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 15px; border-bottom: 2px solid #000; padding-bottom: 5px;">
+        <h2 style="font-size: 18px; font-weight: bold; margin: 0;" id="printTitle">รายการวัสดุที่สั่งซื้อ</h2>
+        <span style="font-size: 14px; font-weight: bold;" id="printSubtitle"></span>
+      </div>
+      <table style="width: 100%; border-collapse: collapse; text-align: left; font-size: 13px;">
+        <thead>
+          <tr style="background-color: #f2f2f2;">
+            <th style="border: 1px solid #000; padding: 6px 8px; text-align: center; width: 60px;">ลำดับ</th>
+            <th style="border: 1px solid #000; padding: 6px 8px;">รายการ</th>
+            <th style="border: 1px solid #000; padding: 6px 8px; text-align: center; width: 100px;">หน่วย</th>
+            <th style="border: 1px solid #000; padding: 6px 8px; text-align: center; width: 80px;">รวม</th>
+          </tr>
+        </thead>
+        <tbody id="printTableBody">
+        </tbody>
+      </table>
+    </div>
+  </div>
+
   <!-- AREA สำหรับพิมพ์รายงานขอซื้อขอจ้าง กฟภ. (วงเงินไม่เกิน 10,000 บาท) -->
   <div id="peaFormArea" style="display: none;">
     <div style="font-family: 'Sarabun', sans-serif; max-width: 750px; margin: 0 auto; padding: 20px; color: #000; line-height: 1.4; font-size: 13px;">
       
-      <!-- Logo & Header -->
       <div style="display: flex; align-items: center; margin-bottom: 10px;">
         <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/d/d4/Provincial_Electricity_Authority_Logo.svg/1200px-Provincial_Electricity_Authority_Logo.svg.png" style="width: 70px; height: auto; margin-right: 15px;" alt="PEA Logo">
         <div>
@@ -317,7 +351,6 @@
         </div>
       </div>
 
-      <!-- Header Info -->
       <div style="margin-bottom: 15px;">
         <table style="width: 100%; border: none; font-size: 13px;">
           <tr>
@@ -342,7 +375,6 @@
         (๑) ด้วย <span id="peaFormDeptText">ผสน.กฟส.ลส.</span> ได้ดำเนินการจัดซื้อจัดจ้าง วัสดุสำนักงาน เพื่อใช้สำหรับงานด้านเอกสาร ของ <span id="peaFormDeptText2">กฟส.หลังสวนและ กฟส.ในสังกัด</span> จำนวน <span id="peaFormItemCount">0</span> รายการ เป็นจำนวนเงินทั้งสิ้น <span id="peaFormTotalAmount">-</span> บาท <span id="peaFormTotalBahtText">(-)</span> โดยมีรายละเอียดดังต่อไปนี้
       </p>
 
-      <!-- Table -->
       <table style="width: 100%; border-collapse: collapse; margin-bottom: 10px; font-size: 12px;">
         <thead>
           <tr style="background-color: #fff;">
@@ -371,7 +403,6 @@
         </tfoot>
       </table>
 
-      <!-- Content text -->
       <p style="text-indent: 40px; margin-bottom: 10px;">
         ทั้งนี้ การดำเนินการจัดซื้อจัดจ้างดังกล่าว เป็นการดำเนินการตามหนังสือคณะกรรมการวินิจฉัยปัญหาการจัดซื้อจัดจ้างและการบริหารพัสดุภาคครุฑ กรมบัญชีกลาง ที่ กค (กวจ) ๐๔๐๕.๒/ว ๑๑๙ ลงวันที่ ๗ มีนาคม ๒๕๖๑ เรื่อง แนวทางการปฏิบัติในการดำเนินการจัดหาพัสดุที่เกี่ยวกับค่าใช้จ่ายในการบริหารงาน ค่าใช้จ่ายในการฝึกอบรม การจัดงาน และการประชุมของหน่วยงานของรัฐ ที่มีวงเงินการจัดซื้อจัดจ้างครั้งหนึ่งไม่เกิน ๑๐,๐๐๐ บาท ตาราง ๑ ลำดับที่...๑๓...
       </p>
@@ -380,10 +411,7 @@
         จึงเรียนมาเพื่อโปรดพิจารณาให้ความเห็นชอบและให้ถือรายงานนี้เป็นหลักฐานการตรวจรับพัสดุ โดยอนุโลม พร้อมอนุมัติเบิกจ่ายเงินต่อไป
       </p>
 
-      <!-- Signatures Grid -->
       <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; font-size: 11px;">
-        
-        <!-- Left Box (2) -->
         <div style="border: 1px solid #000; padding: 10px;">
           <p style="margin: 0 0 5px 0;">(๒) เรียน ผจก.กฟส.ลส.</p>
           <p style="margin: 0 0 5px 15px;">เพื่อโปรดพิจารณา</p>
@@ -400,9 +428,7 @@
           </div>
         </div>
 
-        <!-- Right Box Stack (1) and (3) -->
         <div style="display: flex; flex-col; justify-content: space-between; gap: 10px;">
-          
           <div style="border: 1px solid #000; padding: 10px; text-align: center;">
             <p style="margin: 0 0 20px 0; text-align: left;">ลงชื่อ..........................................................ผู้ดำเนินการ</p>
             <p style="margin: 0;">( นายกลกิจ เลาฮารีจี )</p>
@@ -417,9 +443,7 @@
             <p style="margin: 3px 0 0 0;">ตำแหน่ง ชผจก.(ล) รักษาการแทน ผจก.กฟส.ลส.</p>
             <p style="margin: 3px 0 0 0;">วันที่ <span class="printCurrentDate">๑๗ สิงหาคม ๒๕๖๙</span></p>
           </div>
-
         </div>
-
       </div>
 
     </div>
@@ -796,6 +820,73 @@
       .finally(() => hideLoading());
     }
 
+    /* --- พิมพ์รายงานสรุปส่งร้าน (แบบเดิม) --- */
+    function printSummaryReport() {
+      if (!currentFilteredOrders || currentFilteredOrders.length === 0) {
+        alert("ไม่มีข้อมูลรายการสั่งซื้อในตัวกรองปัจจุบัน");
+        return;
+      }
+
+      const summaryMap = {};
+      currentFilteredOrders.forEach(order => {
+        const name = order.itemName;
+        const qty = parseInt(order.quantity, 10) || 0;
+        const unit = order.unit || '-';
+        if (name) {
+          if (!summaryMap[name]) {
+            summaryMap[name] = { quantity: 0, unit: unit };
+          }
+          summaryMap[name].quantity += qty;
+        }
+      });
+
+      const summaryList = Object.keys(summaryMap).map(name => ({
+        name: name,
+        quantity: summaryMap[name].quantity,
+        unit: summaryMap[name].unit
+      }));
+
+      if (summaryList.length === 0) {
+        alert("ไม่พบข้อมูลพัสดุที่สามารถสรุปยอดได้");
+        return;
+      }
+
+      const selectedDept = document.getElementById('adminDeptFilter').value;
+      const selectedMonth = document.getElementById('adminMonthFilter').value;
+
+      let titleText = "รายการวัสดุที่สั่งซื้อ";
+      if (selectedDept !== 'ALL') {
+        titleText += ` (${selectedDept})`;
+      } else {
+        titleText += ` (รวมทุกแผนก)`;
+      }
+
+      let subtitleText = selectedMonth !== 'ALL' ? selectedMonth : "";
+
+      document.getElementById('printTitle').innerText = titleText;
+      document.getElementById('printSubtitle').innerText = subtitleText;
+
+      const printTbodyEl = document.getElementById('printTableBody');
+      printTbodyEl.innerHTML = '';
+
+      summaryList.forEach((item, index) => {
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+          <td style="border: 1px solid #000; padding: 6px 8px; text-align: center;">${index + 1}</td>
+          <td style="border: 1px solid #000; padding: 6px 8px;">${item.name}</td>
+          <td style="border: 1px solid #000; padding: 6px 8px; text-align: center;">${item.unit || '-'}</td>
+          <td style="border: 1px solid #000; padding: 6px 8px; text-align: center; font-weight: bold;">${item.quantity}</td>
+        `;
+        printTbodyEl.appendChild(tr);
+      });
+
+      // สั่งให้พิมพ์เฉพาะ printArea
+      document.getElementById('printArea').style.display = 'block';
+      document.getElementById('peaFormArea').style.display = 'none';
+      window.print();
+      document.getElementById('printArea').style.display = 'none';
+    }
+
     /* --- LOGICS สำหรับการตรวจรับ & เปรียบเทียบใบวางบิล --- */
 
     function openCompareModal() {
@@ -804,7 +895,6 @@
         return;
       }
 
-      // สรุปยอดรวมจำนวนสั่งซื้อตามชื่อรายการ
       const summaryMap = {};
       currentFilteredOrders.forEach(order => {
         const name = order.itemName;
@@ -821,7 +911,7 @@
       compareItemsList = Object.keys(summaryMap).map(name => ({
         name: name,
         orderedQty: summaryMap[name].orderedQty,
-        receivedQty: summaryMap[name].orderedQty, // ค่าเริ่มต้น ให้เท่ากับสั่งซื้อ
+        receivedQty: summaryMap[name].orderedQty,
         isMatch: true,
         unit: summaryMap[name].unit,
         unitPrice: 0,
@@ -928,7 +1018,6 @@
       }
     }
 
-    /* แปลงตัวเลขเป็นตัวอักษรเงินบาทไทย */
     function ArabicToThaiBaht(numbers) {
       numbers = Number(numbers).toFixed(2);
       const numberArray = numbers.split('.');
@@ -966,7 +1055,6 @@
       return bahtText + satangText;
     }
 
-    /* สลับแปลงเลขตัวเลขอารบิกเป็นเลขไทยสำหรับฟอร์ม กฟภ. */
     function toThaiDigits(numStr) {
       const thaiDigits = ['๐', '๑', '๒', '๓', '๔', '๕', '๖', '๗', '๘', '๙'];
       return String(numStr).replace(/[0-9]/g, function(w) {
@@ -1009,7 +1097,6 @@
       const dates = document.querySelectorAll('.printCurrentDate');
       dates.forEach(d => d.innerText = docDate);
 
-      // Render Table Rows in PEA Form
       const peaTbody = document.getElementById('peaFormTableBody');
       peaTbody.innerHTML = '';
 
@@ -1028,7 +1115,11 @@
         peaTbody.appendChild(tr);
       });
 
+      // สั่งให้พิมพ์เฉพาะ peaFormArea
+      document.getElementById('peaFormArea').style.display = 'block';
+      document.getElementById('printArea').style.display = 'none';
       window.print();
+      document.getElementById('peaFormArea').style.display = 'none';
     }
   </script>
 </body>
