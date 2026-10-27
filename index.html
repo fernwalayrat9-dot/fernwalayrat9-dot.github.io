@@ -38,7 +38,7 @@
       margin: 10mm 15mm 10mm 15mm;
     }
 
-    /* CSS Print: แก้ไขใหม่ให้ซ่อนเฉพาะโครงสร้างเว็บไซต์ และแสดงเฉพาะพื้นที่พิมพ์ที่ต้องการ */
+    /* CSS Print: ซ่อนเฉพาะโครงสร้างเว็บไซต์ และแสดงเฉพาะพื้นที่พิมพ์ที่ต้องการ */
     @media print {
       header, nav, main, .no-print, #adminModal, #compareModal, #loadingOverlay, #systemClosedBanner {
         display: none !important;
@@ -235,7 +235,19 @@
           </div>
         </div>
 
-        <!-- ช่องกรอกข้อมูลผู้ลงนามทั้ง 3 กรอบ (ตั้งค่าเริ่มต้นเป็นช่องว่าง พร้อม Placeholder ตัวอย่าง) -->
+        <!-- เพิ่มช่องกรอก "รหัสบัญชี" และ "ศูนย์ต้นทุน(งบทำการ)" ตรงนี้ -->
+        <div class="p-4 bg-blue-50 border-b grid grid-cols-1 md:grid-cols-2 gap-3 text-xs">
+          <div>
+            <label class="font-bold text-blue-900 block mb-1"><i class="fa-solid fa-book-bookmark mr-1"></i>รหัสบัญชี:</label>
+            <input type="text" id="inputAccountCode" placeholder="เช่น ๕๓๐๓๐๐๑๐" value="๕๓๐๓๐๐๑๐" class="w-full p-1.5 border rounded bg-white font-medium">
+          </div>
+          <div>
+            <label class="font-bold text-blue-900 block mb-1"><i class="fa-solid fa-building-columns mr-1"></i>ศูนย์ต้นทุน (งบทำการ):</label>
+            <input type="text" id="inputCostCenter" placeholder="เช่น ป๓๑๓๑๐๑๐๑" value="ป๓๑๓๑๐๑๐๑" class="w-full p-1.5 border rounded bg-white font-medium">
+          </div>
+        </div>
+
+        <!-- ช่องกรอกข้อมูลผู้ลงนามทั้ง 3 กรอบ -->
         <div class="p-4 bg-purple-50 border-b grid grid-cols-1 md:grid-cols-3 gap-3 text-xs">
           <div>
             <label class="font-bold text-purple-900 block mb-1"><i class="fa-solid fa-user-pen mr-1"></i>1. ผู้ดำเนินการ:</label>
@@ -472,7 +484,7 @@
           <p style="margin: 0 0 2px 25px;">๑.ให้ความเห็นชอบการจัดซื้อจัดจ้างดังกล่าวข้างต้น</p>
           <p style="margin: 0 0 2px 25px;">๒.อนุมัติให้จ่ายเงิน จำนวน <span id="peaSignAmount"></span> บาท</p>
           <p style="margin: 0 0 6px 35px;" id="peaSignBahtText"></p>
-          <p style="margin: 0 0 15px 0;">จากรหัสบัญชี ๕๓๐๓๐๐๑๐ โดยใช้งบทำการ.ป๓๑๓๑๐๑๐๑</p>
+          <p style="margin: 0 0 15px 0;">จากรหัสบัญชี <span id="peaFormAccountCode"></span> โดยใช้งบทำการ.<span id="peaFormCostCenter"></span></p>
 
           <div style="text-align: center; margin-top: 25px;">
             <p style="margin: 0;">ลงชื่อ.................................ผู้บังคับบัญชาชั้นต้น</p>
@@ -497,7 +509,7 @@
             <p style="margin: 15px 0 0 0;">ลงชื่อ.................................หัวหน้าหน่วยงาน</p>
             <p style="margin: 2px 0 0 0;" id="signName3"></p>
             <p style="margin: 2px 0 0 0;" id="signPos3"></p>
-            <p style="margin: 2px 0 0 0;">วันที่ วันที่ .......................</p>
+            <p style="margin: 2px 0 0 0;">วันที่ .......................</p>
           </div>
 
         </div>
@@ -1130,6 +1142,10 @@
       const billInfo = document.getElementById('billDocInfo').value.trim() || "-";
       const vatType = document.getElementById('vatTypeSelect').value;
 
+      // ดึงค่ารหัสบัญชีและศูนย์ต้นทุนที่แอดมินกรอก
+      const accountCode = document.getElementById('inputAccountCode').value.trim() || "๕๓๐๓๐๐๑๐";
+      const costCenter = document.getElementById('inputCostCenter').value.trim() || "ป๓๑๓๑๐๑๐๑";
+
       const signName1 = document.getElementById('inputSignName1').value.trim();
       const signPos1 = document.getElementById('inputSignPos1').value.trim();
       const signName2 = document.getElementById('inputSignName2').value.trim();
@@ -1151,6 +1167,10 @@
       document.getElementById('peaFormDate').innerText = docDate ? toThaiDigits(docDate) : "";
       document.getElementById('peaFormItemCount').innerText = toThaiDigits(compareItemsList.length);
 
+      // นำรหัสบัญชีและศูนย์ต้นทุนไปแสดงในฟอร์มพิมพ์
+      document.getElementById('peaFormAccountCode').innerText = accountCode;
+      document.getElementById('peaFormCostCenter').innerText = costCenter;
+
       const formattedTotal = grandTotal.toLocaleString('th-TH', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
       const thaiTotalStr = grandTotal > 0 ? (toThaiDigits(formattedTotal) + '.-') : "";
       const bahtTextStr = grandTotal > 0 ? `(${ArabicToThaiBaht(grandTotal)})` : "";
@@ -1164,9 +1184,6 @@
 
       document.getElementById('vatMarkBox').innerText = vatType === 'included' ? '/' : ' ';
       document.getElementById('peaFormBillInfoCell').innerText = billInfo;
-
-      const dates = document.querySelectorAll('.printCurrentDate');
-      dates.forEach(d => d.innerText = docDate ? toThaiDigits(docDate) : "");
 
       const peaTbody = document.getElementById('peaFormTableBody');
       peaTbody.innerHTML = '';
