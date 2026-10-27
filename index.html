@@ -38,10 +38,15 @@
       margin: 10mm 15mm 10mm 15mm;
     }
 
-    /* CSS Print: ซ่อนทุกอย่างเป็นค่าเริ่มต้น แล้วเปิดแสดงเฉพาะพื้นที่ที่ต้องการพิมพ์จริงผ่าน Class ควบคุม */
+    /* CSS Print: แก้ไขใหม่ให้ซ่อนเฉพาะโครงสร้างเว็บไซต์ และแสดงเฉพาะพื้นที่พิมพ์ที่ต้องการ */
     @media print {
-      body * { display: none !important; }
-      .no-print { display: none !important; }
+      header, nav, main, .no-print, #adminModal, #compareModal, #loadingOverlay, #systemClosedBanner {
+        display: none !important;
+      }
+      
+      #printArea, #peaFormArea {
+        display: none !important;
+      }
       
       body.printing-summary #printArea {
         display: block !important;
@@ -234,7 +239,7 @@
         <div class="p-4 bg-purple-50 border-b grid grid-cols-1 md:grid-cols-3 gap-3 text-xs">
           <div>
             <label class="font-bold text-purple-900 block mb-1"><i class="fa-solid fa-user-pen mr-1"></i>1. ผู้ดำเนินการ:</label>
-            <input type="text" id="inputSignName1" placeholder="เช่น นายกลกิจ เลาฮารีกิจ" class="w-full p-1.5 border rounded bg-white mb-1">
+            <input type="text" id="inputSignName1" placeholder="เช่น นายกลกิจ เลาอารีกิจ" class="w-full p-1.5 border rounded bg-white mb-1">
             <input type="text" id="inputSignPos1" placeholder="เช่น ชผ.ผสน.กฟส.ลส." class="w-full p-1.5 border rounded bg-white">
           </div>
           <div>
@@ -473,7 +478,7 @@
             <p style="margin: 0;">ลงชื่อ.................................ผู้บังคับบัญชาชั้นต้น</p>
             <p style="margin: 2px 0 0 0;" id="signName2"></p>
             <p style="margin: 2px 0 0 0;" id="signPos2"></p>
-            <p style="margin: 2px 0 0 0;">วันที่ <span class="printCurrentDate"></span></p>
+            <p style="margin: 2px 0 0 0;">วันที่ .......................</p>
           </div>
         </div>
 
@@ -484,7 +489,7 @@
             <p style="margin: 0 0 15px 0; text-align: left;">ลงชื่อ.................................ผู้ดำเนินการ</p>
             <p style="margin: 0;" id="signName1"></p>
             <p style="margin: 2px 0 0 0;" id="signPos1"></p>
-            <p style="margin: 2px 0 0 0;">วันที่ <span class="printCurrentDate"></span></p>
+            <p style="margin: 2px 0 0 0;">วันที่ .......................</p>
           </div>
 
           <div style="border: 1px solid #000; padding: 8px; text-align: center;">
@@ -492,7 +497,7 @@
             <p style="margin: 15px 0 0 0;">ลงชื่อ.................................หัวหน้าหน่วยงาน</p>
             <p style="margin: 2px 0 0 0;" id="signName3"></p>
             <p style="margin: 2px 0 0 0;" id="signPos3"></p>
-            <p style="margin: 2px 0 0 0;">วันที่ <span class="printCurrentDate"></span></p>
+            <p style="margin: 2px 0 0 0;">วันที่ วันที่ .......................</p>
           </div>
 
         </div>
@@ -1125,7 +1130,6 @@
       const billInfo = document.getElementById('billDocInfo').value.trim() || "-";
       const vatType = document.getElementById('vatTypeSelect').value;
 
-      // ดึงข้อมูลผู้ลงนามทั้ง 3 ช่อง (ถ้าไม่ได้กรอก จะเว้นว่างไว้)
       const signName1 = document.getElementById('inputSignName1').value.trim();
       const signPos1 = document.getElementById('inputSignPos1').value.trim();
       const signName2 = document.getElementById('inputSignName2').value.trim();
