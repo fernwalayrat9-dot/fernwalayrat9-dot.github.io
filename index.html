@@ -239,7 +239,7 @@
         <div class="p-4 bg-blue-50 border-b grid grid-cols-1 md:grid-cols-2 gap-3 text-xs">
           <div>
             <label class="font-bold text-blue-900 block mb-1"><i class="fa-solid fa-book-bookmark mr-1"></i>รหัสบัญชี:</label>
-            <input type="text" id="inputAccountCode" placeholder="เช่น 53030010 หรือ ๕๓๐๓๐๐๑๐" class="w-full p-1.5 border rounded bg-white font-medium">
+            <input type="text" id="inputAccountCode" placeholder="เช่น 53030010 หรือ ๑-๕: 53030010, ๖-๑๗: 53030020" class="w-full p-1.5 border rounded bg-white font-medium">
           </div>
           <div>
             <label class="font-bold text-blue-900 block mb-1"><i class="fa-solid fa-building-columns mr-1"></i>ศูนย์ต้นทุน (งบทำการ):</label>
@@ -484,7 +484,7 @@
           <p style="margin: 0 0 2px 25px;">๑.ให้ความเห็นชอบการจัดซื้อจัดจ้างดังกล่าวข้างต้น</p>
           <p style="margin: 0 0 2px 25px;">๒.อนุมัติให้จ่ายเงิน จำนวน <span id="peaSignAmount"></span> บาท</p>
           <p style="margin: 0 0 6px 35px;" id="peaSignBahtText"></p>
-          <p style="margin: 0 0 15px 0;">จากรหัสบัญชี <span id="peaFormAccountCode"></span> โดยใช้งบทำการ<span id="peaFormCostCenter"></span></p>
+          <p style="margin: 0 0 15px 0;" id="peaAccountCodeSection">จากรหัสบัญชี <span id="peaFormAccountCode"></span> โดยใช้งบทำการ<span id="peaFormCostCenter"></span></p>
 
           <div style="text-align: center; margin-top: 25px;">
             <p style="margin: 0;">ลงชื่อ.................................ผู้บังคับบัญชาชั้นต้น</p>
@@ -1142,7 +1142,7 @@
       const billInfo = document.getElementById('billDocInfo').value.trim() || "-";
       const vatType = document.getElementById('vatTypeSelect').value;
 
-      // ดึงค่ารหัสบัญชีและศูนย์ต้นทุนที่แอดมินกรอก แล้วแปลงเลขทุกตัวเป็นเลขไทยอัตโนมัติ
+      // ดึงค่ารหัสบัญชีและศูนย์ต้นทุนที่แอดมินกรอก แล้วแปลงตัวเลขทุกตัวเป็นเลขไทยอัตโนมัติ
       const rawAccountCode = document.getElementById('inputAccountCode').value.trim() || "53030010";
       const rawCostCenter = document.getElementById('inputCostCenter').value.trim() || "J31310101";
 
@@ -1170,8 +1170,14 @@
       document.getElementById('peaFormDate').innerText = docDate ? toThaiDigits(docDate) : "";
       document.getElementById('peaFormItemCount').innerText = toThaiDigits(compareItemsList.length);
 
-      // นำรหัสบัญชีและศูนย์ต้นทุนที่แปลงเป็นเลขไทยแล้วไปแสดงในฟอร์มพิมพ์
-      document.getElementById('peaFormAccountCode').innerText = accountCode;
+      // รองรับการแสดงผลรหัสบัญชีแบบหลายรายการหรือรายการเดี่ยว
+      const accountCodeSection = document.getElementById('peaAccountCodeSection');
+      if (rawAccountCode.includes(':') || rawAccountCode.includes(',')) {
+        accountCodeSection.innerHTML = `จากรหัสบัญชี <span id="peaFormAccountCode">${accountCode}</span>`;
+      } else {
+        accountCodeSection.innerHTML = `จากรหัสบัญชี <span id="peaFormAccountCode">${accountCode}</span> โดยใช้งบทำการ<span id="peaFormCostCenter">${costCenter}</span>`;
+      }
+
       document.getElementById('peaFormCostCenter').innerText = costCenter;
 
       const formattedTotal = grandTotal.toLocaleString('th-TH', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
