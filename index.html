@@ -235,15 +235,15 @@
           </div>
         </div>
 
-        <!-- เพิ่มช่องกรอก "รหัสบัญชี" และ "ศูนย์ต้นทุน(งบทำการ)" ตรงนี้ -->
+        <!-- ช่องกรอกรหัสบัญชีและศูนย์ต้นทุน -->
         <div class="p-4 bg-blue-50 border-b grid grid-cols-1 md:grid-cols-2 gap-3 text-xs">
           <div>
             <label class="font-bold text-blue-900 block mb-1"><i class="fa-solid fa-book-bookmark mr-1"></i>รหัสบัญชี:</label>
-            <input type="text" id="inputAccountCode" placeholder="เช่น ๕๓๐๓๐๐๑๐" class="w-full p-1.5 border rounded bg-white font-medium">
+            <input type="text" id="inputAccountCode" placeholder="เช่น 53030010 หรือ ๕๓๐๓๐๐๑๐" class="w-full p-1.5 border rounded bg-white font-medium">
           </div>
           <div>
             <label class="font-bold text-blue-900 block mb-1"><i class="fa-solid fa-building-columns mr-1"></i>ศูนย์ต้นทุน (งบทำการ):</label>
-            <input type="text" id="inputCostCenter" placeholder="เช่น J๓๑๓๑๐๑๐๐" class="w-full p-1.5 border rounded bg-white font-medium">
+            <input type="text" id="inputCostCenter" placeholder="เช่น J31310170 หรือ J๓๑๓๑01๗0" class="w-full p-1.5 border rounded bg-white font-medium">
           </div>
         </div>
 
@@ -956,7 +956,7 @@
       document.body.classList.remove('printing-summary');
     }
 
-    /* --- LOGICS สำหรับการตรวจรับ & เปรียบเทียบใบวางบิล --- */
+    /* --- LOGICS สำหรับการตรวจรับ & ใบวางบิล --- */
 
     function openCompareModal() {
       if (!currentFilteredOrders || currentFilteredOrders.length === 0) {
@@ -1142,9 +1142,12 @@
       const billInfo = document.getElementById('billDocInfo').value.trim() || "-";
       const vatType = document.getElementById('vatTypeSelect').value;
 
-      // ดึงค่ารหัสบัญชีและศูนย์ต้นทุนที่แอดมินกรอก
-      const accountCode = document.getElementById('inputAccountCode').value.trim() || "๕๓๐๓๐๐๑๐";
-      const costCenter = document.getElementById('inputCostCenter').value.trim() || "ป๓๑๓๑๐๑๐๑";
+      // ดึงค่ารหัสบัญชีและศูนย์ต้นทุนที่แอดมินกรอก แล้วแปลงเลขทุกตัวเป็นเลขไทยอัตโนมัติ
+      const rawAccountCode = document.getElementById('inputAccountCode').value.trim() || "53030010";
+      const rawCostCenter = document.getElementById('inputCostCenter').value.trim() || "J31310101";
+
+      const accountCode = toThaiDigits(rawAccountCode);
+      const costCenter = toThaiDigits(rawCostCenter);
 
       const signName1 = document.getElementById('inputSignName1').value.trim();
       const signPos1 = document.getElementById('inputSignPos1').value.trim();
@@ -1167,7 +1170,7 @@
       document.getElementById('peaFormDate').innerText = docDate ? toThaiDigits(docDate) : "";
       document.getElementById('peaFormItemCount').innerText = toThaiDigits(compareItemsList.length);
 
-      // นำรหัสบัญชีและศูนย์ต้นทุนไปแสดงในฟอร์มพิมพ์
+      // นำรหัสบัญชีและศูนย์ต้นทุนที่แปลงเป็นเลขไทยแล้วไปแสดงในฟอร์มพิมพ์
       document.getElementById('peaFormAccountCode').innerText = accountCode;
       document.getElementById('peaFormCostCenter').innerText = costCenter;
 
