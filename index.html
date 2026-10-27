@@ -239,7 +239,7 @@
         <div class="p-4 bg-purple-50 border-b grid grid-cols-1 md:grid-cols-3 gap-3 text-xs">
           <div>
             <label class="font-bold text-purple-900 block mb-1"><i class="fa-solid fa-user-pen mr-1"></i>1. ผู้ดำเนินการ:</label>
-            <input type="text" id="inputSignName1" placeholder="เช่น นายกลกิจ เลาอารีกิจ" class="w-full p-1.5 border rounded bg-white mb-1">
+            <input type="text" id="inputSignName1" placeholder="เช่น นายกลกิจ เลาฮารีกิจ" class="w-full p-1.5 border rounded bg-white mb-1">
             <input type="text" id="inputSignPos1" placeholder="เช่น ชผ.ผสน.กฟส.ลส." class="w-full p-1.5 border rounded bg-white">
           </div>
           <div>
@@ -747,7 +747,7 @@
         filtered = filtered.filter(o => {
           const sheetDept = o.department ? String(o.department).trim() : "";
           const filterDept = selectedDept.trim();
-          return sheetDept.includes(filterDept) || filterDept.includes(sheetDept);
+          return sheetDept.toLowerCase() === filterDept.toLowerCase() || sheetDept.includes(filterDept) || filterDept.includes(sheetDept);
         });
       }
 
