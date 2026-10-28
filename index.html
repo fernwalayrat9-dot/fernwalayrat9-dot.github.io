@@ -1132,6 +1132,16 @@
       });
     }
 
+    // ฟังก์ชันแปลงเฉพาะตัวเลขที่เป็นรหัสบัญชี (คงเครื่องหมายขีด จุด และคอมมาไว้เหมือนเดิม)
+    function smartConvertToThaiDigits(str) {
+      if (!str) return '';
+      // แยกแปลงเฉพาะส่วนที่เป็นตัวเลข เพื่อไม่ให้ตัวอักษรภาษาอังกฤษหรือเครื่องหมายเสียหาย
+      return String(str).replace(/[0-9]/g, function(w) {
+        const thaiDigits = ['๐', '๑', '๒', '๓', '๔', '๕', '๖', '๗', '๘', '๙'];
+        return thaiDigits[parseInt(w, 10)];
+      });
+    }
+
     function preparePeaReportData() {
       let grandTotal = 0;
       compareItemsList.forEach(item => grandTotal += (item.totalAmount || 0));
@@ -1142,12 +1152,12 @@
       const billInfo = document.getElementById('billDocInfo').value.trim() || "-";
       const vatType = document.getElementById('vatTypeSelect').value;
 
-      // ดึงค่ารหัสบัญชีและศูนย์ต้นทุนที่แอดมินกรอก แล้วแปลงเฉพาะตัวเลขทุกตัวให้เป็นเลขไทยอัตโนมัติ
+      // ดึงค่ารหัสบัญชีและศูนย์ต้นทุนที่แอดมินกรอก
       const rawAccountCode = document.getElementById('inputAccountCode').value.trim() || "53030010";
       const rawCostCenter = document.getElementById('inputCostCenter').value.trim() || "J31310101";
 
-      const accountCode = toThaiDigits(rawAccountCode);
-      const costCenter = toThaiDigits(rawCostCenter);
+      const accountCode = smartConvertToThaiDigits(rawAccountCode);
+      const costCenter = rawCostCenter; // คงรูปแบบศูนย์ต้นทุน J... ไว้ตามเดิม
 
       const signName1 = document.getElementById('inputSignName1').value.trim();
       const signPos1 = document.getElementById('inputSignPos1').value.trim();
@@ -1170,10 +1180,10 @@
       document.getElementById('peaFormDate').innerText = docDate ? toThaiDigits(docDate) : "";
       document.getElementById('peaFormItemCount').innerText = toThaiDigits(compareItemsList.length);
 
-      // จัดการการแสดงผลรหัสบัญชีและงบทำการในฟอร์มพิมพ์
+      // แก้ไขส่วนแสดงผลรหัสบัญชีและงบทำการให้ถูกต้องครบถ้วนไม่ว่าจะเป็นรหัสเดี่ยวหรือหลายรหัส
       const accountCodeSection = document.getElementById('peaAccountCodeSection');
       if (rawAccountCode.includes(':') || rawAccountCode.includes(',')) {
-        accountCodeSection.innerHTML = `จากรหัสบัญชี <span id="peaFormAccountCode">${accountCode}</span>`;
+        accountCodeSection.innerHTML = `จากรหัสบัญชี <span id="peaFormAccountCode">${accountCode}</span> โดยใช้งบทำการ<span id="peaFormCostCenter">${costCenter}</span>`;
       } else {
         accountCodeSection.innerHTML = `จากรหัสบัญชี <span id="peaFormAccountCode">${accountCode}</span> โดยใช้งบทำการ<span id="peaFormCostCenter">${costCenter}</span>`;
       }
