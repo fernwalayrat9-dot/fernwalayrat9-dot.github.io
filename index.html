@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>ระบบสั่งซื้อวัสดุสำนักงาน - กฟส.หลังสวน</title>
+  <title>ระบบสั่งซื้อพัสดุ / วัสดุสำนักงาน - กฟส.หลังสวน</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   
@@ -40,7 +40,7 @@
 
     /* CSS Print: ซ่อนส่วนที่ไม่ต้องการพิมพ์ */
     @media print {
-      header, nav, main, .no-print, #adminModal, #compareModal, #wizardModal, #loadingOverlay, #systemClosedBanner {
+      header, nav, main, .no-print, #adminModal, #compareModal, #wizardModal, #previewModal, #loadingOverlay, #systemClosedBanner {
         display: none !important;
       }
       
@@ -486,8 +486,8 @@
           </button>
           
           <div class="flex items-center gap-2">
-            <button onclick="printCurrentStepForm()" class="px-4 py-2 bg-purple-700 hover:bg-purple-800 text-white font-semibold rounded-xl text-xs transition shadow flex items-center gap-1.5">
-              <i class="fa-solid fa-print"></i> พิมพ์ / ดาวน์โหลด PDF (ฟอร์มที่ <span id="currentStepNum">1</span>)
+            <button onclick="previewCurrentStepForm()" class="px-4 py-2 bg-purple-700 hover:bg-purple-800 text-white font-semibold rounded-xl text-xs transition shadow flex items-center gap-1.5">
+              <i class="fa-solid fa-eye"></i> ดูตัวอย่างฟอร์ม (ขั้นตอนที่ <span id="currentStepNum">1</span>)
             </button>
             <button id="btnNextStep" onclick="changeStep(1)" class="px-4 py-2 bg-indigo-700 hover:bg-indigo-800 text-white font-semibold rounded-xl text-xs transition shadow flex items-center gap-1">
               ถัดไป <i class="fa-solid fa-arrow-right"></i>
@@ -495,6 +495,33 @@
           </div>
         </div>
 
+      </div>
+    </div>
+
+    <!-- PREVIEW MODAL: แสดงตัวอย่างแบบฟอร์มบนจอให้เห็นชัดเจนก่อนพิมพ์ -->
+    <div id="previewModal" class="hidden fixed inset-0 bg-slate-900/70 backdrop-blur-sm z-[90] flex items-center justify-center p-4">
+      <div class="bg-white rounded-2xl shadow-2xl max-w-4xl w-full max-h-[95vh] flex flex-col overflow-hidden">
+        <div class="p-4 bg-slate-800 text-white flex justify-between items-center shrink-0">
+          <h3 class="font-bold text-sm md:text-base flex items-center">
+            <i class="fa-solid fa-file-lines mr-2 text-amber-300"></i> ตัวอย่างเอกสารราชการ (สามารถตรวจสอบความถูกต้องก่อนกดพิมพ์)
+          </h3>
+          <button onclick="closePreviewModal()" class="text-slate-300 hover:text-white"><i class="fa-solid fa-xmark text-xl"></i></button>
+        </div>
+
+        <div class="flex-1 overflow-y-auto p-8 bg-slate-100 flex justify-center">
+          <div id="previewContainerContent" class="bg-white p-8 shadow-md rounded border w-full max-w-[750px] min-h-[900px]">
+            <!-- เนื้อหาฟอร์มที่จะถูกดึงมาแสดงตัวอย่าง -->
+          </div>
+        </div>
+
+        <div class="p-4 bg-white border-t flex justify-between items-center shrink-0">
+          <button onclick="closePreviewModal()" class="px-4 py-2 bg-slate-500 hover:bg-slate-600 text-white font-semibold rounded-xl text-xs transition">
+            <i class="fa-solid fa-arrow-left mr-1"></i> กลับไปแก้ไขข้อมูล
+          </button>
+          <button onclick="printFromPreview()" class="px-6 py-2.5 bg-emerald-700 hover:bg-emerald-800 text-white font-semibold rounded-xl text-sm transition shadow flex items-center gap-2">
+            <i class="fa-solid fa-print"></i> พิมพ์ / บันทึก PDF หน้านี้
+          </button>
+        </div>
       </div>
     </div>
 
@@ -710,7 +737,7 @@
         <tbody id="f1-table-body"></tbody>
       </table>
 
-      <div style="page-break-before: always; padding-top: 10px;">
+      <div style="margin-top: 15px;">
         <div style="text-align: right; font-size: 13pt; margin-bottom: 5px;">หน้า ๒</div>
         <p style="margin: 0 0 3px 0;"><strong>๓. ราคากลางของพัสดุที่จะซื้อ</strong></p>
         <p style="margin: 0 0 2px 15px;">[ &nbsp; ] (๑) ราคากลางได้มาจากการคำนวณตามหลักเกณฑ์ที่คณะกรรมการกำหนด</p>
@@ -1647,7 +1674,7 @@
       btnPrev.classList.toggle('opacity-50', stepNum === 1);
 
       if (stepNum === 4) {
-        btnNext.innerHTML = `สิ้นสุดขั้นตอน <i class="fa-solid fa-check mr-1"></i>`;
+        btnNext.innerHTML = `สิ้นสุดขั้นตอน <i class="fa-solid fa-check ml-1"></i>`;
       } else {
         btnNext.innerHTML = `ถัดไป <i class="fa-solid fa-arrow-right ml-1"></i>`;
       }
@@ -1732,8 +1759,8 @@
 
       // --- เติมฟอร์ม 3 ---
       document.querySelectorAll('.f3-date').forEach(el => el.innerText = considerDate);
-      document.querySelector('.f3-report-date').innerText = wzDate1; // ดึงวันที่จาก Step 1
-      document.getElementById('f3-invite-no').innerText = smartConvertToThaiDigits(rawInviteNo); // ดึงเลขที่จาก Step 2
+      document.querySelector('.f3-report-date').innerText = wzDate1;
+      document.getElementById('f3-invite-no').innerText = smartConvertToThaiDigits(rawInviteNo);
       document.getElementById('f3-invite-date').innerText = inviteDate;
       document.querySelectorAll('.f3-shop-name').forEach(el => el.innerText = shopName);
       document.getElementById('f3-quotation-no').innerText = smartConvertToThaiDigits(quotNo);
@@ -1745,7 +1772,7 @@
 
       // --- เติมฟอร์ม 4 ---
       document.querySelectorAll('.f4-date').forEach(el => el.innerText = deliDate);
-      document.querySelector('.f4-approval-date').innerText = considerDate; // ดึงวันที่จาก Step 3
+      document.querySelector('.f4-approval-date').innerText = considerDate;
       document.getElementById('f4-delivery-no').innerText = smartConvertToThaiDigits(deliNo);
       document.getElementById('f4-delivery-date').innerText = deliDate;
       document.querySelectorAll('.f4-shop-name').forEach(el => el.innerText = shopName);
@@ -1757,8 +1784,20 @@
       document.getElementById('f4-comm3').innerText = `(${cName3}) ${cPos3}`;
     }
 
-    function printCurrentStepForm() {
+    function previewCurrentStepForm() {
       prepareOver10kWizardData();
+      const formDiv = document.getElementById(`over10kFormArea${currentWizardStep}`);
+      if (formDiv) {
+        document.getElementById('previewContainerContent').innerHTML = formDiv.innerHTML;
+        document.getElementById('previewModal').classList.remove('hidden');
+      }
+    }
+
+    function closePreviewModal() {
+      document.getElementById('previewModal').classList.add('hidden');
+    }
+
+    function printFromPreview() {
       document.body.classList.remove('printing-summary', 'printing-pea', 'printing-over10k-1', 'printing-over10k-2', 'printing-over10k-3', 'printing-over10k-4');
       document.body.classList.add(`printing-over10k-${currentWizardStep}`);
       window.print();
