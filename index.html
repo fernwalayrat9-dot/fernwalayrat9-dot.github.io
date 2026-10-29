@@ -35,7 +35,7 @@
 
     @page {
       size: A4;
-      margin: 15mm 15mm 15mm 15mm;
+      margin: 15mm;
     }
 
     /* CSS Print: ซ่อนส่วนที่ไม่ต้องการพิมพ์ */
@@ -1785,11 +1785,21 @@
     }
 
     function previewCurrentStepForm() {
-      prepareOver10kWizardData();
-      const formDiv = document.getElementById(`over10kFormArea${currentWizardStep}`);
-      if (formDiv) {
-        document.getElementById('previewContainerContent').innerHTML = formDiv.innerHTML;
-        document.getElementById('previewModal').classList.remove('hidden');
+      try {
+        prepareOver10kWizardData();
+        const formDiv = document.getElementById(`over10kFormArea${currentWizardStep}`);
+        const previewContent = document.getElementById('previewContainerContent');
+        const previewModal = document.getElementById('previewModal');
+
+        if (formDiv && previewContent && previewModal) {
+          previewContent.innerHTML = formDiv.innerHTML;
+          previewModal.classList.remove('hidden');
+        } else {
+          alert("ไม่พบส่วนแสดงผลตัวอย่างฟอร์มในระบบ");
+        }
+      } catch (err) {
+        console.error(err);
+        alert("เกิดข้อผิดพลาดในการแสดงตัวอย่างฟอร์ม: " + err.message);
       }
     }
 
