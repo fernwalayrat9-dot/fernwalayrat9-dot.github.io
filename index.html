@@ -371,8 +371,8 @@
                   <input type="text" id="wzDate1" placeholder="เช่น ๒๑ กันยายน ๒๕๖๙" class="w-full p-2 border rounded bg-white">
                 </div>
                 <div>
-                  <label class="font-bold text-slate-700 block mb-1">วงเงินรวม VAT (บาท) [กรอกเองได้]:</label>
-                  <input type="text" id="wzAmountTotal" placeholder="เช่น 17,615.00" class="w-full p-2 border rounded bg-white font-bold text-purple-900 focus:ring-2 focus:ring-purple-600 outline-none">
+                  <label class="font-bold text-slate-700 block mb-1">วงเงินรวม VAT (บาท):</label>
+                  <input type="text" id="wzAmountTotal" class="w-full p-2 border rounded bg-slate-100 font-bold text-purple-900" readonly>
                 </div>
                 <div>
                   <label class="font-bold text-slate-700 block mb-1">ชื่อผู้ดำเนินการติดต่อ:</label>
@@ -1758,19 +1758,16 @@
       const quotNo = document.getElementById('wzQuotNo').value.trim() || "๘๙๐๓/๒๕๖๙";
       const vendorNo = document.getElementById('wzVendorNo').value.trim() || "๒๐๘๘๓๓";
 
-      const deliDate = document.getElementById('wzDeliveryDate').value.trim() || "๓ ตุลาคม ๒๕๖๙";
+      const deliDate = document.getElementById('wzDeliveryDate').value.trim() || "๓๐ กันยายน ๒๕๖๙";
       const deliNo = document.getElementById('wzDeliveryNo').value.trim() || "๙๐๒๐/๒๕๖๙";
 
-      // --- จุดที่แก้: ดึงค่าตัวเลขที่คุณพิมพ์ในช่อง wzAmountTotal มาใช้งาน ---
-      const customAmountStr = document.getElementById('wzAmountTotal').value.trim().replace(/,/g, '');
-      let parsedAmount = parseFloat(customAmountStr);
-      if (isNaN(parsedAmount)) parsedAmount = 0;
+      let grandTotal = 0;
+      compareItemsList.forEach(item => grandTotal += item.totalAmount);
+      const formattedTotal = grandTotal.toLocaleString('th-TH', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+      const thaiTotalStr = grandTotal > 0 ? (toThaiDigits(formattedTotal) + '.-') : "๐.๐๐";
+      const bahtTextStr = ArabicToThaiBaht(grandTotal);
 
-      const formattedTotal = parsedAmount.toLocaleString('th-TH', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-      const thaiTotalStr = parsedAmount > 0 ? (toThaiDigits(formattedTotal) + '.-') : "๐.๐๐";
-      const bahtTextStr = ArabicToThaiBaht(parsedAmount);
-
-      // --- เติมฟอร์ม 1 (รายงานขอซื้อ) ---
+      // --- เติมฟอร์ม 1 ---
       document.querySelectorAll('.f1-date').forEach(el => el.innerText = wzDate1);
       const f1Work = document.querySelector('.f1-total-work');
       if(f1Work) f1Work.innerText = toThaiDigits(1);
@@ -1778,9 +1775,8 @@
       const f1Count = document.querySelector('.f1-total-count');
       if(f1Count) f1Count.innerText = toThaiDigits(compareItemsList.length);
 
-      // นำยอดเงินที่กรอกมาแสดงผลในหัวข้อที่ 4 (แปลงเป็นเลขไทยอัตโนมัติ)
       const f1Grand = document.querySelector('.f1-grand-total-text');
-      if(f1Grand) f1Grand.innerText = toThaiDigits(formattedTotal);
+      if(f1Grand) f1Grand.innerText = thaiTotalStr;
 
       const f1Baht = document.querySelector('.f1-baht-text');
       if(f1Baht) f1Baht.innerText = bahtTextStr;
@@ -1813,81 +1809,6 @@
           tbody.appendChild(tr);
         });
       });
-
-      // --- เติมฟอร์มอื่นๆ ตามปกติ ---
-      document.querySelectorAll('.f2-docno').forEach(el => el.innerText = smartConvertToThaiDigits(rawInviteNo));
-      document.querySelectorAll('.f2-date').forEach(el => el.innerText = inviteDate);
-      document.querySelectorAll('.f2-shop-name').forEach(el => el.innerText = `ผู้จัดการ ${shopName}`);
-      
-      document.querySelectorAll('.f2-table-body').forEach(tbody => {
-        tbody.innerHTML = '';
-        compareItemsList.forEach((item, idx) => {
-          const tr = document.createElement('tr');
-          tr.innerHTML = `
-            <td style="border: 1px solid #000; padding: 4px; text-align: center;">${toThaiDigits(idx + 1)}</td>
-            <td style="border: 1px solid #000; padding: 4px;">${item.name}</td>
-            <td style="border: 1px solid #000; padding: 4px; text-align: center;">${toThaiDigits(item.orderedQty)}</td>
-            <td style="border: 1px solid #000; padding: 4px; text-align: center;">${item.unit || ''}</td>
-          `;
-          tbody.appendChild(tr);
-        });
-      });
-
-      document.querySelectorAll('.f3-date').forEach(el => el.innerText = considerDate);
-      const f3RepDate = document.querySelector('.f3-report-date');
-      if(f3RepDate) f3RepDate.innerText = wzDate1;
-
-      const f3InvNo = document.querySelector('.f3-invite-no');
-      if(f3InvNo) f3InvNo.innerText = smartConvertToThaiDigits(rawInviteNo);
-
-      const f3InvDate = document.querySelector('.f3-invite-date');
-      if(f3InvDate) f3InvDate.innerText = inviteDate;
-
-      document.querySelectorAll('.f3-shop-name').forEach(el => el.innerText = shopName);
-      
-      const f3QNo = document.querySelector('.f3-quotation-no');
-      if(f3QNo) f3QNo.innerText = smartConvertToThaiDigits(quotNo);
-
-      const f3QDate = document.querySelector('.f3-quotation-date');
-      if(f3QDate) f3QDate.innerText = considerDate;
-
-      const f3Tot = document.querySelector('.f3-total-amount');
-      if(f3Tot) f3Tot.innerText = thaiTotalStr;
-
-      const f3B = document.querySelector('.f3-baht-text');
-      if(f3B) f3B.innerText = bahtTextStr;
-
-      const f3V = document.querySelector('.f3-vendor-no');
-      if(f3V) f3V.innerText = smartConvertToThaiDigits(vendorNo);
-
-      const f3Op = document.querySelector('.f3-operator-name');
-      if(f3Op) f3Op.innerText = `(${operator})`;
-
-      document.querySelectorAll('.f4-date').forEach(el => el.innerText = deliDate);
-      
-      const f4AppDate = document.querySelector('.f4-approval-date');
-      if(f4AppDate) f4AppDate.innerText = considerDate;
-
-      const f4DelNo = document.querySelector('.f4-delivery-no');
-      if(f4DelNo) f4DelNo.innerText = smartConvertToThaiDigits(deliNo);
-
-      const f4DelDate = document.querySelector('.f4-delivery-date');
-      if(f4DelDate) f4DelDate.innerText = deliDate;
-
-      document.querySelectorAll('.f4-shop-name').forEach(el => el.innerText = shopName);
-      
-      document.querySelectorAll('.f4-total-amount').forEach(el => el.innerText = thaiTotalStr);
-      document.querySelectorAll('.f4-baht-text').forEach(el => el.innerText = bahtTextStr);
-
-      const f4C1 = document.querySelector('.f4-comm1');
-      if(f4C1) f4C1.innerText = `(${cName1}) ${cPos1}`;
-
-      const f4C2 = document.querySelector('.f4-comm2');
-      if(f4C2) f4C2.innerText = `(${cName2}) ${cPos2}`;
-
-      const f4C3 = document.querySelector('.f4-comm3');
-      if(f4C3) f4C3.innerText = `(${cName3}) ${cPos3}`;
-    }
 
       // --- เติมฟอร์ม 2 ---
       document.querySelectorAll('.f2-docno').forEach(el => el.innerText = smartConvertToThaiDigits(rawInviteNo));
