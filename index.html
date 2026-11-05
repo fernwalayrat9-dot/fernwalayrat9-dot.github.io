@@ -227,7 +227,7 @@
           </div>
           <div>
             <label class="font-bold text-slate-700 block mb-1">วันที่ออกหนังสือ (ถ้ามี):</label>
-            <input type="text" id="docDateText" placeholder="เช่น ๑ต์ สิงหาคม ๒๕๖๙ (เว้นว่างไว้ได้)" class="w-full p-2 border rounded bg-white">
+            <input type="text" id="docDateText" placeholder="เช่น ๑๗ สิงหาคม ๒๕๖๙ (เว้นว่างไว้ได้)" class="w-full p-2 border rounded bg-white">
           </div>
           <div>
             <label class="font-bold text-slate-700 block mb-1">ใบเสร็จ/ใบส่งของ (เล่ม/เลขที่/ลงวันที่):</label>
@@ -427,15 +427,15 @@
                 </div>
               </div>
 
-              <!-- ช่องกรอกผู้ลงนามในหนังสือเชิญชวน -->
+              <!-- ช่องกรอกผู้ลงนามในหนังสือเชิญชวน (เปลี่ยนตำแหน่งเป็น textarea เพื่อให้กด Enter จัดบรรทัดได้อิสระ) -->
               <div class="grid grid-cols-1 md:grid-cols-2 gap-3 text-xs border-t pt-3">
                 <div>
                   <label class="font-bold text-purple-900 block mb-1"><i class="fa-solid fa-user-pen mr-1"></i>ชื่อ-นามสกุล ผู้ลงนาม:</label>
                   <input type="text" id="wzInviteSignName" value="นายกิตติพงษ์ โสภาพงษ์" class="w-full p-2 border rounded bg-white font-medium">
                 </div>
                 <div>
-                  <label class="font-bold text-purple-900 block mb-1"><i class="fa-solid fa-id-card mr-1"></i>ตำแหน่งผู้ลงนาม:</label>
-                  <input type="text" id="wzInviteSignPos" value="ผู้จัดการ การไฟฟ้าส่วนภูมิภาคสาขาหลังสวน" class="w-full p-2 border rounded bg-white font-medium">
+                  <label class="font-bold text-purple-900 block mb-1"><i class="fa-solid fa-id-card mr-1"></i>ตำแหน่งผู้ลงนาม (กด Enter เพื่อขึ้นบรรทัดใหม่ได้อิสระ):</label>
+                  <textarea id="wzInviteSignPos" rows="3" class="w-full p-2 border rounded bg-white font-medium outline-none focus:ring-2 focus:ring-purple-600">ผู้จัดการ การไฟฟ้าส่วนภูมิภาคสาขาหลังสวน</textarea>
                 </div>
               </div>
             </div>
@@ -897,7 +897,8 @@
 
       <div style="text-align: center; margin-left: 50%;">
         <p style="margin: 0;" class="f2-sign-name">(นายกิตติพงษ์ โสภาพงษ์)</p>
-        <p style="margin: 2px 0 0 0;" class="f2-sign-pos">ผู้จัดการ การไฟฟ้าส่วนภูมิภาคสาขาหลังสวน</p>
+        <!-- ใช้ white-space: pre-line เพื่อให้แสดงผลขึ้นบรรทัดใหม่ตามที่กด Enter ใน textarea -->
+        <p style="margin: 2px 0 0 0; white-space: pre-line;" class="f2-sign-pos">ผู้จัดการ การไฟฟ้าส่วนภูมิภาคสาขาหลังสวน</p>
       </div>
 
       <div style="margin-top: 30px; font-size: 14pt;">
@@ -1753,7 +1754,7 @@
     }
 
     function prepareOver10kWizardData() {
-      const wzDate1 = document.getElementById('wzDate1').value.trim() || "๒๑ กันยายน ๒๕๖๙";
+      const wzDate1 = document.getElementById('wzDate1').value.trim() || "๒ที่เรายายน ๒๕๖๙";
       const operator = document.getElementById('wzOperatorName').value.trim() || "นางสาวพรศิริ เมฆสวี";
       const cName1 = document.getElementById('wzCommName1').value.trim();
       const cPos1 = document.getElementById('wzCommPos1').value.trim();
@@ -1766,7 +1767,7 @@
       const inviteDate = document.getElementById('wzInviteDate').value.trim() || "๒๒ กันยายน ๒๕๖๙";
       const shopName = document.getElementById('wzShopName').value.trim() || "ร้านพัฒน์";
 
-      // ดึงค่าผู้ลงนามในหนังสือเชิญชวน (Step 2)
+      // ดึงค่าผู้ลงนามและตำแหน่งในหนังสือเชิญชวน (รองรับการขึ้นบรรทัดใหม่จาก textarea)
       const inviteSignName = document.getElementById('wzInviteSignName').value.trim() || "นายกิตติพงษ์ โสภาพงษ์";
       const inviteSignPos = document.getElementById('wzInviteSignPos').value.trim() || "ผู้จัดการ การไฟฟ้าส่วนภูมิภาคสาขาหลังสวน";
 
@@ -1834,7 +1835,7 @@
       document.querySelectorAll('.f2-date').forEach(el => el.innerText = inviteDate);
       document.querySelectorAll('.f2-shop-name').forEach(el => el.innerText = `ผู้จัดการ ${shopName}`);
       
-      // อัปเดตชื่อผู้ลงนามและตำแหน่งในหนังสือเชิญชวน (ฟอร์ม 2)
+      // อัปเดตชื่อผู้ลงนามและตำแหน่งในหนังสือเชิญชวน (ฟอร์ม 2) พร้อมรองรับการขึ้นบรรทัดใหม่
       document.querySelectorAll('.f2-sign-name').forEach(el => el.innerText = `(${inviteSignName})`);
       document.querySelectorAll('.f2-sign-pos').forEach(el => el.innerText = inviteSignPos);
 
