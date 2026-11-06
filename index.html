@@ -854,22 +854,24 @@
     <!-- ปรับขอบกระดาษด้านบนเป็น 4.8cm -->
     <div class="pea-document" style="max-width: 750px; margin: 0 auto; padding: 4cm 20px 10px 50px; color: #000; line-height: 1.25; font-size: 16pt;">
       
-      <!-- ส่วนตารางหัวกระดาษ (ลบโลโก้แล้ว) -->
-      <table style="width: 100%; border: none; border-collapse: collapse; font-size: 16pt; font-family: 'TH Sarabun PSK', sans-serif; margin-bottom: 10px;">
-        <tr>
-          <!-- ฝั่งซ้าย: เลขที่หนังสือ ขึ้นต้นบรรทัดแรกเท่ากับฝั่งขวา -->
-          <td style="width: 55%; vertical-align: top; padding: 0;">
-            <strong>ที่</strong> มท ๕๓๐๗.๔๖/กฟส.ลส.<span class="f2-docno">๔๔๕๖๘</span>
-          </td>
-          
-          <!-- ฝั่งขวา: ที่อยู่ชิดขอบขวา แต่กั้นหน้า 3 บรรทัดเท่ากัน -->
-          <td style="width: 45%; vertical-align: top; padding: 0; text-align: left;">
-            การไฟฟ้าส่วนภูมิภาคอำเภอหลังสวน<br>
-            ๒๐ ถนนประชาราษฎร์ ตำบลขันเงิน<br>
-            อำเภอหลังสวน จังหวัดชุมพร ๘๖๑๑๐
-          </td>
-        </tr>
-      </table>
+      <!-- ตารางส่วนหัวกระดาษ -->
+<table style="width: 100%; border: none; border-collapse: collapse; font-size: 16pt; font-family: 'TH Sarabun PSK', sans-serif; margin-bottom: 10px;">
+  <tr>
+    <!-- ฝั่งซ้าย: เลขที่หนังสือ -->
+    <td style="width: 45%; vertical-align: top; padding: 0;">
+      <strong>ที่</strong> มท ๕๓๐๗.๔๖/กฟส.ลส.<span class="f2-docno">๔๔๕๖๘</span>
+    </td>
+    
+    <!-- ฝั่งขวา: ที่อยู่ (ปรับเพิ่ม text-align: right ที่ตัว td แล้วใส่ div ครอบข้อความให้ชิดซ้าย) -->
+    <td style="width: 55%; vertical-align: top; padding: 0; text-align: right;">
+      <div style="display: inline-block; text-align: left;">
+        การไฟฟ้าส่วนภูมิภาคอำเภอหลังสวน<br>
+        ๒๐ ถนนประชาราษฎร์ ตำบลขันเงิน<br>
+        อำเภอหลังสวน จังหวัดชุมพร ๘๖๑๑๐
+      </div>
+    </td>
+  </tr>
+</table>
 
       <!-- วันที่: ปรับให้อยู่กึ่งกลางหน้ากระดาษ -->
       <div style="text-align: center; margin-bottom: 10px;">
