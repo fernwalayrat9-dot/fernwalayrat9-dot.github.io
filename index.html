@@ -851,37 +851,41 @@
       
 <!-- ฟอร์มที่ 2: หนังสือแจ้งให้ยื่นใบเสนอราคา -->
   <div id="over10kFormArea2" style="display: none;">
-    <div class="pea-document" style="max-width: 750px; margin: 0 auto; padding: 2.5cm 20px 2.8cm 40px; color: #000; line-height: 1.25; font-size: 16pt; width: 210mm; height: 297mm; box-sizing: border-box; display: flex; flex-direction: column; justify-content: space-between; background: #fff;">
+    <!-- ปรับขอบกระดาษด้านบนเป็น 4.8cm -->
+    <div class="pea-document" style="max-width: 750px; margin: 0 auto; padding: 4.8cm 20px 10px 20px; color: #000; line-height: 1.25; font-size: 16pt;">
       
-      <!-- [ส่วนที่ 1: เนื้อหาด้านบนทั้งหมด] -->
-      <div>
-        <table style="width: 100%; border: none; border-collapse: collapse; font-size: 16pt; font-family: 'TH Sarabun PSK', sans-serif; margin-bottom: 10px;">
-  <tr>
-    <td style="width: 55%; vertical-align: top; padding: 0;">
-      <strong>ที่</strong> มท ๕๓๐๗.๔๖/กฟส.ลส.<span class="f2-docno">๔๔๕๖๘</span>
-    </td>
-    <td style="width: 45%; vertical-align: top; padding: 0; text-align: left;">
-      การไฟฟ้าส่วนภูมิภาคอำเภอหลังสวน<br>
-      ๒๐ ถนนประชาราษฎร์ ตำบลขันเงิน<br>
-      อำเภอหลังสวน จังหวัดชุมพร ๘๖๑๑๐
-    </td>
-  </tr>
-</table>
+      <!-- ส่วนตารางหัวกระดาษ (ลบโลโก้แล้ว) -->
+      <table style="width: 100%; border: none; border-collapse: collapse; font-size: 16pt; font-family: 'TH Sarabun PSK', sans-serif; margin-bottom: 10px;">
+        <tr>
+          <!-- ฝั่งซ้าย: เลขที่หนังสือ ขึ้นต้นบรรทัดแรกเท่ากับฝั่งขวา -->
+          <td style="width: 55%; vertical-align: top; padding: 0;">
+            <strong>ที่</strong> มท ๕๓๐๗.๔๖/กฟส.ลส.<span class="f2-docno">๔๔๕๖๘</span>
+          </td>
+          
+          <!-- ฝั่งขวา: ที่อยู่ชิดขอบขวา แต่กั้นหน้า 3 บรรทัดเท่ากัน -->
+          <td style="width: 45%; vertical-align: top; padding: 0; text-align: left;">
+            การไฟฟ้าส่วนภูมิภาคอำเภอหลังสวน<br>
+            ๒๐ ถนนประชาราษฎร์ ตำบลขันเงิน<br>
+            อำเภอหลังสวน จังหวัดชุมพร ๘๖๑๑๐
+          </td>
+        </tr>
+      </table>
 
-        <div style="text-align: center; margin-bottom: 10px;">
-          <span class="f2-date">๒๒ กันยายน ๒๕๖๙</span>
-        </div>
+      <!-- วันที่: ปรับให้อยู่กึ่งกลางหน้ากระดาษ -->
+      <div style="text-align: center; margin-bottom: 10px;">
+        <span class="f2-date">๒๒ กันยายน ๒๕๖๙</span>
+      </div>
 
-        <table style="width: 100%; border: none; border-collapse: collapse; font-size: 16pt; font-family: 'TH Sarabun PSK', sans-serif; margin-bottom: 10px;">
-          <tr>
-            <td style="width: 50px; vertical-align: top;"><strong>เรื่อง</strong></td>
-            <td>แจ้งให้ยื่นใบเสนอราคาวัสดุสำนักงานและวัสดุเบ็ดเตล็ด</td>
-          </tr>
-          <tr>
-            <td style="vertical-align: top;"><strong>เรียน</strong></td>
-            <td><span class="f2-shop-name">ผู้จัดการ ร้านพัฒน์</span></td>
-          </tr>
-        </table>
+      <table style="width: 100%; border: none; border-collapse: collapse; font-size: 16pt; font-family: 'TH Sarabun PSK', sans-serif; margin-bottom: 10px;">
+        <tr>
+          <td style="width: 50px; vertical-align: top;"><strong>เรื่อง</strong></td>
+          <td>แจ้งให้ยื่นใบเสนอราคาวัสดุสำนักงานและวัสดุเบ็ดเตล็ด</td>
+        </tr>
+        <tr>
+          <td style="vertical-align: top;"><strong>เรียน</strong></td>
+          <td><span class="f2-shop-name">ผู้จัดการ ร้านพัฒน์</span></td>
+        </tr>
+      </table>
 
         <p style="text-indent: 2.5em; text-align: justify; margin-bottom: 10px;">
           ด้วยการไฟฟ้าส่วนภูมิภาคสาขาหลังสวน มีความประสงค์จะจัดซื้อวัสดุสำนักงานและวัสดุเบ็ดเตล็ดของสำนักงาน กฟส.หลังสวนและ กฟส.ในสังกัด โดยวิธีเฉพาะเจาะจง และกำหนดส่งมอบงานภายใน ๑๕ วัน ตามรายละเอียดดังนี้
