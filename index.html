@@ -1950,11 +1950,11 @@
       document.getElementById('previewModal').classList.add('hidden');
     }
 
-    function printFromPreview() {
+   function printFromPreview() {
       document.body.classList.remove('printing-summary', 'printing-pea', 'printing-over10k-1', 'printing-over10k-2', 'printing-over10k-3', 'printing-over10k-4');
-      document.body.classList.add(`printing-over10k-${currentWizardStep}`);
+      document.body.classList.add('printing-over10k-3');
       window.print();
-      document.body.classList.remove(`printing-over10k-${currentWizardStep}`);
+      document.body.classList.remove('printing-over10k-3');
     }
   </script>
 </body>
