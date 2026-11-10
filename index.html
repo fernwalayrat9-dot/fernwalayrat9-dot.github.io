@@ -1353,14 +1353,17 @@
       if(f3V) f3V.innerText = smartConvertToThaiDigits(vendorNo);
     }
 
-    function previewCurrentStepForm() {
+   function previewCurrentStepForm() {
       try {
         prepareOver10kWizardData();
+        
+        // ค้นหาฟอร์มตามขั้นตอนปัจจุบัน
         const formDiv = document.getElementById(`over10kFormArea${currentWizardStep}`);
         const previewContent = document.getElementById('previewContainerContent');
         const previewModal = document.getElementById('previewModal');
 
         if (formDiv && previewContent && previewModal) {
+          // ดึงเนื้อหาภายในมาแสดง และกำหนดสไตล์กระดาษ A4 ให้ถูกต้อง
           previewContent.innerHTML = formDiv.innerHTML;
           previewModal.classList.remove('hidden');
         } else {
