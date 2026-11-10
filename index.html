@@ -6,7 +6,6 @@
   <title>ระบบสั่งซื้อพัสดุ / วัสดุสำนักงาน - กฟส.หลังสวน</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-  
   <link href="https://fonts.googleapis.com/css2?family=Sarabun:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet">
   
   <style>
@@ -38,22 +37,13 @@
       margin: 15mm;
     }
 
-    /* CSS Print: ซ่อนส่วนที่ไม่ต้องการพิมพ์ */
     @media print {
       header, nav, main, .no-print, #adminModal, #compareModal, #wizardModal, #previewModal, #loadingOverlay, #systemClosedBanner {
         display: none !important;
       }
-      
       #printArea, #peaFormArea, #over10kFormArea1, #over10kFormArea2, #over10kFormArea3, #over10kFormArea4 {
         display: none !important;
       }
-      
-      body.printing-summary #printArea { display: block !important; }
-      body.printing-pea #peaFormArea { display: block !important; }
-      body.printing-over10k-1 #over10kFormArea1 { display: block !important; }
-      body.printing-over10k-2 #over10kFormArea2 { display: block !important; }
-      body.printing-over10k-3 #over10kFormArea3 { display: block !important; }
-      body.printing-over10k-4 #over10kFormArea4 { display: block !important; }
     }
   </style>
 </head>
@@ -210,7 +200,7 @@
       </div>
     </div>
 
-    <!-- MODAL ตรวจรับพัสดุ & เปรียบเทียบใบวางบิล (<= 10,000 บาท) -->
+    <!-- MODAL ตรวจรับพัสดุ & เปรียบเทียบใบวางบิล -->
     <div id="compareModal" class="hidden fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-[60] flex items-center justify-center p-4">
       <div class="bg-white rounded-2xl shadow-2xl max-w-5xl w-full max-h-[90vh] flex flex-col overflow-hidden">
         <div class="p-4 bg-indigo-900 text-white flex justify-between items-center">
@@ -227,42 +217,40 @@
           </div>
           <div>
             <label class="font-bold text-slate-700 block mb-1">วันที่ออกหนังสือ (ถ้ามี):</label>
-            <input type="text" id="docDateText" placeholder="เช่น ๑๗ สิงหาคม ๒๕๖๙ (เว้นว่างไว้ได้)" class="w-full p-2 border rounded bg-white">
+            <input type="text" id="docDateText" placeholder="เช่น ๑๗ สิงหาคม ๒๕๖๙" class="w-full p-2 border rounded bg-white">
           </div>
           <div>
             <label class="font-bold text-slate-700 block mb-1">ใบเสร็จ/ใบส่งของ (เล่ม/เลขที่/ลงวันที่):</label>
-            <input type="text" id="billDocInfo" placeholder="เช่น ใบเสร็จเล่มที่ ๓๕ เลขที่ ๓ ลงวันที่ ๑๗ ส.ค. ๖๙" class="w-full p-2 border rounded bg-white">
+            <input type="text" id="billDocInfo" placeholder="เช่น ใบเสร็จเล่มที่ ๓๕ เลขที่ ๓" class="w-full p-2 border rounded bg-white">
           </div>
         </div>
 
-        <!-- ช่องกรอกรหัสบัญชีและศูนย์ต้นทุน -->
         <div class="p-4 bg-blue-50 border-b grid grid-cols-1 md:grid-cols-2 gap-3 text-xs">
           <div>
             <label class="font-bold text-blue-900 block mb-1"><i class="fa-solid fa-book-bookmark mr-1"></i>รหัสบัญชี:</label>
-            <input type="text" id="inputAccountCode" placeholder="เช่น 53030010 หรือ ๑-๕: 53030020, ๖-๑๗: 53002002" class="w-full p-1.5 border rounded bg-white font-medium">
+            <input type="text" id="inputAccountCode" placeholder="เช่น 53030010" class="w-full p-1.5 border rounded bg-white font-medium">
           </div>
           <div>
-            <label class="font-bold text-blue-900 block mb-1"><i class="fa-solid fa-building-columns mr-1"></i>ศูนย์ต้นทุน (งบทำการ):</label>
-            <input type="text" id="inputCostCenter" placeholder="เช่น J31310170 หรือ J๓๑๓๑01๗0" class="w-full p-1.5 border rounded bg-white font-medium">
+            <label class="font-bold text-blue-900 block mb-1"><i class="fa-solid fa-building-columns mr-1"></i>ศูนย์ต้นทุน:</label>
+            <input type="text" id="inputCostCenter" placeholder="เช่น J31310170" class="w-full p-1.5 border rounded bg-white font-medium">
           </div>
         </div>
 
-        <!-- ช่องกรอกข้อมูลผู้ลงนามทั้ง 3 กรอบ -->
         <div class="p-4 bg-purple-50 border-b grid grid-cols-1 md:grid-cols-3 gap-3 text-xs">
           <div>
-            <label class="font-bold text-purple-900 block mb-1"><i class="fa-solid fa-user-pen mr-1"></i>1. ผู้ดำเนินการ:</label>
-            <input type="text" id="inputSignName1" placeholder="เช่น นายไฟฟ้า แรงสูง" class="w-full p-1.5 border rounded bg-white mb-1">
-            <input type="text" id="inputSignPos1" placeholder="เช่น พบช.ผสน.กฟส.ลส." class="w-full p-1.5 border rounded bg-white">
+            <label class="font-bold text-purple-900 block mb-1">1. ผู้ดำเนินการ:</label>
+            <input type="text" id="inputSignName1" class="w-full p-1.5 border rounded bg-white mb-1">
+            <input type="text" id="inputSignPos1" class="w-full p-1.5 border rounded bg-white">
           </div>
           <div>
-            <label class="font-bold text-purple-900 block mb-1"><i class="fa-solid fa-user-pen mr-1"></i>2. ผู้บังคับบัญชาชั้นต้น:</label>
-            <input type="text" id="inputSignName2" placeholder="เช่น นางสาวปลอดภัย หายห่วง" class="w-full p-1.5 border rounded bg-white mb-1">
-            <input type="text" id="inputSignPos2" placeholder="เช่น หน.ผสน.กฟส.ลส." class="w-full p-1.5 border rounded bg-white">
+            <label class="font-bold text-purple-900 block mb-1">2. ผู้บังคับบัญชาชั้นต้น:</label>
+            <input type="text" id="inputSignName2" class="w-full p-1.5 border rounded bg-white mb-1">
+            <input type="text" id="inputSignPos2" class="w-full p-1.5 border rounded bg-white">
           </div>
           <div>
-            <label class="font-bold text-purple-900 block mb-1"><i class="fa-solid fa-user-pen mr-1"></i>3. หัวหน้าหน่วยงาน:</label>
-            <input type="text" id="inputSignName3" placeholder="เช่น นายกิจการ รุ่งเรือง" class="w-full p-1.5 border rounded bg-white mb-1">
-            <input type="text" id="inputSignPos3" placeholder="เช่น ผจก.กฟส.ลส." class="w-full p-1.5 border rounded bg-white">
+            <label class="font-bold text-purple-900 block mb-1">3. หัวหน้าหน่วยงาน:</label>
+            <input type="text" id="inputSignName3" class="w-full p-1.5 border rounded bg-white mb-1">
+            <input type="text" id="inputSignPos3" class="w-full p-1.5 border rounded bg-white">
           </div>
         </div>
 
@@ -305,7 +293,7 @@
 
         <div class="p-4 bg-slate-100 border-t flex flex-col sm:flex-row justify-between items-center gap-3">
           <div id="amountWarning" class="text-xs font-bold text-amber-700 flex items-center">
-            <i class="fa-solid fa-circle-info mr-1"></i> วงเงินไม่เกิน 10,000 บาท (ออกรายงานขอความเห็นชอบได้)
+            <i class="fa-solid fa-circle-info mr-1"></i> วงเงินไม่เกิน 10,000 บาท
           </div>
           <div class="flex items-center gap-2">
             <button id="btnOver10kFlow" onclick="openWizardModal()" class="hidden px-4 py-2 bg-purple-700 hover:bg-purple-800 text-white font-semibold rounded-xl text-xs transition shadow flex items-center gap-1.5">
@@ -322,11 +310,9 @@
       </div>
     </div>
 
-    <!-- WIZARD MODAL: จัดการทีละขั้นตอนสำหรับวงเงินเกิน 10,000 บาท -->
+    <!-- WIZARD MODAL -->
     <div id="wizardModal" class="hidden fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-[70] flex items-center justify-center p-4">
       <div class="bg-white rounded-2xl shadow-2xl max-w-5xl w-full max-h-[92vh] flex flex-col overflow-hidden">
-        
-        <!-- Header & Progress Tracker -->
         <div class="p-4 bg-purple-900 text-white flex justify-between items-center shrink-0">
           <h2 class="font-bold text-base md:text-lg flex items-center">
             <i class="fa-solid fa-diagram-project mr-2 text-amber-300"></i> ขั้นตอนการจัดซื้อจัดจ้าง (วิธีเฉพาะเจาะจง > 10,000 บาท)
@@ -334,7 +320,6 @@
           <button onclick="closeWizardModal()" class="text-slate-300 hover:text-white"><i class="fa-solid fa-xmark text-xl"></i></button>
         </div>
 
-        <!-- Tracking Banner Steps Bar -->
         <div class="bg-slate-800 px-4 py-3 border-b shrink-0">
           <div class="grid grid-cols-4 gap-2 text-center text-xs font-semibold">
             <button onclick="goToStep(1)" id="stepBtn-1" class="p-2 rounded-lg bg-purple-600 text-white transition flex flex-col items-center gap-1">
@@ -356,15 +341,11 @@
           </div>
         </div>
 
-        <!-- Step Content Area -->
         <div class="flex-1 overflow-y-auto p-6 bg-slate-50">
-          
-          <!-- STEP 1 CONTAINER -->
+          <!-- STEP 1 -->
           <div id="wizardStep1" class="space-y-4">
             <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm">
-              <h3 class="font-bold text-slate-800 text-sm mb-3 flex items-center text-purple-900">
-                <i class="fa-solid fa-file-pen mr-2"></i> ขั้นตอนที่ 1: รายงานขอซื้อพัสดุ
-              </h3>
+              <h3 class="font-bold text-slate-800 text-sm mb-3 text-purple-900"><i class="fa-solid fa-file-pen mr-2"></i> ขั้นตอนที่ 1: รายงานขอซื้อพัสดุ</h3>
               <div class="grid grid-cols-1 md:grid-cols-3 gap-3 text-xs mb-4">
                 <div>
                   <label class="font-bold text-slate-700 block mb-1">วันที่รายงานขอซื้อ:</label>
@@ -372,81 +353,41 @@
                 </div>
                 <div>
                   <label class="font-bold text-slate-700 block mb-1">วงเงินรวม VAT (บาท):</label>
-                  <input type="text" id="wzAmountTotal" placeholder="เช่น 17,615.00" class="w-full p-2 border rounded bg-white font-bold text-purple-900 focus:ring-2 focus:ring-purple-600 outline-none">
+                  <input type="text" id="wzAmountTotal" class="w-full p-2 border rounded bg-white font-bold text-purple-900">
                 </div>
                 <div>
                   <label class="font-bold text-slate-700 block mb-1">ชื่อผู้ดำเนินการติดต่อ:</label>
                   <input type="text" id="wzOperatorName" value="นางสาวพรศิริ เมฆสวี" class="w-full p-2 border rounded bg-white">
                 </div>
               </div>
-
-              <div class="border-t pt-3">
-                <label class="font-bold text-purple-900 text-xs block mb-2"><i class="fa-solid fa-users mr-1"></i> รายชื่อคณะกรรมการตรวจรับ 3 ท่าน:</label>
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-3 text-xs">
-                  <div class="p-2 bg-purple-50/50 border rounded-lg">
-                    <span class="font-bold text-slate-700 block mb-1">1. ประธานกรรมการ:</span>
-                    <input type="text" id="wzCommName1" value="นายสุรศักดิ์ ยังปักษี" class="w-full p-1.5 border rounded bg-white mb-1">
-                    <input type="text" id="wzCommPos1" value="หผ.กส.กฟส.ลส." class="w-full p-1.5 border rounded bg-white">
-                  </div>
-                  <div class="p-2 bg-purple-50/50 border rounded-lg">
-                    <span class="font-bold text-slate-700 block mb-1">2. กรรมการ:</span>
-                    <input type="text" id="wzCommName2" value="นางสาวดุจฤดี เนตรสุวรรณ์" class="w-full p-1.5 border rounded bg-white mb-1">
-                    <input type="text" id="wzCommPos2" value="ชผ.บร.กฟส.ลส." class="w-full p-1.5 border rounded bg-white">
-                  </div>
-                  <div class="p-2 bg-purple-50/50 border rounded-lg">
-                    <span class="font-bold text-slate-700 block mb-1">3. กรรมการ:</span>
-                    <input type="text" id="wzCommName3" value="นายกลกิจ เลาอารีกิจ" class="w-full p-1.5 border rounded bg-white mb-1">
-                    <input type="text" id="wzCommPos3" value="ซผ.สน.กฟส.ลส." class="w-full p-1.5 border rounded bg-white">
-                  </div>
-                </div>
-              </div>
             </div>
           </div>
 
-          <!-- STEP 2 CONTAINER -->
+          <!-- STEP 2 -->
           <div id="wizardStep2" class="hidden space-y-4">
             <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm">
-              <h3 class="font-bold text-slate-800 text-sm mb-3 flex items-center text-purple-900">
-                <i class="fa-solid fa-envelope-open-text mr-2"></i> ขั้นตอนที่ 2: ออกหนังสือแจ้งให้ยื่นใบเสนอราคา
-              </h3>
+              <h3 class="font-bold text-slate-800 text-sm mb-3 text-purple-900"><i class="fa-solid fa-envelope-open-text mr-2"></i> ขั้นตอนที่ 2: หนังสือเชิญชวน</h3>
               <div class="grid grid-cols-1 md:grid-cols-3 gap-3 text-xs mb-3">
                 <div>
-                  <label class="font-bold text-slate-700 block mb-1">เลขที่หนังสือ (พิมพ์เฉพาะ 5 ตัวท้าย):</label>
-                  <div class="flex items-center">
-                    <span class="text-slate-500 font-bold mr-1">มท ๕๓๐๗.๔๖/กฟส.ลส.</span>
-                    <input type="text" id="wzInviteNo" placeholder="๔๔๕๖๘" class="w-24 p-2 border rounded bg-white font-bold">
-                  </div>
+                  <label class="font-bold text-slate-700 block mb-1">เลขที่หนังสือ (5 ตัวท้าย):</label>
+                  <input type="text" id="wzInviteNo" placeholder="๔๔๕๖๘" class="w-full p-2 border rounded bg-white font-bold">
                 </div>
                 <div>
                   <label class="font-bold text-slate-700 block mb-1">วันที่หนังสือเชิญชวน:</label>
                   <input type="text" id="wzInviteDate" placeholder="เช่น ๒๒ กันยายน ๒๕๖๙" class="w-full p-2 border rounded bg-white">
                 </div>
                 <div>
-                  <label class="font-bold text-slate-700 block mb-1">ชื่อร้านค้าผู้รับหนังสือ:</label>
+                  <label class="font-bold text-slate-700 block mb-1">ชื่อร้านค้า:</label>
                   <input type="text" id="wzShopName" placeholder="เช่น ร้านพัฒน์" class="w-full p-2 border rounded bg-white">
-                </div>
-              </div>
-
-              <!-- ช่องกรอกผู้ลงนามในหนังสือเชิญชวน (เปลี่ยนตำแหน่งเป็น textarea เพื่อให้กด Enter จัดบรรทัดได้อิสระ) -->
-              <div class="grid grid-cols-1 md:grid-cols-2 gap-3 text-xs border-t pt-3">
-                <div>
-                  <label class="font-bold text-purple-900 block mb-1"><i class="fa-solid fa-user-pen mr-1"></i>ชื่อ-นามสกุล ผู้ลงนาม:</label>
-                  <input type="text" id="wzInviteSignName" value="นายกิตติพงษ์ โสภาพงษ์" class="w-full p-2 border rounded bg-white font-medium">
-                </div>
-                <div>
-                  <label class="font-bold text-purple-900 block mb-1"><i class="fa-solid fa-id-card mr-1"></i>ตำแหน่งผู้ลงนาม (กด Enter เพื่อขึ้นบรรทัดใหม่ได้อิสระ):</label>
-                  <textarea id="wzInviteSignPos" rows="3" class="w-full p-2 border rounded bg-white font-medium outline-none focus:ring-2 focus:ring-purple-600">ผู้จัดการ การไฟฟ้าส่วนภูมิภาคสาขาหลังสวน</textarea>
                 </div>
               </div>
             </div>
           </div>
 
-          <!-- STEP 3 CONTAINER -->
+          <!-- STEP 3 -->
           <div id="wizardStep3" class="hidden space-y-4">
             <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm">
-              <h3 class="font-bold text-slate-800 text-sm mb-3 flex items-center text-purple-900">
-                <i class="fa-solid fa-square-poll-vertical mr-2"></i> ขั้นตอนที่ 3: บันทึกผลการพิจารณาและขออนุมัติฯ
-              </h3>
+              <h3 class="font-bold text-slate-800 text-sm mb-3 text-purple-900"><i class="fa-solid fa-square-poll-vertical mr-2"></i> ขั้นตอนที่ 3: บันทึกผลการพิจารณา</h3>
               <div class="grid grid-cols-1 md:grid-cols-3 gap-3 text-xs mb-3">
                 <div>
                   <label class="font-bold text-slate-700 block mb-1">วันที่บันทึกผลพิจารณา / วันอนุมัติ:</label>
@@ -461,75 +402,53 @@
                   <input type="text" id="wzVendorNo" placeholder="เช่น ๒๐๘๘๓๓" class="w-full p-2 border rounded bg-white">
                 </div>
               </div>
-              <p class="text-xs text-slate-500 italic bg-amber-50 p-2 rounded border border-amber-200">
-                * ข้อ 1.1 จะดึงวันที่จากขั้นตอนที่ 1 และ ข้อ 1.2 จะดึงเลขที่หนังสือเชิญชวนจากขั้นตอนที่ 2 มาลงให้อัตโนมัติ
-              </p>
             </div>
           </div>
 
-          <!-- STEP 4 CONTAINER -->
+          <!-- STEP 4 -->
           <div id="wizardStep4" class="hidden space-y-4">
             <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm">
-              <h3 class="font-bold text-slate-800 text-sm mb-3 flex items-center text-purple-900">
-                <i class="fa-solid fa-file-circle-check mr-2"></i> ขั้นตอนที่ 4: บันทึกผลการตรวจรับงานจัดซื้อ
-              </h3>
+              <h3 class="font-bold text-slate-800 text-sm mb-3 text-purple-900"><i class="fa-solid fa-file-circle-check mr-2"></i> ขั้นตอนที่ 4: ตรวจรับงาน</h3>
               <div class="grid grid-cols-1 md:grid-cols-3 gap-3 text-xs mb-3">
                 <div>
-                  <label class="font-bold text-slate-700 block mb-1">วันที่ลงรับใบส่งมอบงาน / วันตรวจรับ:</label>
-                  <input type="text" id="wzDeliveryDate" placeholder="เช่น ๓๐ กันยายน ๒๕๖๙" class="w-full p-2 border rounded bg-white">
+                  <label class="font-bold text-slate-700 block mb-1">วันที่ตรวจรับ:</label>
+                  <input type="text" id="wzDeliveryDate" placeholder="เช่น ๓ ตุลาคม ๒๕๖๙" class="w-full p-2 border rounded bg-white">
                 </div>
                 <div>
                   <label class="font-bold text-slate-700 block mb-1">เลขที่ใบส่งมอบงาน:</label>
                   <input type="text" id="wzDeliveryNo" placeholder="เช่น ๙๐๒ผ/๒๕๖๙" class="w-full p-2 border rounded bg-white">
                 </div>
               </div>
-              <p class="text-xs text-slate-500 italic bg-amber-50 p-2 rounded border border-amber-200">
-                * ข้อ 1.1 จะดึงวันที่อนุมัติจากขั้นตอนที่ 3 และท้ายบันทึกจะดึงรายชื่อคณะกรรมการตรวจรับทั้ง 3 ท่านมาให้อัตโนมัติ
-              </p>
             </div>
           </div>
-
         </div>
 
-        <!-- Wizard Footer Bar Buttons -->
         <div class="p-4 bg-slate-100 border-t flex justify-between items-center shrink-0">
-          <button id="btnPrevStep" onclick="changeStep(-1)" class="px-4 py-2 bg-slate-500 hover:bg-slate-600 text-white font-semibold rounded-xl text-xs transition shadow flex items-center gap-1">
-            <i class="fa-solid fa-arrow-left"></i> ย้อนกลับ
-          </button>
-          
+          <button id="btnPrevStep" onclick="changeStep(-1)" class="px-4 py-2 bg-slate-500 hover:bg-slate-600 text-white font-semibold rounded-xl text-xs transition">ย้อนกลับ</button>
           <div class="flex items-center gap-2">
-            <button onclick="previewCurrentStepForm()" class="px-4 py-2 bg-purple-700 hover:bg-purple-800 text-white font-semibold rounded-xl text-xs transition shadow flex items-center gap-1.5">
+            <button onclick="previewCurrentStepForm()" class="px-4 py-2 bg-purple-700 hover:bg-purple-800 text-white font-semibold rounded-xl text-xs transition">
               <i class="fa-solid fa-eye"></i> ดูตัวอย่างฟอร์ม (ขั้นตอนที่ <span id="currentStepNum">1</span>)
             </button>
-            <button id="btnNextStep" onclick="changeStep(1)" class="px-4 py-2 bg-indigo-700 hover:bg-indigo-800 text-white font-semibold rounded-xl text-xs transition shadow flex items-center gap-1">
-              ถัดไป <i class="fa-solid fa-arrow-right"></i>
-            </button>
+            <button id="btnNextStep" onclick="changeStep(1)" class="px-4 py-2 bg-indigo-700 hover:bg-indigo-800 text-white font-semibold rounded-xl text-xs transition">ถัดไป</button>
           </div>
         </div>
-
       </div>
     </div>
 
-    <!-- PREVIEW MODAL: แสดงตัวอย่างแบบฟอร์มบนจอให้เห็นชัดเจนก่อนพิมพ์ -->
+    <!-- PREVIEW MODAL -->
     <div id="previewModal" class="hidden fixed inset-0 bg-slate-900/70 backdrop-blur-sm z-[90] flex items-center justify-center p-4">
       <div class="bg-white rounded-2xl shadow-2xl max-w-4xl w-full max-h-[95vh] flex flex-col overflow-hidden">
         <div class="p-4 bg-slate-800 text-white flex justify-between items-center shrink-0">
-          <h3 class="font-bold text-sm md:text-base flex items-center">
-            <i class="fa-solid fa-file-lines mr-2 text-amber-300"></i> ตัวอย่างเอกสารราชการ (สามารถตรวจสอบความถูกต้องก่อนกดพิมพ์)
-          </h3>
+          <h3 class="font-bold text-sm md:text-base"><i class="fa-solid fa-file-lines mr-2 text-amber-300"></i> ตัวอย่างเอกสารราชการ</h3>
           <button onclick="closePreviewModal()" class="text-slate-300 hover:text-white"><i class="fa-solid fa-xmark text-xl"></i></button>
         </div>
 
         <div class="flex-1 overflow-y-auto p-8 bg-slate-100 flex justify-center">
-          <div id="previewContainerContent" class="bg-white p-8 shadow-md rounded border w-full max-w-[750px] min-h-[900px]">
-            <!-- เนื้อหาฟอร์มที่จะถูกดึงมาแสดงตัวอย่าง -->
-          </div>
+          <div id="previewContainerContent" class="bg-white p-8 shadow-md rounded border w-full max-w-[750px] min-h-[900px]"></div>
         </div>
 
         <div class="p-4 bg-white border-t flex justify-between items-center shrink-0">
-          <button onclick="closePreviewModal()" class="px-4 py-2 bg-slate-500 hover:bg-slate-600 text-white font-semibold rounded-xl text-xs transition">
-            <i class="fa-solid fa-arrow-left mr-1"></i> กลับไปแก้ไขข้อมูล
-          </button>
+          <button onclick="closePreviewModal()" class="px-4 py-2 bg-slate-500 hover:bg-slate-600 text-white font-semibold rounded-xl text-xs transition">กลับไปแก้ไข</button>
           <button onclick="printFromPreview()" class="px-6 py-2.5 bg-emerald-700 hover:bg-emerald-800 text-white font-semibold rounded-xl text-sm transition shadow flex items-center gap-2">
             <i class="fa-solid fa-print"></i> พิมพ์ / บันทึก PDF หน้านี้
           </button>
@@ -565,11 +484,9 @@
     <!-- Catalog -->
     <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 mb-6">
       <div class="flex flex-col md:flex-row justify-between items-center gap-4 mb-6">
-        <h2 class="text-lg font-bold text-slate-800 flex items-center">
-          <i class="fa-solid fa-list-check text-purple-700 mr-2"></i> รายการวัสดุสำนักงาน
-        </h2>
+        <h2 class="text-lg font-bold text-slate-800 flex items-center"><i class="fa-solid fa-list-check text-purple-700 mr-2"></i> รายการวัสดุสำนักงาน</h2>
         <div class="relative w-full md:w-72">
-          <input type="text" id="searchInput" oninput="filterItems()" placeholder="ค้นหาพัสดุ (พิมพ์ชื่อ หรือ ID)..." class="w-full pl-9 pr-4 py-2 border border-slate-300 rounded-xl text-sm focus:ring-2 focus:ring-purple-600 outline-none">
+          <input type="text" id="searchInput" oninput="filterItems()" placeholder="ค้นหาพัสดุ (พิมพ์ชื่อ หรือ ID)..." class="w-full pl-9 pr-4 py-2 border border-slate-300 rounded-xl text-sm outline-none">
           <i class="fa-solid fa-magnifying-glass absolute left-3 top-2.5 text-slate-400 text-sm"></i>
         </div>
       </div>
@@ -584,9 +501,7 @@
     <div class="max-w-7xl mx-auto flex flex-row justify-between items-center gap-4">
       <div>
         <div class="text-xs text-slate-500">สรุปการเลือก</div>
-        <div class="text-sm font-bold text-purple-900">
-          <span id="selectedCount">0</span> รายการ (<span id="totalQuantity">0</span> ชิ้น)
-        </div>
+        <div class="text-sm font-bold text-purple-950"><span id="selectedCount">0</span> รายการ (<span id="totalQuantity">0</span> ชิ้น)</div>
       </div>
       <button id="submitBtn" onclick="submitOrder()" class="px-6 py-2.5 bg-purple-800 hover:bg-purple-900 text-white font-semibold rounded-xl text-sm transition shadow-md flex items-center gap-2">
         <i class="fa-solid fa-paper-plane"></i> ยืนยันการส่งความต้องการ
@@ -594,9 +509,9 @@
     </div>
   </div>
 
-  <!-- AREA พิมพ์รายงานส่งร้าน (แบบสรุปยอด) -->
+  <!-- AREA พิมพ์รายงานส่งร้าน -->
   <div id="printArea" style="display: none;">
-    <div style="font-family: 'TH Sarabun PSK', 'TH SarabunIT๙', 'Sarabun', sans-serif; max-width: 800px; margin: 0 auto; padding: 10px;">
+    <div style="font-family: 'TH Sarabun PSK', sans-serif; max-width: 800px; margin: 0 auto; padding: 10px;">
       <div style="display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 15px; border-bottom: 2px solid #000; padding-bottom: 5px;">
         <h2 style="font-size: 22px; font-weight: bold; margin: 0;" id="printTitle">รายการวัสดุที่สั่งซื้อ</h2>
         <span style="font-size: 16px; font-weight: bold;" id="printSubtitle"></span>
@@ -604,352 +519,95 @@
       <table style="width: 100%; border-collapse: collapse; text-align: left; font-size: 16px;">
         <thead>
           <tr style="background-color: #f2f2f2;">
-            <th style="border: 1px solid #000; padding: 6px 8px; text-align: center; width: 60px;">ลำดับ</th>
-            <th style="border: 1px solid #000; padding: 6px 8px;">รายการ</th>
-            <th style="border: 1px solid #000; padding: 6px 8px; text-align: center; width: 100px;">หน่วย</th>
-            <th style="border: 1px solid #000; padding: 6px 8px; text-align: center; width: 80px;">รวม</th>
+            <th style="border: 1px solid #000; padding: 6px; text-align: center; width: 60px;">ลำดับ</th>
+            <th style="border: 1px solid #000; padding: 6px;">รายการ</th>
+            <th style="border: 1px solid #000; padding: 6px; text-align: center; width: 100px;">หน่วย</th>
+            <th style="border: 1px solid #000; padding: 6px; text-align: center; width: 80px;">รวม</th>
           </tr>
         </thead>
-        <tbody id="printTableBody">
-        </tbody>
+        <tbody id="printTableBody"></tbody>
       </table>
     </div>
   </div>
 
-  <!-- AREA สำหรับพิมพ์รายงานขอซื้อขอจ้าง กฟภ. (วงเงินไม่เกิน 10,000 บาท) -->
+  <!-- AREA สำหรับพิมพ์รายงาน <= 10,000 บาท -->
   <div id="peaFormArea" style="display: none;">
     <div class="pea-document" style="max-width: 750px; margin: 0 auto; padding: 10px 20px; color: #000; line-height: 1.25; font-size: 16pt;">
       <div style="margin-bottom: 10px; text-align: left;"><img src="logo.jpg" style="width: 3.94cm; height: 2.96cm;" alt="PEA Logo"></div>
-      <div style="margin-bottom: 10px;">
-        <table style="width: 100%; border: none; border-collapse: collapse; font-size: 16pt; font-family: 'TH Sarabun PSK', sans-serif;">
-          <tr>
-            <td style="width: 50%; vertical-align: top;"><strong>จาก</strong> <span id="peaFormFrom">ผสน.กฟส.ลส.</span></td>
-            <td style="width: 50%; vertical-align: top;"><strong>ถึง</strong> <span id="peaFormTo">กฟส.ลส.</span></td>
-          </tr>
-          <tr>
-            <td style="vertical-align: top;"><strong>เลขที่</strong> <span id="peaFormNo"></span></td>
-            <td style="vertical-align: top;"><strong>วันที่</strong> <span id="peaFormDate"></span></td>
-          </tr>
-        </table>
-        <table style="width: 100%; border: none; border-collapse: collapse; margin-top: 4px; font-size: 16pt; font-family: 'TH Sarabun PSK', sans-serif;">
-          <tr>
-            <td style="width: 50px; vertical-align: top; white-space: nowrap;"><strong>เรื่อง</strong></td>
-            <td style="vertical-align: top; text-align: justify;">รายงานขอความเห็นชอบการจัดซื้อจัดจ้างพัสดุ ที่เกี่ยวกับค่าใช้จ่ายในการบริหารงานที่มีวงเงินการจัดซื้อจัดจ้างครั้งหนึ่งไม่เกิน ๑๐,๐๐๐ บาท</td>
-          </tr>
-        </table>
-      </div>
-      <p style="margin: 5px 0 10px 0;"><strong>เรียน</strong> ผจก.กฟส.ลส. ผ่าน ชจก.(ล) กฟส.ลส.</p>
-      <p style="text-indent: 2.5em; margin-bottom: 10px; text-align: justify; font-size: 16pt;">
-        (๑) ด้วย <span id="peaFormDeptText">ผสน.กฟส.ลส.</span> ได้ดำเนินการจัดซื้อจัดจ้างวัสดุสำนักงานเพื่อใช้สำหรับงานด้านเอกสารของ <span id="peaFormDeptText2">กฟส.หลังสวนและ กฟส.ในสังกัด</span> จำนวน <span id="peaFormItemCount">๐</span> รายการ เป็นจำนวนเงินทั้งสิ้น <span id="peaFormTotalAmount"></span> บาท <span id="peaFormTotalBahtText"></span> โดยมีรายละเอียดดังต่อไปนี้
-      </p>
-      <table style="width: 100%; border-collapse: collapse; margin-bottom: 10px; font-size: 16pt; font-family: 'TH Sarabun PSK', sans-serif;">
+      <table style="width: 100%; font-size: 16pt;">
+        <tr>
+          <td style="width: 50%;"><strong>จาก</strong> <span id="peaFormFrom">ผสน.กฟส.ลส.</span></td>
+          <td style="width: 50%;"><strong>ถึง</strong> <span id="peaFormTo">กฟส.ลส.</span></td>
+        </tr>
+        <tr>
+          <td><strong>เลขที่</strong> <span id="peaFormNo"></span></td>
+          <td><strong>วันที่</strong> <span id="peaFormDate"></span></td>
+        </tr>
+      </table>
+      <p><strong>เรื่อง</strong> รายงานขอความเห็นชอบการจัดซื้อจัดจ้างพัสดุ วงเงินไม่เกิน ๑๐,๐๐๐ บาท</p>
+      <p><strong>เรียน</strong> ผจก.กฟส.ลส. ผ่าน ชจก.(ล) กฟส.ลส.</p>
+      <table style="width: 100%; border-collapse: collapse; margin-bottom: 10px; font-size: 16pt;">
         <thead>
-          <tr style="background-color: #fff;">
-            <th style="border: 1px solid #000; padding: 4px; text-align: center; width: 35px;">ที่</th>
-            <th style="border: 1px solid #000; padding: 4px; text-align: center;">รายการพัสดุ/งานจ้าง</th>
-            <th style="border: 1px solid #000; padding: 4px; text-align: center; width: 110px;">จำนวน/ปริมาณงาน</th>
-            <th style="border: 1px solid #000; padding: 4px; text-align: center; width: 100px;">จำนวนเงิน (บาท)</th>
-            <th style="border: 1px solid #000; padding: 4px; text-align: center; width: 180px;">ใบเสร็จรับเงิน/ใบส่งของเล่มที่/เลขที่/ลงวันที่</th>
+          <tr>
+            <th style="border: 1px solid #000; padding: 4px; text-align: center;">ที่</th>
+            <th style="border: 1px solid #000; padding: 4px; text-align: center;">รายการ</th>
+            <th style="border: 1px solid #000; padding: 4px; text-align: center;">จำนวน</th>
+            <th style="border: 1px solid #000; padding: 4px; text-align: center;">จำนวนเงิน</th>
           </tr>
         </thead>
         <tbody id="peaFormTableBody"></tbody>
-        <tfoot>
-          <tr>
-            <td colspan="3" style="border: 1px solid #000; padding: 4px;">รวมเป็นเงิน (<span id="vatMarkBox">/</span> รวม <span style="display:inline-block; width:10px; height:10px; border:1px solid #000; margin-left:3px;"></span> ไม่รวม ภาษีมูลค่าเพิ่ม)</td>
-            <td style="border: 1px solid #000; padding: 4px; text-align: right; font-weight: bold;" id="peaFormSumAmount"></td>
-            <td style="border: 1px solid #000; padding: 4px;" id="peaFormBillInfoCell"></td>
-          </tr>
-          <tr><td colspan="5" style="border: 1px solid #000; padding: 4px; text-align: center; font-weight: bold;" id="peaFormSumBahtText"></td></tr>
-        </tfoot>
       </table>
-      <p style="text-indent: 2.5em; margin-bottom: 8px; text-align: justify; font-size: 16pt;">
-        ทั้งนี้ การดำเนินการจัดซื้อจัดจ้างดังกล่าว เป็นการดำเนินการตามหนังสือคณะกรรมการวินิจฉัยปัญหาการจัดซื้อจัดจ้างและการบริหารพัสดุภาครัฐ กรมบัญชีกลาง ที่ กค (กวจ) ๐๔๐๕.๒/ว ๑๑๙ ลงวันที่ ๗ มีนาคม ๒๕๖๑ เรื่อง แนวทางการปฏิบัติในการดำเนินการจัดหาพัสดุที่เกี่ยวกับค่าใช้จ่ายในการบริหารงาน... วงเงินไม่เกิน ๑๐,๐๐๐ บาท ตาราง ๑ ลำดับที่...๑๓...
-      </p>
-      <p style="text-indent: 2.5em; margin-bottom: 20px; text-align: justify; font-size: 16pt;">จึงเรียนมาเพื่อโปรดพิจารณาให้ความเห็นชอบและให้ถือรายงานนี้เป็นหลักฐานการตรวจรับพัสดุ โดยอนุโลมพร้อมอนุมัติเบิกจ่ายเงินต่อไป</p>
-      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; font-size: 16pt; font-family: 'TH Sarabun PSK', sans-serif;">
-        <div style="border: 1px solid #000; padding: 8px;">
-          <p style="margin: 0 0 3px 0;">(๒) เรียน ผจก.กฟส.ลส.</p>
-          <p style="margin: 0 0 3px 15px;">เพื่อโปรดพิจารณา</p>
-          <p style="margin: 0 0 2px 25px;">๑.ให้ความเห็นชอบการจัดซื้อจัดจ้างดังกล่าวข้างต้น</p>
-          <p style="margin: 0 0 2px 25px;">๒.อนุมัติให้จ่ายเงิน จำนวน <span id="peaSignAmount"></span> บาท</p>
-          <p style="margin: 0 0 6px 35px;" id="peaSignBahtText"></p>
-          <p style="margin: 0 0 15px 0;" id="peaAccountCodeSection">จากรหัสบัญชี <span id="peaFormAccountCode"></span> โดยใช้งบทำการ<span id="peaFormCostCenter"></span></p>
-          <div style="text-align: center; margin-top: 25px;">
-            <p style="margin: 0;">ลงชื่อ.................................ผู้บังคับบัญชาชั้นต้น</p>
-            <p style="margin: 2px 0 0 0;" id="signName2"></p>
-            <p style="margin: 2px 0 0 0;" id="signPos2"></p>
-            <p style="margin: 2px 0 0 0;">วันที่ .......................</p>
-          </div>
-        </div>
-        <div style="display: flex; flex-direction: column; justify-content: space-between; gap: 8px;">
-          <div style="border: 1px solid #000; padding: 8px; text-align: center;">
-            <p style="margin: 0 0 15px 0; text-align: left;">ลงชื่อ.................................ผู้ดำเนินการ</p>
-            <p style="margin: 0;" id="signName1"></p>
-            <p style="margin: 2px 0 0 0;" id="signPos1"></p>
-            <p style="margin: 2px 0 0 0;">วันที่ .......................</p>
-          </div>
-          <div style="border: 1px solid #000; padding: 8px; text-align: center;">
-            <p style="margin: 0 0 3px 0; text-align: left;">(๓) - เห็นชอบและอนุมัติ</p>
-            <p style="margin: 15px 0 0 0;">ลงชื่อ.................................หัวหน้าหน่วยงาน</p>
-            <p style="margin: 2px 0 0 0;" id="signName3"></p>
-            <p style="margin: 2px 0 0 0;" id="signPos3"></p>
-            <p style="margin: 2px 0 0 0;">วันที่ .......................</p>
-          </div>
-        </div>
-      </div>
     </div>
   </div>
 
-  <!-- ========================================== -->
-  <!-- 4 แบบฟอร์มสำหรับวงเงินเกิน 10,000 บาท -->
-  <!-- ========================================== -->
-
-  <!-- ฟอร์มที่ 1: รายงานจัดซื้อ (วิธีเฉพาะเจาะจง) -->
+  <!-- ฟอร์มที่ 1 -->
   <div id="over10kFormArea1" style="display: none;">
-    <div class="pea-document" style="max-width: 750px; margin: 0 auto; padding: 10px 20px; color: #000; line-height: 1.25; font-size: 16pt; position: relative; min-height: 1050px;">
-      
-      <!-- พื้นที่เนื้อหาด้านบนทั้งหมด -->
-      <div style="flex: 1;">
-      <div style="margin-top: 15px; margin-bottom: 12px; text-align: left;"><img src="logo.jpg" style="width: 3.94cm; height: 2.96cm;" alt="PEA Logo"></div>
-        
-        <!-- ส่วนหัว บันทึกข้อความ -->
-        <table style="width: 100%; border: none; border-collapse: collapse; font-size: 16pt; font-family: 'TH Sarabun PSK', sans-serif; margin-bottom: 4px;">
-          <tr>
-            <td style="width: 50%; vertical-align: top;"><strong style="display: inline-block; width: 35px;">จาก</strong> ผสน.กฟส.ลส.</td>
-            <td style="width: 50%; vertical-align: top;"><strong style="display: inline-block; width: 35px;">ถึง</strong> ผจก.กฟส.ลส.</td>
-          </tr>
-          <tr>
-            <td style="vertical-align: top; padding-top: 4px;"><strong style="display: inline-block; width: 35px;">เลขที่</strong> ต.๑ กฟส.ลส.(สน)</td>
-            <td style="vertical-align: top; padding-top: 4px;"><strong style="display: inline-block; width: 35px;">วันที่</strong> <span class="f1-date">..........................................</span></td>
-          </tr>
-        </table>
-        <table style="width: 100%; border: none; border-collapse: collapse; font-size: 16pt; font-family: 'TH Sarabun PSK', sans-serif; margin-bottom: 6px;">
-          <tr>
-            <p style="margin: 2px 0 10px 0;"><strong style="display: inline-block; width: 35px;">เรื่อง</strong> รายงานจัดซื้อวัสดุสำนักงานและวัสดุเบ็ดเตล็ดของสำนักงาน กฟส.หลังสวนและ กฟส.ในสังกัด</p>
-          </tr>
-        </table>
-        <p style="margin: 2px 0 10px 0;"><strong style="display: inline-block; width: 35px;">เรียน</strong> ผจก.กฟส.ลส. ผ่าน ชจก.(ล) กฟส.ลส.</p>
-        
-        <!-- ย่อหน้าแรก -->
-        <p style="text-indent: 5em; text-align: justify; margin-bottom: 10px;">
-          ด้วย ผสน.กฟส.ลส. มีความประสงค์จะจัดซื้อวัสดุสำนักงานและวัสดุเบ็ดเตล็ดของสำนักงาน กฟส.หลังสวนและ กฟส.ในสังกัดโดยวิธีเฉพาะเจาะจง ตามพระราชบัญญัติการจัดซื้อจัดจ้างและการบริหารพัสดุภาครัฐ พ.ศ. ๒๕๖๐ ตามมาตรา ๕๖(๒)(ข) และตามระเบียบกระทรวงการคลังว่าด้วยการจัดซื้อจัดจ้างและการบริหารพัสดุภาครัฐ พ.ศ.๒๕๖๐ จำนวน <span class="f1-total-work">๑</span> งาน (รวม <span class="f1-total-count">๐</span> รายการ) ซึ่งมีรายละเอียดดังต่อไปนี้
-        </p>
-
-        <!-- ข้อ 1: เหตุผลและความจำเป็น -->
-        <p style="text-indent: 5em; margin: 0 0 2px 0;"><strong>๑. เหตุผลและความจำเป็นที่ต้องซื้อ/จ้าง</strong></p>
-        <p style="text-indent: 5em; margin: 0 0 2px 0;"><u style="text-decoration: underline;">เหตุผล</u> ให้ระบุเหตุผลที่จะจัดซื้อหรือจัดจ้าง</p>
-        <p style="margin: 0 0 2px 100px;">[ &nbsp; ] พัสดุไม่มีใช้หรือไม่พอใช้</p>
-        <p style="margin: 0 0 2px 100px;">[ &nbsp; ] ต้องใช้พัสดุในการบำรุงรักษา</p>
-        <p style="margin: 0 0 6px 100px;">[ &nbsp; ] อื่นๆ ระบุ...................................................................................................</p>
-        
-        <p style="text-indent: 5em; margin: 0 0 2px 0;"><u style="text-decoration: underline;">ความจำเป็น</u> ให้ระบุความจำเป็นที่จะจัดซื้อหรือจัดจ้าง</p>
-        <p style="margin: 0 0 2px 100px;">[ &nbsp; ] เพื่อให้หน่วยงานมีพัสดุสำหรับไว้ใช้งาน</p>
-        <p style="margin: 0 0 2px 100px;">[ &nbsp; ] เพื่อทดแทนพัสดุที่สิ้นเปลืองหมดไป ชำรุด หรือเสื่อมสภาพจากการใช้งานตามปกติ พัสดุเดิมสูญหาย ถูกทำลาย</p>
-        <p style="margin: 0 0 2px 100px;">[ &nbsp; ] เพื่อสำรองไว้เพื่อการทดแทนพัสดุที่ใช้อยู่ปัจจุบันไม่ให้ขาดความต่อเนื่องของการใช้งาน</p>
-        <p style="margin: 0 0 10px 100px;">[ &nbsp; ] อื่นๆ ระบุ...................................................................................................</p>
-
-        <!-- ข้อ 2: รายละเอียดของพัสดุ -->
-        <p style="text-indent: 5em; margin: 0 0 2px 0;"><strong>๒. รายละเอียดของพัสดุที่จะซื้อ/งานที่จะจ้าง</strong></p>
-        <p style="text-indent: 5em; margin: 0 0 2px 0;"><u style="text-decoration: underline;">เหตุผลการจัดซื้อ</u> ให้ระบุรายการและจำนวนวัสดุ ครุภัณฑ์และลักษณะของวัสดุ ครุภัณฑ์ที่ต้องการจะซื้อ</p>
-        <p style="margin: 0 0 8px 100px;">[ &nbsp; ] วัสดุสำนักงานและวัสดุเบ็ดเตล็ด</p>
-        
-        <table style="width: 100%; table-layout: fixed; border-collapse: collapse; margin-bottom: 10px; font-size: 16pt; font-family: 'TH Sarabun PSK', sans-serif;">
-          <thead>
-            <tr>
-              <th style="border: 1px solid #000; padding: 4px; text-align: center; width: 35px;">ที่</th>
-              <th style="border: 1px solid #000; padding: 4px; text-align: center; width: 250px;">รายการ</th>
-              <th style="border: 1px solid #000; padding: 4px; text-align: center; width: 100px;">จำนวน</th>
-              <th style="border: 1px solid #000; padding: 4px; text-align: center; width: 90px;">หน่วย</th>
-            </tr>
-          </thead>
-          <tbody class="f1-table-body"></tbody>
-        </table>
-
-        <!-- หน้า 2 -->
-        <div style="margin-top: 20px;">
-          
-          <p style="margin: 0 0 6px 100px;">[ &nbsp; ] อื่นๆ ระบุ...................................................................................................</p>
-
-          <p style="text-indent: 5em; margin: 0 0 2px 0;"><u style="text-decoration: underline;">การจัดจ้าง</u> ให้ระบุรายการและจำนวนที่ต้องการจะจัดจ้างหรือรายการที่ต้องการจ้างเหมา</p>
-          <p style="margin: 0 0 2px 100px;">[ &nbsp; ] ซ่อมครุภัณฑ์</p>
-          <p style="margin: 0 0 2px 100px;">[ &nbsp; ] จ้างเหมาบริการ</p>
-          <p style="margin: 0 0 2px 100px;">[ &nbsp; ] จ้างก่อสร้างอาคาร</p>
-          <p style="margin: 0 0 10px 100px;">[ &nbsp; ] อื่นๆ ระบุ...................................................................................................</p>
-          
-          <p style="text-indent: 5em; margin: 0 0 2px 0;"><strong>๓. ราคากลางของพัสดุที่จะซื้อ/งานที่จะจ้าง</strong></p>
-          <p style="margin: 0 0 2px 100px;">[ &nbsp; ] (๑) ราคากลางได้มาจากการคำนวณตามหลักเกณฑ์ที่คณะกรรมการกำหนด</p>
-          <p style="margin: 0 0 2px 100px;">[ &nbsp; ] (๒) ราคาที่ได้มาจากฐานข้อมูลราคาอ้างอิงของพัสดุที่กรมบัญชีกลางจัดทำ</p>
-          <p style="margin: 0 0 2px 100px;">[ &nbsp; ] (๓) ราคามาตรฐานที่สำนักงานงบประมาณหรือหน่วยงานกลางอื่นกำหนด</p>
-          <p style="margin: 0 0 2px 100px;">[ &nbsp; ] (๔) ราคาที่ได้มาจากการสืบราคาจากท้องตลาด</p>
-          <p style="margin: 0 0 2px 100px;">[ &nbsp; ] (๕) ราคาที่เคยซื้อหรือจ้างครั้งหลังสุดภายในระยะเวลาสองปีงบประมาณ</p>
-          <p style="margin: 0 0 2px 100px;">[ &nbsp; ] (๖) วิธีอื่นใดตามหลักเกณฑ์ วิธีการ หรือแนวทางปฏิบัติของ กฟภ.</p>
-          <p style="text-indent: 5em; margin-bottom: 10px;">ในกรณีที่มีราคาตาม (๑) ให้ใช้ราคาตาม (๑) ก่อน ในกรณีที่ไม่มีราคาตาม (๑) แต่มีราคาตาม (๒) หรือ (๓) ให้ใช้ราคาตาม (๒) หรือ(๓) ก่อน โดยจะใช้ราคาใดตาม (๒) หรือ(๓) ให้คำนึงถึงประโยชน์ของหน่วยงานของรัฐเป็นสำคัญในกรณีที่ไม่มีราคาตามข้อ (๑) (๒) และ (๓) ให้ใช้ราคาตาม (๔) (๕) หรือ (๖) โดยจะใช้ราคาใดตาม (๔) (๕) หรือ (๖) ให้คำนึงถึงประโยชน์ของหน่วยงานของรัฐเป็นสำคัญ</p>
-
-          <p style="text-indent: 5em; margin: 0 0 2px 0;"><strong>๔. วงเงินที่จะซื้อโดยให้ระบุวงเงินงบประมาณ (รวมภาษีมูลค่าเพิ่ม)</strong></p>
-          <p style="text-indent: 5em; margin-bottom: 10px;">เป็นเงิน <span class="f1-grand-total-text"></span> บาท (<span class="f1-baht-text"></span>)</p>
-
-          <p style="text-indent: 5em; margin: 0 0 2px 0;"><strong>๕. กำหนดเวลาที่ต้องการใช้พัสดุนั้น หรือให้งานนั้นแล้วเสร็จ</strong></p>
-           <p style="margin: 0 0 2px 100px;">[ &nbsp; ] การจัดซื้อวัสดุ ครุภัณฑ์ ให้กำหนดวันส่งมอบพัสดุ ภายใน ๑๕ วัน นับถัดจากวันที่ลงนามในรายงานขออนุมัติจัดซื้อ</p>
-           <p style="margin: 0 0 2px 100px;">[ &nbsp; ] การจัดจ้าง กำหนดวันส่งมอบงาน ภายใน......วัน นับแต่วันถัดจากวันลงนามในสัญญา/ใบสั่ง</p>
-           <p style="margin: 0 0 2px 100px;">[ &nbsp; ] นับแต่วันถัดจากวันลงนามในสัญญา/ใบสั่ง</p>
-           <p style="margin: 0 0 10px 100px;">[ &nbsp; ] นับถัดจากวันที่ได้รับหนังสือแจ้งให้เริ่มทำงาน/ส่งมอบพื้นที่</p>
-
-          <p style="text-indent: 5em; margin: 0 0 2px 0;"><strong>๖. วิธีซื้อหรือจ้าง และเหตุผลที่จะต้องซื้อหรือจ้าง โดยวิธีเจาะจง</strong></p>
-          <p style="text-indent: 5em; margin-bottom: 10px; text-align: justify;">พิจารณาเห็นสมควรดำเนินการจัดซื้อจัดจ้างโดยวิธีเฉพาะเจาะจง ตามพระราชบัญญัติการจัดซื้อจัดจ้างและการบริหารพัสดุภาครัฐ พ.ศ. ๒๕๖0 ตามมาตรา ๕๖ (๒)(ข) เนื่องจากการจัดซื้อจัดจ้างครั้งนี้มีราคาไม่เกิน ๕๐๐,๐๐๐.๐๐ บาท และดำเนินการตามระเบียบกระทรวงการคลังว่าด้วยการจัดซื้อจัดจ้างและการบริหารพัสดุภาครัฐ พ.ศ.๒๕๖๐ ข้อ ๗๙</p>
-
-          <p style="text-indent: 5em; margin: 0 0 2px 0;"><strong>๗. หลักเกณฑ์การพิจารณาการคัดเลือกข้อเสนอ</strong></p>
-          <p style="text-indent: 5em; margin-bottom: 10px;">โดยใช้เกณฑ์ราคา</p>
-
-          <p style="text-indent: 5em; margin: 0 0 2px 0;"><strong>๘. ข้อเสนออื่นๆ</strong></p>
-          <p style="text-indent: 5em; margin: 0 0 2px 0;">๘.๑ เห็นสมควรให้ <span class="f1-operator-text">นางสาวพรศิริ เมฆสวี หผ.สน.กฟส.ลส.</span> เป็นผู้ดำเนินการติดต่อตกลงราคากับผู้ประกอบการจำหน่ายโดยตรง</p>
-          <p style="text-indent: 5em; margin: 0 0 2px 0;">๘.๒ เห็นควรแต่งตั้งคณะกรรมการตรวจรับ ดังนี้</p>
-          <table style="width: 100%; border-collapse: collapse; margin-left: 5em; font-size: 16pt; font-family: 'TH Sarabun PSK', sans-serif; border: none;">
-          <tr style="border: none;">
-            <td style="border: none; padding: 2px 5px 2px 0; width: 220px; vertical-align: top;">๑) นายสุรศักดิ์ ยังปักษี</td>
-            <td style="border: none; padding: 2px 5px; width: 150px; vertical-align: top;">หผ.กส.กฟส.ลส.</td>
-            <td style="border: none; padding: 2px 5px; vertical-align: top;">ประธานกรรมการ</td>
-          </tr>
-          <tr style="border: none;">
-            <td style="border: none; padding: 2px 5px 2px 0; vertical-align: top;">๒) นางสาวดุจฤดี เนตรสุวรรณ์</td>
-            <td style="border: none; padding: 2px 5px; vertical-align: top;">ชผ.บร.กฟส.ลส.</td>
-            <td style="border: none; padding: 2px 5px; vertical-align: top;">กรรมการ</td>
-          </tr>
-          <tr style="border: none;">
-            <td style="border: none; padding: 2px 5px 2px 0; vertical-align: top;">๓) นายกลกิจ เลาอารีกิจ</td>
-            <td style="border: none; padding: 2px 5px; vertical-align: top;">ชผ.สน.กฟส.ลส.</td>
-            <td style="border: none; padding: 2px 5px; vertical-align: top;">กรรมการ</td>
-          </tr>
-          </table>
-          <p style="text-indent: 5em; margin: 0 0 10px 0;">ทั้งนี้เป็นอำนาจของ ผจก.กฟส.ลส. ตามคำสั่งมอบอำนาจอนุมัติจัดซื้อ จัดจ้าง จัดเช่า ที่ พ.(ม) ๒๘/๒๕๖๘ ลงวันที่ ๑๗ พฤศจิกายน ๒๕๖๘</p>
-
-          <p style="text-indent: 5em; margin: 0 0 2px 0;"><strong>จึงเรียนมาเพื่อโปรดพิจารณา ดังนี้</strong></p> 
-          <p style="margin: 0 0 2px 100px;" class="f1-comm-list1">๑. เห็นชอบในรายงานขอซื้อ/ขอจ้างดังกล่าวข้างต้น</p>
-          <p style="margin: 0 0 2px 100px;" class="f1-comm-list1">๒. เห็นชอบให้คณะกรรมการจัดซื้อ ตามข้อ ๘.๑ ลงนามในหนังสือถึงผู้ประกอบการจำหน่ายให้เข้ายื่นข้อเสนอ</p>
-          <p style="margin: 0 0 2px 100px;" class="f1-comm-list1">๓. อนุมัติแต่งตั้งคณะกรรมการตรวจรับ ตามข้อ ๘.๒</p>
-         
-          <div style="display: flex; justify-content: flex-start; margin-top: 80px;">
-            <div style="margin-left: 350px; text-align: center; margin-right: 50px;">
-              <p style="margin: 0;" class="f1-sign1-name">(นางสาวพรศิริ เมฆสวี)</p>
-              <p style="margin: 2px 0 0 0;" class="f1-sign1-pos">หผ.สน.กฟส.ลส.</p>
-            </div>
-          </div>
-
-          <div style="display: flex; justify-content: flex-end; margin-top: 15px;">
-            <div style="width: 50%; border: 1px solid #000; padding: 6px;">
-              <p style="margin: 0 0 5px 0;">อนุมัติ</p>
-              <div style="text-align: center; margin-top: 30px;">
-                <p style="margin: 0;">(นายกิตติพงษ์ โสภาพงษ์)</p>
-                <p style="margin: 2px 0 0 0;">ผจก.กฟส.ลส.</p>
-                <p style="margin: 2px 0 0 0;"><span class="f1-date">..........................................</span></p>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
+    <div class="pea-document" style="max-width: 750px; margin: 0 auto; padding: 10px 20px; color: #000; font-size: 16pt;">
+      <img src="logo.jpg" style="width: 3.94cm; height: 2.96cm;" alt="Logo">
+      <p>รายงานขอซื้อ (วิธีเฉพาะเจาะจง)</p>
+      <table style="width: 100%; border-collapse: collapse;"><tbody class="f1-table-body"></tbody></table>
     </div>
   </div>
-      
-<!-- ฟอร์มที่ 2: หนังสือแจ้งให้ยื่นใบเสนอราคา -->
+
+  <!-- ฟอร์มที่ 2 -->
   <div id="over10kFormArea2" style="display: none;">
-    <!-- ปรับขอบกระดาษด้านบนเป็น 4.8cm -->
-    <div class="pea-document" style="max-width: 750px; margin: 0 auto; padding: 3.5cm 20px 10px 50px; color: #000; line-height: 1.25; font-size: 16pt;">
-      
-      <!-- ตารางส่วนหัวกระดาษ -->
-<table style="width: 100%; border: none; border-collapse: collapse; font-size: 16pt; font-family: 'TH Sarabun PSK', sans-serif; margin-bottom: 10px;">
-  <tr>
-    <!-- ฝั่งซ้าย: เลขที่หนังสือ -->
-    <td style="width: 45%; vertical-align: top; padding: 0;">
-      <strong>ที่</strong> มท ๕๓๐๗.๔๖/กฟส.ลส.<span class="f2-docno">๔๔๕๖๘</span>
-    </td>
-    
-    <!-- ฝั่งขวา: ที่อยู่ (ปรับเพิ่ม text-align: right ที่ตัว td แล้วใส่ div ครอบข้อความให้ชิดซ้าย) -->
-    <td style="width: 55%; vertical-align: top; padding: 0; text-align: right;">
-      <div style="display: inline-block; text-align: left;">
-        การไฟฟ้าส่วนภูมิภาคอำเภอหลังสวน<br>
-        ๒๐ ถนนประชาราษฎร์ ตำบลขันเงิน<br>
-        อำเภอหลังสวน จังหวัดชุมพร ๘๖๑๑๐
-      </div>
-    </td>
-  </tr>
-</table>
+    <div class="pea-document" style="max-width: 750px; margin: 0 auto; padding: 3.5cm 20px 10px 50px; color: #000; font-size: 16pt;">
+      <p>หนังสือเชิญชวนเสนอราคา</p>
+      <table style="width: 100%; border-collapse: collapse;"><tbody class="f2-table-body"></tbody></table>
+    </div>
+  </div>
 
-      <!-- วันที่: ปรับให้อยู่กึ่งกลางหน้ากระดาษ -->
-      <div style="text-align: center; margin-bottom: 10px;">
-        <span class="f2-date">๒๒ กันยายน ๒๕๖๙</span>
-      </div>
-
-      <table style="width: 100%; border: none; border-collapse: collapse; font-size: 16pt; font-family: 'TH Sarabun PSK', sans-serif; margin-bottom: 10px;">
-        <tr>
-          <td style="width: 50px; vertical-align: top;"><strong>เรื่อง</strong></td>
-          <td>แจ้งให้ยื่นใบเสนอราคาวัสดุสำนักงานและวัสดุเบ็ดเตล็ด</td>
-        </tr>
-        <tr>
-          <td style="vertical-align: top;"><strong>เรียน</strong></td>
-          <td><span class="f2-shop-name">ผู้จัดการ ร้านพัฒน์</span></td>
-        </tr>
-      </table>
-
-        <p style="text-indent: 5em; text-align: justify; text-justify: distribute; word-break: break-word; margin-bottom: 10px;">
-          ด้วยการไฟฟ้าส่วนภูมิภาคสาขาหลังสวน มีความประสงค์จะจัดซื้อวัสดุสำนักงานและวัสดุเบ็ดเตล็ดของสำนักงาน กฟส.หลังสวนและ กฟส.ในสังกัด โดยวิธีเฉพาะเจาะจง และกำหนดส่งมอบงานภายใน ๑๕ วัน ตามรายละเอียดดังนี้
-        </p>
-
-        <table style="width: 100%; border-collapse: collapse; margin-bottom: 10px; font-size: 16pt; font-family: 'TH Sarabun PSK', sans-serif;">
-          <thead>
-            <tr>
-              <th style="border: 1px solid #000; padding: 4px; text-align: center; width: 35px;">ที่</th>
-              <th style="border: 1px solid #000; padding: 4px; text-align: center;">รายการพัสดุ</th>
-              <th style="border: 1px solid #000; padding: 4px; text-align: center; width: 90px;">จำนวน</th>
-              <th style="border: 1px solid #000; padding: 4px; text-align: center; width: 90px;">หน่วย</th>
-            </tr>
-          </thead>
-          <tbody class="f2-table-body"></tbody>
-        </table>
-
-        <p style="text-indent: 5em; text-align: justify; text-justify: distribute; word-break: break-word; margin-bottom: 10px;">
-          การไฟฟ้าส่วนภูมิภาคสาขาหลังสวน ได้พิจารณาแล้วเห็นว่าท่านเป็นผู้ประกอบการที่มีคุณสมบัติสามารถดำเนินการจัดหาวัสดุสำนักงานและวัสดุเบ็ดเตล็ด ดังกล่าว ได้ตามระยะเวลาที่กำหนด จึงขอให้ท่านเสนอราคาภายใน ๓ วัน หากพ้นจากกำหนดเวลาดังกล่าว จะถือว่าท่านไม่ประสงค์จะเสนอราคา
-        </p>
-        
-        <p style="text-indent: 5em; margin: 0 0 50px 0;">จึงเรียนมาเพื่อทราบและดำเนินการต่อไป</p>
-
-        <div style="text-align: center; margin-left: 50%;">
-          <p style="margin: 0;" class="f2-sign-name">(นายกิตติพงษ์ โสภาพงษ์)</p>
-          <p style="margin: 2px 0 0 0; white-space: pre-line;" class="f2-sign-pos">ผู้จัดการ การไฟฟ้าส่วนภูมิภาคสาขาหลังสวน</p>
-        </div>
-      </div>
-
-  <!-- ฟอร์มที่ 3: บันทึกผลการพิจารณาและขออนุมัติฯ -->
+  <!-- ฟอร์มที่ 3 -->
   <div id="over10kFormArea3" style="display: none;">
     <div class="pea-document" style="max-width: 750px; margin: 0 auto; padding: 2.5cm 50px 2.8cm 50px; color: #000; line-height: 1.25; font-size: 16pt; width: 210mm; min-height: 297mm; box-sizing: border-box; display: flex; flex-direction: column; justify-content: space-between; background: #fff;">
-      
-      <!-- ส่วนเนื้อหาด้านบนทั้งหมด -->
       <div>
         <div style="text-align: center; font-size: 14pt; margin-bottom: 2px;">- ๑ -</div>
         <div style="margin-top: 15px; margin-bottom: 12px; text-align: left;"><img src="logo.jpg" style="width: 3.94cm; height: 2.96cm;" alt="PEA Logo"></div>
-        <table style="width: 100%; border: none; border-collapse: collapse; font-size: 16pt; font-family: 'TH Sarabun PSK', sans-serif; margin-bottom: 5px;">
+        <table style="width: 100%; border: none; border-collapse: collapse; font-size: 16pt; margin-bottom: 5px;">
           <tr>
-            <td style="width: 50%;"><strong style="display: inline-block; width: 35px;">จาก</strong> ผสน.กฟส.ลส.</td>
-            <td style="width: 50%;"><strong style="display: inline-block; width: 35px;">ถึง</strong> ผจก.กฟส.ลส.</td>
+            <td style="width: 50%;"><strong>จาก</strong> ผสน.กฟส.ลส.</td>
+            <td style="width: 50%;"><strong>ถึง</strong> ผจก.กฟส.ลส.</td>
           </tr>
           <tr>
-            <td><strong style="display: inline-block; width: 35px;">เลขที่</strong> ต.๑ กฟส.ลส.(สน)</td>
-            <td><strong style="display: inline-block; width: 35px;">วันที่</strong> <span class="f3-date">๒๕ กันยายน ๒๕๖๙</span></td>
+            <td><strong>เลขที่</strong> ต.๑ กฟส.ลส.(สน)</td>
+            <td><strong>วันที่</strong> <span class="f3-date">๒๕ กันยายน ๒๕๖๙</span></td>
           </tr>
         </table>
-        <table style="width: 100%; border: none; border-collapse: collapse; font-size: 16pt; font-family: 'TH Sarabun PSK', sans-serif;">
+        <table style="width: 100%; border: none; border-collapse: collapse; font-size: 16pt;">
           <tr>
             <td style="width: 35px; vertical-align: top;"><strong>เรื่อง</strong></td>
             <td style="vertical-align: top; text-align: justify; padding-left: 15px;">ผลการพิจารณาและขออนุมัติจัดซื้อวัสดุสำนักงานและวัสดุเบ็ดเตล็ดของสำนักงาน กฟส.หลังสวนและ กฟส.ในสังกัด โดยวิธีเจาะจง</td>
           </tr>
         </table>
-        <p style="margin: 5px 0 10px 0;"><strong style="display: inline-block; width: 35px;">เรียน</strong> ผจก.กฟส.ลส. ผ่าน ชจก.(ล) กฟส.ลส.</p>
+        <p style="margin: 5px 0 10px 0;"><strong>เรียน</strong> ผจก.กฟส.ลส. ผ่าน ชจก.(ล) กฟส.ลส.</p>
         
         <p style="margin: 0 0 3px 0;"><strong>๑. เรื่องเดิม</strong></p>
-        <p style="text-indent: 2.5em; margin: 0 0 2px 0;">๑.๑ ตามอนุมัติ ผจก.กฟส.ลส. ลงวันที่ <span class="f3-report-date">๒๑ กันยายน ๒๕๖๙</span> เรื่องรายงานขอซื้อวัสดุสำนักงานและวัสดุเบ็ดเตล็ด</p>
+        <p style="text-indent: 2.5em; margin: 0 0 2px 0;">๑.๑ ตามอนุมัติ ผจก.กฟส.ลส. ลงวันที่ <span class="f3-report-date">๒๑ กันยายน ๒๕๖๙</span> เรื่องรายงานขอซื้อวัสดุสำนักงาน</p>
         <p style="text-indent: 2.5em; margin: 0 0 8px 0;">๑.๒ กฟส.ลส. ได้ทำหนังสือเชิญชวนให้เสนอราคา เลขที่ มท ๕๓๐๗.๔๖/กฟส.ลส.<span class="f3-invite-no">๔๔๕๖๘</span> ลงวันที่ <span class="f3-invite-date">๒๒ กันยายน ๒๕๖๙</span></p>
 
         <p style="margin: 0 0 3px 0;"><strong>๒. ข้อเท็จจริง</strong></p>
         <p style="text-indent: 2.5em; text-align: justify; margin-bottom: 5px;">
-          ๒.๑ <span class="f3-shop-name">ร้านพัฒน์</span> ได้เสนอราคาวัสดุสำนักงานและวัสดุเบ็ดเตล็ดในสำนักงานตามใบเสนอราคาลงรับเลขที่ <span class="f3-quotation-no">๘๙0๓/๒๕๖๙</span> ลงวันที่ <span class="f3-quotation-date">๒๕ กันยายน ๒๕๖๙</span> เป็นจำนวนเงินทั้งสิ้น <span class="f3-total-amount">๑๗,๖๑๕.-</span> บาท (<span class="f3-baht-text"></span>) รวมภาษีมูลค่าเพิ่ม โดยผู้เสนอราคามีคุณสมบัติตรงตามข้อกำหนด
+          ๒.๑ <span class="f3-shop-name">ร้านพัฒน์</span> ได้เสนอราคาวัสดุสำนักงานและวัสดุเบ็ดเตล็ดในสำนักงานตามใบเสนอราคาลงรับเลขที่ <span class="f3-quotation-no">๘๙0๓/๒๕๖๙</span> ลงวันที่ <span class="f3-quotation-date">๒๕ กันยายน ๒๕๖๙</span> เป็นจำนวนเงินทั้งสิ้น <span class="f3-total-amount">๑๗,๖๑๕.-</span> บาท (<span class="f3-baht-text"></span>) รวมภาษีมูลค่าเพิ่ม
         </p>
         <p style="text-indent: 2.5em; text-align: justify; margin-bottom: 8px;">
           ๒.๒ ผสน.กฟส.ลส. ได้ต่อรองราคากับผู้เสนอราคาด้วยวาจา เมื่อวันที่ <span class="f3-quotation-date">๒๕ กันยายน ๒๕๖๙</span> โดยผู้เสนอราคายยืนยันใช้ราคาเดิม ตามข้อ ๒.๑
@@ -957,13 +615,12 @@
 
         <p style="margin: 0 0 3px 0;"><strong>๓. ข้อพิจารณา</strong></p>
         <p style="text-indent: 2.5em; text-align: justify; margin-bottom: 15px;">
-          จากรายละเอียดดังกล่าวข้างต้น ผสน.กฟส.ลส. พิจารณาแล้วเห็นควรดำเนินการจัดซื้อวัสดุสำนักงานและวัสดุเบ็ดเตล็ดในสำนักงานโดยวิธีเจาะจง จาก <span class="f3-shop-name">ร้านพัฒน์</span> หมายเลขผู้ขาย <span class="f3-vendor-no">๒๐๘๘๓๓</span> และมีกำหนดส่งมอบพัสดุภายใน ๑๕ วัน นับถัดจากวันที่ลงนามในรายงานขออนุมัติจัดซื้อ
+          จากรายละเอียดดังกล่าวข้างต้น ผสน.กฟส.ลส. พิจารณาแล้วเห็นควรดำเนินการจัดซื้อจาก <span class="f3-shop-name">ร้านพัฒน์</span> หมายเลขผู้ขาย <span class="f3-vendor-no">๒๐๘๘๓๓</span> และมีกำหนดส่งมอบพัสดุภายใน ๑๕ วัน
         </p>
 
         <p style="margin-bottom: 40px;">จึงเรียนมาเพื่อโปรดพิจารณาอนุมัติ</p>
       </div>
 
-      <!-- ส่วนบล็อกลงนามด้านล่าง -->
       <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
         <div style="border: 1px solid #000; padding: 8px;">
           <p style="margin: 0 0 5px 0;">เรียน หผ.สน.</p>
@@ -979,79 +636,13 @@
           <p style="margin: 2px 0 0 0;">หผ.สน.กฟส.ลส.</p>
         </div>
       </div>
-
     </div>
   </div>
 
-  <!-- ฟอร์มที่ 4: บันทึกผลการตรวจรับงานจัดซื้อ -->
+  <!-- ฟอร์มที่ 4 -->
   <div id="over10kFormArea4" style="display: none;">
-    <div class="pea-document" style="max-width: 750px; margin: 0 auto; padding: 10px 20px; color: #000; line-height: 1.25; font-size: 16pt;">
-      <div style="text-align: center; font-size: 14pt; margin-bottom: 2px;">- ๑ -</div>
-      <div style="margin-top: 15px; margin-bottom: 12px; text-align: left;"><img src="logo.jpg" style="width: 3.94cm; height: 2.96cm;" alt="PEA Logo"></div>
-      <table style="width: 100%; border: none; border-collapse: collapse; font-size: 16pt; font-family: 'TH Sarabun PSK', sans-serif; margin-bottom: 5px;">
-        <tr>
-          <td style="width: 50%;"><strong style="display: inline-block; width: 35px;">จาก</strong> คณะกรรมการตรวจรับงาน</td>
-          <td style="width: 50%;"><strong style="display: inline-block; width: 35px;">ถึง</strong> ผจก.กฟส.ลส.</td>
-        </tr>
-        <tr>
-          <td><strong style="display: inline-block; width: 35px;">เลขที่</strong> ต.๑กฟส.ลส.(สน)</td>
-          <td><strong style="display: inline-block; width: 35px;">วันที่</strong> <span class="f4-date">๒ ตุลาคม ๒๕๖๙</span></td>
-        </tr>
-      </table>
-      <table style="width: 100%; border: none; border-collapse: collapse; font-size: 16pt; font-family: 'TH Sarabun PSK', sans-serif;">
-        <tr>
-          <td style="width: 35px; vertical-align: top;"><strong>เรื่อง</strong></td>
-          <td style="vertical-align: top; text-align: justify; padding-left: 15px;">ผลการตรวจรับงานจัดซื้อวัสดุสำนักงานและวัสดุเบ็ดเตล็ดของสำนักงาน กฟส.หลังสวนและ กฟส.ในสังกัด</td>
-        </tr>
-      </table>
-      <p style="margin: 5px 0 10px 0;"><strong style="display: inline-block; width: 35px;">เรียน</strong> ผจก.กฟส.ลส. ผ่าน ชจก.(ล) กฟส.ลส.</p>
-      
-      <p style="margin: 0 0 3px 0;"><strong>๑. เรื่องเดิม</strong></p>
-      <p style="text-indent: 2.5em; margin: 0 0 2px 0;">๑.๑ ตามอนุมัติ ผจก.กฟส.ลส. ลงวันที่ <span class="f4-approval-date">๒๕ กันยายน ๒๕๖๙</span> เรื่อง ผลการพิจารณาและขออนุมัติจัดซื้อวัสดุสำนักงานและวัสดุเบ็ดเตล็ด โดยวิธีเจาะจง</p>
-      <p style="text-indent: 2.5em; margin: 0 0 8px 0;">๑.๒ ตามใบส่งมอบของลงรับเลขที่ <span class="f4-delivery-no">๙๐๒ผ/๒๕๖๙</span> ลงวันที่ <span class="f4-delivery-date">๓๐ กันยายน ๒๕๖๙</span></p>
-
-      <p style="margin: 0 0 3px 0;"><strong>๒. ข้อเท็จจริง</strong></p>
-      <p style="text-indent: 2.5em; text-align: justify; margin-bottom: 5px;">
-        ๒.๑ คณะกรรมการตรวจได้ตรวจรับงานจัดซื้อดังกล่าวเสร็จเรียบร้อยตามเงื่อนไขการซื้อทุกประการเมื่อวันที่ <span class="f4-date">๒ ตุลาคม ๒๕๖๙</span> ผลปรากฏว่า <span class="f4-shop-name">ร้านพัฒน์</span> ได้ส่งมอบพัสดุครบถ้วนตามข้อตกลงการซื้อ
-      </p>
-      <p style="text-indent: 2.5em; text-align: justify; margin-bottom: 8px;">
-        ๒.๒ ตามคำสั่ง กฟภ. ที่ พ.(ม) ๒๘/๒๕๖๘ ลงวันที่ ๑๗ พฤศจิกายน ๒๕๖๘ ข้อ ๑ ข้อ่อย ๑.๒ (๑) ให้ ผจก.กฟส. ระดับ ๑๑ มีอำนาจในการสั่งจ่ายเงินครั้งหนึ่งมีวงเงินไม่เกิน ๒,๐๐๐,๐๐๐ บาท
-      </p>
-
-      <p style="margin: 0 0 3px 0;"><strong>๓. ข้อพิจารณา</strong></p>
-      <p style="text-indent: 2.5em; text-align: justify; margin-bottom: 5px;">
-        คณะกรรมการตรวจรับงาน พิจารณาแล้วเห็นว่า <span class="f4-shop-name">ร้านพัฒน์</span> ได้ส่งมอบพัสดุ ให้กับ กฟส.ลส. เสร็จเรียบร้อยแล้วถูกต้องตามเงื่อนไขทุกประการ จึงเห็นควรดำเนินการดังต่อไปนี้
-      </p>
-      <p style="text-indent: 2.5em; margin: 0 0 2px 0;">๓.๑ รับมอบงาน ตามข้อ ๒.๑</p>
-      <p style="text-indent: 2.5em; margin: 0 0 10px 0;">๓.๒ ขออนุมัติเบิกจ่ายเงิน ตามข้อ ๑.๒ ให้กับ <span class="f4-shop-name">ร้านพัฒน์</span> เป็นจำนวนเงิน <span class="f4-total-amount">๑๗,๖๑๕.-</span> บาท (<span class="f4-baht-text"></span>), รวมภาษีมูลค่าเพิ่ม</p>
-
-      <p style="margin-bottom: 15px;">จึงเรียนมาเพื่อโปรดพิจารณาอนุมัติ</p>
-
-      <!-- ลายเซ็นคณะกรรมการตรวจรับ 3 คน -->
-      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 15px; font-size: 16pt;">
-        <div style="text-align: center;">
-          <p style="margin: 0;">ลงชื่อ..................................................ประธานกรรมการตรวจรับ</p>
-          <p style="margin: 2px 0 0 0;" class="f4-comm1">(นายสุรศักดิ์ ยังปักษี) หผ.กส.กฟส.ลส.</p>
-        </div>
-        <div style="text-align: center;">
-          <p style="margin: 0;">ลงชื่อ..................................................กรรมการตรวจรับ</p>
-          <p style="margin: 2px 0 0 0;" class="f4-comm2">(นางสาวดุจฤดี เนตรสุวรรณ์) ชผ.บร.กฟส.ลส.</p>
-        </div>
-        <div style="text-align: center; grid-column: span 2;">
-          <p style="margin: 0;">ลงชื่อ..................................................กรรมการตรวจรับ</p>
-          <p style="margin: 2px 0 0 0;" class="f4-comm3">(นายกลกิจ เลาอารีกิจ) ซผ.สน.กฟส.ลส.</p>
-        </div>
-      </div>
-
-      <!-- กรอบอนุมัติ -->
-      <div style="border: 1px solid #000; padding: 6px;">
-        <p style="margin: 0 0 3px 0;">อนุมัติและลงนามแล้ว</p>
-        <div style="text-align: center; margin-top: 10px;">
-          <p style="margin: 0;">(นายกิตติพงษ์ โสภาพงษ์)</p>
-          <p style="margin: 2px 0 0 0;">ผจก.กฟส.ลส.</p>
-          <p style="margin: 2px 0 0 0;"><span class="f4-date">๒ ตุลาคม ๒๕๖๙</span></p>
-        </div>
-      </div>
+    <div class="pea-document" style="max-width: 750px; margin: 0 auto; padding: 10px 20px; color: #000; font-size: 16pt;">
+      <p>บันทึกผลการตรวจรับงาน</p>
     </div>
   </div>
 
@@ -1122,7 +713,7 @@
           </div>
           <div class="flex items-center space-x-1">
             <button onclick="updateQty('${item.id}', -1)" class="w-8 h-8 rounded-lg border bg-white text-slate-600 hover:bg-slate-100 flex items-center justify-center font-bold">-</button>
-            <input type="number" id="qty-${item.id}" value="${qty}" min="0" oninput="handleDirectInput('${item.id}', this.value)" class="w-12 h-8 text-center font-bold text-sm border rounded-lg focus:ring-2 focus:ring-purple-600 outline-none bg-white">
+            <input type="number" id="qty-${item.id}" value="${qty}" min="0" oninput="handleDirectInput('${item.id}', this.value)" class="w-12 h-8 text-center font-bold text-sm border rounded-lg outline-none bg-white">
             <button onclick="updateQty('${item.id}', 1)" class="w-8 h-8 rounded-lg border bg-purple-700 text-white hover:bg-purple-800 flex items-center justify-center font-bold">+</button>
           </div>
         `;
@@ -1462,7 +1053,6 @@
       });
 
       document.body.classList.add('printing-summary');
-      document.body.classList.remove('printing-pea', 'printing-over10k-1', 'printing-over10k-2', 'printing-over10k-3', 'printing-over10k-4');
       window.print();
       document.body.classList.remove('printing-summary');
     }
@@ -1576,7 +1166,7 @@
         btnPea.classList.add('hidden');
       } else {
         warningEl.className = "text-xs font-bold text-emerald-700 flex items-center";
-        warningEl.innerHTML = `<i class="fa-solid fa-circle-check mr-1"></i> วงเงินไม่เกิน 10,000 บาท (ใช้แบบฟอร์มขอความเห็นชอบได้ปกติ)`;
+        warningEl.innerHTML = `<i class="fa-solid fa-circle-check mr-1"></i> วงเงินไม่เกิน 10,000 บาท`;
         btnOver10k.classList.add('hidden');
         btnWord.classList.remove('hidden');
         btnPea.classList.remove('hidden');
@@ -1628,66 +1218,28 @@
     function preparePeaReportData() {
       let grandTotal = 0;
       compareItemsList.forEach(item => grandTotal += (item.totalAmount || 0));
-
       const selectedDept = document.getElementById('adminDeptFilter').value;
       const docNo = document.getElementById('docNoInput').value.trim();
       const docDate = document.getElementById('docDateText').value.trim();
       const billInfo = document.getElementById('billDocInfo').value.trim() || "-";
-      const vatType = document.getElementById('vatTypeSelect').value;
 
-      const rawAccountCode = document.getElementById('inputAccountCode').value.trim() || "53030010";
-      const rawCostCenter = document.getElementById('inputCostCenter').value.trim() || "J31310101";
-      const accountCode = smartConvertToThaiDigits(rawAccountCode);
-      const costCenter = rawCostCenter;
-
-      const signName1 = document.getElementById('inputSignName1').value.trim();
-      const signPos1 = document.getElementById('inputSignPos1').value.trim();
-      const signName2 = document.getElementById('inputSignName2').value.trim();
-      const signPos2 = document.getElementById('inputSignPos2').value.trim();
-      const signName3 = document.getElementById('inputSignName3').value.trim();
-      const signPos3 = document.getElementById('inputSignPos3').value.trim();
-
-      document.getElementById('signName1').innerText = signName1 ? `( ${signName1} )` : "";
-      document.getElementById('signPos1').innerText = signPos1 ? `ตำแหน่ง ${signPos1}` : "";
-      document.getElementById('signName2').innerText = signName2 ? `( ${signName2} )` : "";
-      document.getElementById('signPos2').innerText = signPos2 ? `ตำแหน่ง ${signPos2}` : "";
-      document.getElementById('signName3').innerText = signName3 ? `( ${signName3} )` : "";
-      document.getElementById('signPos3').innerText = signPos3 ? `ตำแหน่ง ${signPos3}` : "";
-
-      document.getElementById('peaFormDeptText').innerText = selectedDept !== 'ALL' ? selectedDept : "กฟส.หลังสวน";
-      document.getElementById('peaFormDeptText2').innerText = selectedDept !== 'ALL' ? selectedDept : "กฟส.หลังสวนและ กฟส.ในสังกัด";
+      document.getElementById('peaFormFrom').innerText = selectedDept !== 'ALL' ? selectedDept : "ผสน.กฟส.ลส.";
       document.getElementById('peaFormNo').innerText = docNo ? toThaiDigits(docNo) : "";
       document.getElementById('peaFormDate').innerText = docDate ? toThaiDigits(docDate) : "";
-      document.getElementById('peaFormItemCount').innerText = toThaiDigits(compareItemsList.length);
-
-      const accountCodeSection = document.getElementById('peaAccountCodeSection');
-      accountCodeSection.innerHTML = `จากรหัสบัญชี <span id="peaFormAccountCode">${accountCode}</span> โดยใช้งบทำการ<span id="peaFormCostCenter">${costCenter}</span>`;
 
       const formattedTotal = grandTotal.toLocaleString('th-TH', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
       const thaiTotalStr = grandTotal > 0 ? (toThaiDigits(formattedTotal) + '.-') : "";
-      const bahtTextStr = grandTotal > 0 ? `(${ArabicToThaiBaht(grandTotal)})` : "";
-
-      document.getElementById('peaFormTotalAmount').innerText = thaiTotalStr;
-      document.getElementById('peaFormTotalBahtText').innerText = bahtTextStr;
-      document.getElementById('peaFormSumAmount').innerText = thaiTotalStr;
-      document.getElementById('peaFormSumBahtText').innerText = bahtTextStr;
-      document.getElementById('peaSignAmount').innerText = thaiTotalStr;
-      document.getElementById('peaSignBahtText').innerText = bahtTextStr;
-      document.getElementById('vatMarkBox').innerText = vatType === 'included' ? '/' : ' ';
-      document.getElementById('peaFormBillInfoCell').innerText = billInfo;
 
       const peaTbody = document.getElementById('peaFormTableBody');
       peaTbody.innerHTML = '';
       compareItemsList.forEach((item, index) => {
         const tr = document.createElement('tr');
         const itemAmtFormatted = (item.totalAmount || 0).toLocaleString('th-TH', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-        const qtyStr = `${toThaiDigits(item.receivedQty)} ${item.unit || ''}`;
         tr.innerHTML = `
           <td style="border: 1px solid #000; padding: 4px; text-align: center;">${toThaiDigits(index + 1)}</td>
           <td style="border: 1px solid #000; padding: 4px;">${item.name}</td>
-          <td style="border: 1px solid #000; padding: 4px; text-align: center;">${qtyStr}</td>
+          <td style="border: 1px solid #000; padding: 4px; text-align: center;">${toThaiDigits(item.receivedQty)} ${item.unit || ''}</td>
           <td style="border: 1px solid #000; padding: 4px; text-align: right;">${toThaiDigits(itemAmtFormatted)}.-</td>
-          <td style="border: 1px solid #000; padding: 4px; text-align: center;">${index === 0 ? billInfo : ''}</td>
         `;
         peaTbody.appendChild(tr);
       });
@@ -1697,7 +1249,6 @@
       if (!compareItemsList || compareItemsList.length === 0) { alert("กรุณาเปิดเมนู 'ตรวจรับ & ใบวางบิล' ก่อนพิมพ์"); return; }
       preparePeaReportData();
       document.body.classList.add('printing-pea');
-      document.body.classList.remove('printing-summary', 'printing-over10k-1', 'printing-over10k-2', 'printing-over10k-3', 'printing-over10k-4');
       window.print();
       document.body.classList.remove('printing-pea');
     }
@@ -1719,12 +1270,10 @@
       URL.revokeObjectURL(url);
     }
 
-    /* --- LOGICS สำหรับ WIZARD MULTI-STEP (> 10,000 บาท) --- */
     function openWizardModal() {
       let total = 0;
       compareItemsList.forEach(item => total += item.totalAmount);
       document.getElementById('wzAmountTotal').value = total > 0 ? total.toLocaleString('th-TH', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : "";
-      
       document.getElementById('wizardModal').classList.remove('hidden');
       goToStep(1);
     }
@@ -1751,7 +1300,6 @@
 
       const btnPrev = document.getElementById('btnPrevStep');
       const btnNext = document.getElementById('btnNextStep');
-      
       btnPrev.disabled = (stepNum === 1);
       btnPrev.classList.toggle('opacity-50', stepNum === 1);
 
@@ -1764,37 +1312,19 @@
 
     function changeStep(dir) {
       const target = currentWizardStep + dir;
-      if (target >= 1 && target <= 4) {
-        goToStep(target);
-      }
+      if (target >= 1 && target <= 4) { goToStep(target); }
     }
 
     function prepareOver10kWizardData() {
-      const wzDate1 = document.getElementById('wzDate1').value.trim() || "๒ที่เรายายน ๒๕๖๙";
+      const wzDate1 = document.getElementById('wzDate1').value.trim() || "๒๑ กันยายน ๒๕๖๙";
       const operator = document.getElementById('wzOperatorName').value.trim() || "นางสาวพรศิริ เมฆสวี";
-      const cName1 = document.getElementById('wzCommName1').value.trim();
-      const cPos1 = document.getElementById('wzCommPos1').value.trim();
-      const cName2 = document.getElementById('wzCommName2').value.trim();
-      const cPos2 = document.getElementById('wzCommPos2').value.trim();
-      const cName3 = document.getElementById('wzCommName3').value.trim();
-      const cPos3 = document.getElementById('wzCommPos3').value.trim();
-
       const rawInviteNo = document.getElementById('wzInviteNo').value.trim() || "๔๔๕๖๘";
       const inviteDate = document.getElementById('wzInviteDate').value.trim() || "๒๒ กันยายน ๒๕๖๙";
       const shopName = document.getElementById('wzShopName').value.trim() || "ร้านพัฒน์";
-
-      // ดึงค่าผู้ลงนามและตำแหน่งในหนังสือเชิญชวน (รองรับการขึ้นบรรทัดใหม่จาก textarea)
-      const inviteSignName = document.getElementById('wzInviteSignName').value.trim() || "นายกิตติพงษ์ โสภาพงษ์";
-      const inviteSignPos = document.getElementById('wzInviteSignPos').value.trim() || "ผู้จัดการ การไฟฟ้าส่วนภูมิภาคสาขาหลังสวน";
-
       const considerDate = document.getElementById('wzConsiderDate').value.trim() || "๒๕ กันยายน ๒๕๖๙";
       const quotNo = document.getElementById('wzQuotNo').value.trim() || "๘๙٠๓/๒๕๖๙";
       const vendorNo = document.getElementById('wzVendorNo').value.trim() || "๒๐๘๘๓๓";
 
-      const deliDate = document.getElementById('wzDeliveryDate').value.trim() || "๓ ตุลาคม ๒๕๖๙";
-      const deliNo = document.getElementById('wzDeliveryNo').value.trim() || "๙๐๒๐/๒๕๖๙";
-
-      // ดึงค่าวงเงินที่ผู้ใช้พิมพ์ใน Step 1
       const customAmountStr = document.getElementById('wzAmountTotal').value.trim().replace(/,/g, '');
       let parsedAmount = parseFloat(customAmountStr);
       if (isNaN(parsedAmount)) parsedAmount = 0;
@@ -1803,128 +1333,24 @@
       const thaiTotalStr = parsedAmount > 0 ? (toThaiDigits(formattedTotal) + '.-') : "๐.๐๐";
       const bahtTextStr = ArabicToThaiBaht(parsedAmount);
 
-      // --- เติมฟอร์ม 1 ---
-      document.querySelectorAll('.f1-date').forEach(el => el.innerText = wzDate1);
-      const f1Work = document.querySelector('.f1-total-work');
-      if(f1Work) f1Work.innerText = toThaiDigits(1);
-      
-      const f1Count = document.querySelector('.f1-total-count');
-      if(f1Count) f1Count.innerText = toThaiDigits(compareItemsList.length);
-
-      const f1Grand = document.querySelector('.f1-grand-total-text');
-      if(f1Grand) f1Grand.innerText = toThaiDigits(formattedTotal);
-
-      const f1Baht = document.querySelector('.f1-baht-text');
-      if(f1Baht) f1Baht.innerText = bahtTextStr;
-
-      const f1Op = document.querySelector('.f1-operator-text');
-      if(f1Op) f1Op.innerText = operator + " หผ.สน.กฟส.ลส.";
-
-      const f1Sign = document.querySelector('.f1-sign1-name');
-      if(f1Sign) f1Sign.innerText = `(${operator})`;
-
-      const cList1 = document.querySelector('.f1-comm-list1');
-      if(cList1) cList1.innerText = `๑) ${cName1} ${cPos1} ประธานกรรมการ`;
-      
-      const cList2 = document.querySelector('.f1-comm-list2');
-      if(cList2) cList2.innerText = `๒) ${cName2} ${cPos2} กรรมการ`;
-
-      const cList3 = document.querySelector('.f1-comm-list3');
-      if(cList3) cList3.innerText = `๓) ${cName3} ${cPos3} กรรมการ`;
-
-      document.querySelectorAll('.f1-table-body').forEach(tbody => {
-        tbody.innerHTML = '';
-        compareItemsList.forEach((item, idx) => {
-          const tr = document.createElement('tr');
-          tr.innerHTML = `
-            <td style="border: 1px solid #000; padding: 4px; text-align: center;">${toThaiDigits(idx + 1)}</td>
-            <td style="border: 1px solid #000; padding: 4px;">${item.name}</td>
-            <td style="border: 1px solid #000; padding: 4px; text-align: center;">${toThaiDigits(item.orderedQty)}</td>
-            <td style="border: 1px solid #000; padding: 4px; text-align: center;">${item.unit || ''}</td>
-          `;
-          tbody.appendChild(tr);
-        });
-      });
-
-      // --- เติมฟอร์ม 2 ---
-      document.querySelectorAll('.f2-docno').forEach(el => el.innerText = smartConvertToThaiDigits(rawInviteNo));
-      document.querySelectorAll('.f2-date').forEach(el => el.innerText = inviteDate);
-      document.querySelectorAll('.f2-shop-name').forEach(el => el.innerText = `ผู้จัดการ ${shopName}`);
-      
-      // อัปเดตชื่อผู้ลงนามและตำแหน่งในหนังสือเชิญชวน (ฟอร์ม 2) พร้อมรองรับการขึ้นบรรทัดใหม่
-      document.querySelectorAll('.f2-sign-name').forEach(el => el.innerText = `(${inviteSignName})`);
-      document.querySelectorAll('.f2-sign-pos').forEach(el => el.innerText = inviteSignPos);
-
-      document.querySelectorAll('.f2-table-body').forEach(tbody => {
-        tbody.innerHTML = '';
-        compareItemsList.forEach((item, idx) => {
-          const tr = document.createElement('tr');
-          tr.innerHTML = `
-            <td style="border: 1px solid #000; padding: 4px; text-align: center;">${toThaiDigits(idx + 1)}</td>
-            <td style="border: 1px solid #000; padding: 4px;">${item.name}</td>
-            <td style="border: 1px solid #000; padding: 4px; text-align: center;">${toThaiDigits(item.orderedQty)}</td>
-            <td style="border: 1px solid #000; padding: 4px; text-align: center;">${item.unit || ''}</td>
-          `;
-          tbody.appendChild(tr);
-        });
-      });
-
-      // --- เติมฟอร์ม 3 ---
       document.querySelectorAll('.f3-date').forEach(el => el.innerText = considerDate);
       const f3RepDate = document.querySelector('.f3-report-date');
       if(f3RepDate) f3RepDate.innerText = wzDate1;
-
       const f3InvNo = document.querySelector('.f3-invite-no');
       if(f3InvNo) f3InvNo.innerText = smartConvertToThaiDigits(rawInviteNo);
-
       const f3InvDate = document.querySelector('.f3-invite-date');
       if(f3InvDate) f3InvDate.innerText = inviteDate;
-
       document.querySelectorAll('.f3-shop-name').forEach(el => el.innerText = shopName);
-      
       const f3QNo = document.querySelector('.f3-quotation-no');
       if(f3QNo) f3QNo.innerText = smartConvertToThaiDigits(quotNo);
-
       const f3QDate = document.querySelector('.f3-quotation-date');
       if(f3QDate) f3QDate.innerText = considerDate;
-
       const f3Tot = document.querySelector('.f3-total-amount');
       if(f3Tot) f3Tot.innerText = thaiTotalStr;
-
       const f3B = document.querySelector('.f3-baht-text');
       if(f3B) f3B.innerText = bahtTextStr;
-
       const f3V = document.querySelector('.f3-vendor-no');
       if(f3V) f3V.innerText = smartConvertToThaiDigits(vendorNo);
-
-      const f3Op = document.querySelector('.f3-operator-name');
-      if(f3Op) f3Op.innerText = `(${operator})`;
-
-      // --- เติมฟอร์ม 4 ---
-      document.querySelectorAll('.f4-date').forEach(el => el.innerText = deliDate);
-      
-      const f4AppDate = document.querySelector('.f4-approval-date');
-      if(f4AppDate) f4AppDate.innerText = considerDate;
-
-      const f4DelNo = document.querySelector('.f4-delivery-no');
-      if(f4DelNo) f4DelNo.innerText = smartConvertToThaiDigits(deliNo);
-
-      const f4DelDate = document.querySelector('.f4-delivery-date');
-      if(f4DelDate) f4DelDate.innerText = deliDate;
-
-      document.querySelectorAll('.f4-shop-name').forEach(el => el.innerText = shopName);
-      
-      document.querySelectorAll('.f4-total-amount').forEach(el => el.innerText = thaiTotalStr);
-      document.querySelectorAll('.f4-baht-text').forEach(el => el.innerText = bahtTextStr);
-
-      const f4C1 = document.querySelector('.f4-comm1');
-      if(f4C1) f4C1.innerText = `(${cName1}) ${cPos1}`;
-
-      const f4C2 = document.querySelector('.f4-comm2');
-      if(f4C2) f4C2.innerText = `(${cName2}) ${cPos2}`;
-
-      const f4C3 = document.querySelector('.f4-comm3');
-      if(f4C3) f4C3.innerText = `(${cName3}) ${cPos3}`;
     }
 
     function previewCurrentStepForm() {
@@ -1951,9 +1377,7 @@
     }
 
     function printFromPreview() {
-      // ดึงเนื้อหาเฉพาะจากกล่องพรีวิวมาพิมพ์โดยตรง
       const previewContent = document.getElementById('previewContainerContent').innerHTML;
-      
       const printWindow = window.open('', '_blank');
       printWindow.document.write(`
         <html>
@@ -1966,14 +1390,8 @@
                 font-weight: normal;
                 font-style: normal;
               }
-              @font-face {
-                font-family: 'TH Sarabun PSK';
-                src: local('TH Sarabun PSK Bold'), local('THSarabunPSK-Bold');
-                font-weight: bold;
-                font-style: normal;
-              }
               body {
-                font-family: 'TH Sarabun PSK', 'TH SarabunIT๙', 'Sarabun', sans-serif;
+                font-family: 'TH Sarabun PSK', sans-serif;
                 font-size: 16pt;
                 color: #000;
                 line-height: 1.25;
@@ -1981,10 +1399,7 @@
                 padding: 15mm;
                 background: #fff;
               }
-              @page {
-                size: A4;
-                margin: 15mm;
-              }
+              @page { size: A4; margin: 15mm; }
               img { max-width: 100%; height: auto; }
             </style>
           </head>
@@ -1995,9 +1410,12 @@
                 window.print();
                 window.close();
               };
-            </script>
+            <\/script>
           </body>
         </html>
       `);
       printWindow.document.close();
     }
+  </script>
+</body>
+</html>
