@@ -1961,10 +1961,47 @@
     }
 
     function printFromPreview() {
-      document.body.classList.remove('printing-summary', 'printing-pea', 'printing-over10k-1', 'printing-over10k-2', 'printing-over10k-3', 'printing-over10k-4');
-      document.body.classList.add(`printing-over10k-${currentWizardStep}`);
-      window.print();
-      document.body.classList.remove(`printing-over10k-${currentWizardStep}`);
+      // 1. ดึงเนื้อหาจากในกล่องพรีวิว
+      const previewContent = document.getElementById('previewContainerContent').innerHTML;
+      
+      // 2. เปิดหน้าต่างพิมพ์ใหม่ (Print Window) และยัดเนื้อหาลงไปตรงๆ
+      const printWindow = window.open('', '_blank');
+      printWindow.document.write(`
+        <html>
+          <head>
+            <title>พิมพ์เอกสารราชการ</title>
+            <style>
+              @font-face {
+                font-family: 'TH Sarabun PSK';
+                src: local('TH Sarabun PSK'), local('THSarabunPSK');
+                font-weight: normal;
+                font-style: normal;
+              }
+              body {
+                font-family: 'TH Sarabun PSK', sans-serif;
+                font-size: 16pt;
+                color: #000;
+                line-height: 1.25;
+                margin: 0;
+                padding: 15mm;
+                background: #fff;
+              }
+              @page { size: A4; margin: 15mm; }
+              img { max-width: 100%; height: auto; }
+            </style>
+          </head>
+          <body>
+            ${previewContent}
+            <script>
+              window.onload = function() {
+                window.print();
+                window.close();
+              };
+            <\/script>
+          </body>
+        </html>
+      `);
+      printWindow.document.close();
     }
   </script>
 </body>
