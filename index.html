@@ -157,26 +157,26 @@
             </div>
 
             <div class="overflow-x-auto border rounded-xl">
-              <table class="w-full text-sm text-left text-slate-600">
-                <thead class="text-xs uppercase bg-slate-100 text-slate-700">
-                  <tr>
-                    <th class="p-3 text-center w-10">
-                      <input type="checkbox" id="selectAllCheckbox" onchange="toggleSelectAllRows(this.checked)" class="w-4 h-4 text-purple-600 rounded focus:ring-purple-500 cursor-pointer">
-                    </th>
-                    <th class="p-3">วัน-เวลา</th>
-                    <th class="p-3">แผนก/งาน</th>
-                    <th class="p-3">รอบเดือน</th>
-                    <th class="p-3">รายการพัสดุ</th>
-                    <th class="p-3 text-center">จำนวน</th>
-                    <th class="p-3 text-center">หน่วยนับ</th>
-                    <th class="p-3 text-center">จัดการ</th>
-                  </tr>
-                </thead>
-                <tbody id="adminOrdersTable">
-                  <tr><td colspan="8" class="text-center py-4 text-slate-400">กำลังโหลดข้อมูล...</td></tr>
-                </tbody>
-              </table>
-            </div>
+            <table class="w-full text-sm text-left text-slate-600">
+              <thead class="text-xs uppercase bg-slate-100 text-slate-700">
+                <tr>
+                  <th class="p-3 text-center w-10">
+                    <input type="checkbox" id="selectAllCheckbox" onchange="toggleSelectAllRows(this.checked)" class="w-4 h-4 text-purple-600 rounded focus:ring-purple-500 cursor-pointer">
+                  </th>
+                  <th class="p-3">วัน-เวลา</th>
+                  <th class="p-3">แผนก/งาน</th>
+                  <th class="p-3">รอบเดือน</th>
+                  <th class="p-3">รายการพัสดุ</th>
+                  <th class="p-3 text-center">จำนวน</th>
+                  <th class="p-3 text-center">หน่วยนับ</th>
+                  <th class="p-3 text-center">จัดการ</th>
+                </tr>
+              </thead>
+              <tbody id="adminOrdersTable">
+                <tr><td colspan="8" class="text-center py-4 text-slate-400">กำลังโหลดข้อมูล...</td></tr>
+              </tbody>
+            </table>
+          </div>
           </div>
 
           <!-- Add Item Tab -->
@@ -1391,7 +1391,6 @@
         tableBody.appendChild(tr);
       });
     }
-
     function toggleSelectAllRows(isChecked) {
       const checkboxes = document.querySelectorAll('.row-checkbox');
       checkboxes.forEach(cb => cb.checked = isChecked);
@@ -1537,7 +1536,7 @@ function buildCompareList() {
         orderedQty: summaryMap[name].orderedQty,
         receivedQty: summaryMap[name].orderedQty,
         isMatch: true,
-        isSelected: true, // ค่าเริ่มต้นให้เลือกทุกรายการ
+        isSelected: true, // เลือกไว้เป็นค่าเริ่มต้น
         unit: summaryMap[name].unit,
         unitPrice: 0,
         totalAmount: 0
@@ -1552,7 +1551,7 @@ function buildCompareList() {
         tr.className = "border-b hover:bg-slate-50";
         tr.innerHTML = `
           <td class="p-2 border text-center">
-            <input type="checkbox" ${item.isSelected ? 'checked' : ''} onchange="handleItemSelect(${index}, this.checked)" class="compare-item-checkbox w-4 h-4 text-purple-600 rounded focus:ring-purple-500 cursor-pointer">
+            <input type="checkbox" ${item.isSelected !== false ? 'checked' : ''} onchange="handleItemSelect(${index}, this.checked)" class="compare-item-checkbox w-4 h-4 text-purple-600 rounded focus:ring-purple-500 cursor-pointer">
           </td>
           <td class="p-2 border text-center font-semibold">${index + 1}</td>
           <td class="p-2 border font-medium text-slate-800">${item.name}</td>
@@ -1579,6 +1578,17 @@ function buildCompareList() {
       calculateCompareTotals();
     }
 
+    function handleItemSelect(index, isChecked) {
+      compareItemsList[index].isSelected = isChecked;
+      calculateCompareTotals();
+    }
+
+    function toggleSelectAllCompare(isChecked) {
+      compareItemsList.forEach(item => item.isSelected = isChecked);
+      const checkboxes = document.querySelectorAll('.compare-item-checkbox');
+      checkboxes.forEach(cb => cb.checked = isChecked);
+      calculateCompareTotals();
+    }
     function handleItemSelect(index, isChecked) {
       compareItemsList[index].isSelected = isChecked;
       calculateCompareTotals();
