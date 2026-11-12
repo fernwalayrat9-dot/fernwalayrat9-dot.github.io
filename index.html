@@ -157,26 +157,26 @@
             </div>
 
             <div class="overflow-x-auto border rounded-xl">
-            <table class="w-full text-sm text-left text-slate-600">
-              <thead class="text-xs uppercase bg-slate-100 text-slate-700">
-                <tr>
-                  <th class="p-3 text-center w-10">
-                    <input type="checkbox" id="selectAllCheckbox" onchange="toggleSelectAllRows(this.checked)" class="w-4 h-4 text-purple-600 rounded focus:ring-purple-500 cursor-pointer">
-                  </th>
-                  <th class="p-3">วัน-เวลา</th>
-                  <th class="p-3">แผนก/งาน</th>
-                  <th class="p-3">รอบเดือน</th>
-                  <th class="p-3">รายการพัสดุ</th>
-                  <th class="p-3 text-center">จำนวน</th>
-                  <th class="p-3 text-center">หน่วยนับ</th>
-                  <th class="p-3 text-center">จัดการ</th>
-                </tr>
-              </thead>
-              <tbody id="adminOrdersTable">
-                <tr><td colspan="8" class="text-center py-4 text-slate-400">กำลังโหลดข้อมูล...</td></tr>
-              </tbody>
-            </table>
-          </div>
+              <table class="w-full text-sm text-left text-slate-600">
+                <thead class="text-xs uppercase bg-slate-100 text-slate-700">
+                  <tr>
+                    <th class="p-3 text-center w-10">
+                      <input type="checkbox" id="selectAllCheckbox" onchange="toggleSelectAllRows(this.checked)" class="w-4 h-4 text-purple-600 rounded focus:ring-purple-500 cursor-pointer">
+                    </th>
+                    <th class="p-3">วัน-เวลา</th>
+                    <th class="p-3">แผนก/งาน</th>
+                    <th class="p-3">รอบเดือน</th>
+                    <th class="p-3">รายการพัสดุ</th>
+                    <th class="p-3 text-center">จำนวน</th>
+                    <th class="p-3 text-center">หน่วยนับ</th>
+                    <th class="p-3 text-center">จัดการ</th>
+                  </tr>
+                </thead>
+                <tbody id="adminOrdersTable">
+                  <tr><td colspan="8" class="text-center py-4 text-slate-400">กำลังโหลดข้อมูล...</td></tr>
+                </tbody>
+              </table>
+            </div>
           </div>
 
           <!-- Add Item Tab -->
@@ -284,20 +284,17 @@
         <div class="flex-1 overflow-y-auto p-4">
           <table class="w-full text-xs text-left text-slate-600 border border-collapse">
             <thead class="bg-slate-100 text-slate-700 uppercase font-bold border-b">
-  <tr>
-    <th class="p-2 border text-center w-12">
-      <input type="checkbox" id="selectAllCompare" checked onchange="toggleSelectAllCompare(this.checked)" class="w-4 h-4 text-purple-600 rounded focus:ring-purple-500 cursor-pointer" title="เลือกทั้งหมด">
-    </th>
-    <th class="p-2 border text-center w-12">ลำดับ</th>
-    <th class="p-2 border">รายการพัสดุ</th>
-    <th class="p-2 border text-center">สั่งซื้อ</th>
-    <th class="p-2 border text-center">สถานะตรวจรับ</th>
-    <th class="p-2 border text-center w-20">รับจริง</th>
-    <th class="p-2 border text-center">หน่วย</th>
-    <th class="p-2 border text-center w-28">ราคา/หน่วย (บาท)</th>
-    <th class="p-2 border text-right w-28">จำนวนเงิน (บาท)</th>
-  </tr>
-</thead>
+              <tr>
+                <th class="p-2 border text-center">ลำดับ</th>
+                <th class="p-2 border">รายการพัสดุ</th>
+                <th class="p-2 border text-center">สั่งซื้อ</th>
+                <th class="p-2 border text-center">สถานะตรวจรับ</th>
+                <th class="p-2 border text-center w-20">รับจริง</th>
+                <th class="p-2 border text-center">หน่วย</th>
+                <th class="p-2 border text-center w-28">ราคา/หน่วย (บาท)</th>
+                <th class="p-2 border text-right w-28">จำนวนเงิน (บาท)</th>
+              </tr>
+            </thead>
             <tbody id="compareTableBody">
               <tr><td colspan="8" class="text-center py-4 text-slate-400">กรุณาเลือกตัวกรองแผนกหรือรอบเดือน...</td></tr>
             </tbody>
@@ -1391,6 +1388,7 @@
         tableBody.appendChild(tr);
       });
     }
+
     function toggleSelectAllRows(isChecked) {
       const checkboxes = document.querySelectorAll('.row-checkbox');
       checkboxes.forEach(cb => cb.checked = isChecked);
@@ -1520,7 +1518,7 @@
 
     function closeCompareModal() { document.getElementById('compareModal').classList.add('hidden'); }
 
-function buildCompareList() {
+    function buildCompareList() {
       const summaryMap = {};
       currentFilteredOrders.forEach(order => {
         const name = order.itemName;
@@ -1536,7 +1534,6 @@ function buildCompareList() {
         orderedQty: summaryMap[name].orderedQty,
         receivedQty: summaryMap[name].orderedQty,
         isMatch: true,
-        isSelected: true, // เลือกไว้เป็นค่าเริ่มต้น
         unit: summaryMap[name].unit,
         unitPrice: 0,
         totalAmount: 0
@@ -1550,9 +1547,6 @@ function buildCompareList() {
         const tr = document.createElement('tr');
         tr.className = "border-b hover:bg-slate-50";
         tr.innerHTML = `
-          <td class="p-2 border text-center">
-            <input type="checkbox" ${item.isSelected !== false ? 'checked' : ''} onchange="handleItemSelect(${index}, this.checked)" class="compare-item-checkbox w-4 h-4 text-purple-600 rounded focus:ring-purple-500 cursor-pointer">
-          </td>
           <td class="p-2 border text-center font-semibold">${index + 1}</td>
           <td class="p-2 border font-medium text-slate-800">${item.name}</td>
           <td class="p-2 border text-center font-bold text-slate-600">${item.orderedQty}</td>
@@ -1578,38 +1572,36 @@ function buildCompareList() {
       calculateCompareTotals();
     }
 
-    function handleItemSelect(index, isChecked) {
-      compareItemsList[index].isSelected = isChecked;
-      calculateCompareTotals();
+    function handleMatchChange(index, value) {
+      const isMatch = (value === 'true');
+      compareItemsList[index].isMatch = isMatch;
+      if (isMatch) compareItemsList[index].receivedQty = compareItemsList[index].orderedQty;
+      renderCompareTable();
     }
 
-    function toggleSelectAllCompare(isChecked) {
-      compareItemsList.forEach(item => item.isSelected = isChecked);
-      const checkboxes = document.querySelectorAll('.compare-item-checkbox');
-      checkboxes.forEach(cb => cb.checked = isChecked);
-      calculateCompareTotals();
-    }
-    function handleItemSelect(index, isChecked) {
-      compareItemsList[index].isSelected = isChecked;
-      calculateCompareTotals();
+    function handleReceivedQtyInput(index, val) {
+      let q = parseInt(val, 10);
+      compareItemsList[index].receivedQty = (isNaN(q) || q < 0) ? 0 : q;
+      updateItemTotal(index);
     }
 
-    function toggleSelectAllCompare(isChecked) {
-      compareItemsList.forEach(item => item.isSelected = isChecked);
-      const checkboxes = document.querySelectorAll('.compare-item-checkbox');
-      checkboxes.forEach(cb => cb.checked = isChecked);
+    function handleUnitPriceInput(index, val) {
+      let p = parseFloat(val);
+      compareItemsList[index].unitPrice = (isNaN(p) || p < 0) ? 0 : p;
+      updateItemTotal(index);
+    }
+
+    function updateItemTotal(index) {
+      const item = compareItemsList[index];
+      item.totalAmount = item.receivedQty * item.unitPrice;
+      const el = document.getElementById(`itemTotal-${index}`);
+      if (el) el.innerText = item.totalAmount.toLocaleString('th-TH', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
       calculateCompareTotals();
     }
 
     function calculateCompareTotals() {
       let grandTotal = 0;
-      // คำนวณเฉพาะรายการที่ถูกติ๊กเลือก (isSelected === true) เท่านั้น
-      compareItemsList.forEach(item => {
-        if (item.isSelected) {
-          grandTotal += (item.totalAmount || 0);
-        }
-      });
-
+      compareItemsList.forEach(item => grandTotal += (item.totalAmount || 0));
       document.getElementById('grandTotalText').innerText = grandTotal.toLocaleString('th-TH', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
       document.getElementById('bahtTextThai').innerText = `(${ArabicToThaiBaht(grandTotal)})`;
 
@@ -1633,11 +1625,51 @@ function buildCompareList() {
       }
     }
 
+    function ArabicToThaiBaht(numbers) {
+      numbers = Number(numbers).toFixed(2);
+      const numberArray = numbers.split('.');
+      let baht = numberArray[0];
+      let satang = numberArray[1];
+      if (Number(numbers) === 0) return 'ศูนย์บาทถ้วน';
+      const thaiNumbers = ["ศูนย์", "หนึ่ง", "สอง", "สาม", "สี่", "ห้า", "หก", "เจ็ด", "แปด", "เก้า"];
+      const thaiDigits = ["", "สิบ", "ร้อย", "พัน", "หมื่น", "แสน", "ล้าน"];
+      function readNumber(numStr) {
+        let text = "";
+        const len = numStr.length;
+        for (let i = 0; i < len; i++) {
+          let digit = parseInt(numStr.charAt(i), 10);
+          let pos = len - i - 1;
+          if (digit !== 0) {
+            if (pos === 1 && digit === 1) text += "สิบ";
+            else if (pos === 1 && digit === 2) text += "ยี่สิบ";
+            else if (pos === 0 && digit === 1 && len > 1) text += "เอ็ด";
+            else text += thaiNumbers[digit] + thaiDigits[pos];
+          }
+        }
+        return text;
+      }
+      let bahtText = readNumber(baht) + "บาท";
+      let satangText = (parseInt(satang, 10) === 0) ? "ถ้วน" : readNumber(satang) + "สตางค์";
+      return bahtText + satangText;
+    }
+
+    function toThaiDigits(numStr) {
+      if (!numStr && numStr !== 0) return '';
+      const thaiDigits = ['๐', '๑', '๒', '๓', '๔', '๕', '๖', '๗', '๘', '๙'];
+      return String(numStr).replace(/[0-9]/g, function(w) { return thaiDigits[parseInt(w, 10)]; });
+    }
+
+    function smartConvertToThaiDigits(str) {
+      if (!str) return '';
+      return String(str).replace(/[0-9]/g, function(w) {
+        const thaiDigits = ['๐', '๑', '๒', '๓', '๔', '๕', '๖', '๗', '๘', '๙'];
+        return thaiDigits[parseInt(w, 10)];
+      });
+    }
+
     function preparePeaReportData() {
-      // กรองเอาเฉพาะรายการที่ถูกติ๊กเลือก (isSelected) มาสร้างฟอร์ม
-      const activeItems = compareItemsList.filter(item => item.isSelected);
       let grandTotal = 0;
-      activeItems.forEach(item => grandTotal += (item.totalAmount || 0));
+      compareItemsList.forEach(item => grandTotal += (item.totalAmount || 0));
 
       const selectedDept = document.getElementById('adminDeptFilter').value;
       const docNo = document.getElementById('docNoInput').value.trim();
@@ -1668,7 +1700,7 @@ function buildCompareList() {
       document.getElementById('peaFormDeptText2').innerText = selectedDept !== 'ALL' ? selectedDept : "กฟส.หลังสวนและ กฟส.ในสังกัด";
       document.getElementById('peaFormNo').innerText = docNo ? toThaiDigits(docNo) : "";
       document.getElementById('peaFormDate').innerText = docDate ? toThaiDigits(docDate) : "";
-      document.getElementById('peaFormItemCount').innerText = toThaiDigits(activeItems.length);
+      document.getElementById('peaFormItemCount').innerText = toThaiDigits(compareItemsList.length);
 
       const accountCodeSection = document.getElementById('peaAccountCodeSection');
       accountCodeSection.innerHTML = `จากรหัสบัญชี <span id="peaFormAccountCode">${accountCode}</span> โดยใช้งบทำการ<span id="peaFormCostCenter">${costCenter}</span>`;
@@ -1688,7 +1720,7 @@ function buildCompareList() {
 
       const peaTbody = document.getElementById('peaFormTableBody');
       peaTbody.innerHTML = '';
-      activeItems.forEach((item, index) => {
+      compareItemsList.forEach((item, index) => {
         const tr = document.createElement('tr');
         const itemAmtFormatted = (item.totalAmount || 0).toLocaleString('th-TH', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
         const qtyStr = `${toThaiDigits(item.receivedQty)} ${item.unit || ''}`;
