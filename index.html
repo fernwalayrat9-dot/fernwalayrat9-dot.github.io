@@ -83,8 +83,8 @@
         <a href="#order-form" class="px-4 py-2 bg-amber-400 hover:bg-amber-500 text-slate-900 font-semibold rounded-lg text-sm transition shadow">
           <i class="fa-solid fa-cart-plus mr-1"></i> กรอกความต้องการ
         </a>
-        <button onclick="toggleAdminModal()" class="px-4 py-2 bg-white/10 hover:bg-white/20 text-white rounded-lg text-sm border border-white/20 transition">
-          <i class="fa-solid fa-user-gear mr-1"></i> ผู้ดูแลระบบ
+        <button onclick="openAdminCheckModal()" class="px-4 py-2 bg-white/10 hover:bg-white/20 text-white rounded-lg text-sm border border-white/20 transition">
+          <i class="fa-solid fa-list-check mr-1"></i> ดูข้อมูลการสั่งซื้อ
         </button>
       </div>
     </div>
@@ -95,24 +95,15 @@
   </div>
 
   <main class="max-w-7xl mx-auto px-4 py-6 no-print">
-    <!-- Admin Modal -->
+    <!-- Admin Orders Modal (เปิดดูได้ทันทีไม่ต้องใส่รหัสผ่าน) -->
     <div id="adminModal" class="hidden fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center p-4">
       <div class="bg-white rounded-2xl shadow-2xl max-w-6xl w-full max-h-[90vh] flex flex-col overflow-hidden">
         <div class="p-4 bg-slate-800 text-white flex justify-between items-center">
-          <h2 class="font-bold text-lg"><i class="fa-solid fa-sliders mr-2"></i>เมนูผู้ดูแลระบบ (Admin)</h2>
+          <h2 class="font-bold text-lg"><i class="fa-solid fa-clipboard-list mr-2"></i>ข้อมูลการสั่งซื้อพัสดุทั้งหมด</h2>
           <button onclick="toggleAdminModal()" class="text-slate-400 hover:text-white"><i class="fa-solid fa-xmark text-xl"></i></button>
         </div>
-        
-        <div id="adminLoginArea" class="p-8 text-center">
-          <i class="fa-solid fa-lock text-4xl text-slate-300 mb-3"></i>
-          <h3 class="font-semibold text-slate-700 mb-2">กรุณาใส่รหัสผ่านผู้ดูแลระบบ</h3>
-          <div class="max-w-xs mx-auto flex gap-2">
-            <input type="password" id="adminPass" placeholder="รหัสผ่าน" class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-purple-600 outline-none">
-            <button onclick="checkAdminAuth()" class="px-4 py-2 bg-purple-700 text-white rounded-lg font-medium hover:bg-purple-800">ยืนยัน</button>
-          </div>
-        </div>
 
-        <div id="adminPanel" class="hidden flex-1 overflow-y-auto p-6 space-y-6">
+        <div id="adminPanel" class="flex-1 overflow-y-auto p-6 space-y-6">
           <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 border-b pb-4">
             <div class="flex space-x-2">
               <button onclick="switchAdminTab('orders')" id="tabOrdersBtn" class="px-4 py-2 rounded-lg font-medium text-sm bg-purple-100 text-purple-800">รายงานสั่งซื้อ</button>
@@ -158,7 +149,8 @@
                 <button onclick="printSummaryReport()" class="px-3 py-1.5 bg-slate-700 text-white text-xs rounded-lg hover:bg-slate-800 font-medium transition shadow-sm">
                   <i class="fa-solid fa-print mr-1"></i> พิมพ์รายงานส่งร้าน
                 </button>
-                <button onclick="openCompareModal()" class="px-3 py-1.5 bg-indigo-600 text-white text-xs rounded-lg hover:bg-indigo-700 font-medium transition shadow-sm">
+                <!-- ปุ่มตรวจรับถูกย้ายรหัสผ่านมากั้นตรงนี้ -->
+                <button onclick="promptComparePassword()" class="px-3 py-1.5 bg-indigo-600 text-white text-xs rounded-lg hover:bg-indigo-700 font-medium transition shadow-sm">
                   <i class="fa-solid fa-scale-balanced mr-1"></i> ตรวจรับ & ใบวางบิล
                 </button>
               </div>
@@ -210,6 +202,21 @@
       </div>
     </div>
 
+    <!-- Password Prompt Modal สำหรับปุ่ม ตรวจรับ & ใบวางบิล -->
+    <div id="passwordModal" class="hidden fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-[80] flex items-center justify-center p-4">
+      <div class="bg-white rounded-2xl shadow-2xl max-w-sm w-full p-6 text-center space-y-4">
+        <div class="w-12 h-12 bg-purple-100 text-purple-700 rounded-full flex items-center justify-center mx-auto text-xl">
+          <i class="fa-solid fa-lock"></i>
+        </div>
+        <h3 class="font-bold text-slate-800 text-base">กรุณาใส่รหัสผ่านผู้ดูแลระบบ</h3>
+        <p class="text-xs text-slate-500">เพื่อเข้าสู่เมนูตรวจรับพัสดุและจัดทำใบวางบิล</p>
+        <input type="password" id="comparePasswordInput" placeholder="รหัสผ่าน" class="w-full px-4 py-2 border rounded-xl text-center focus:ring-2 focus:ring-purple-600 outline-none text-sm">
+        <div class="flex gap-2 pt-2">
+          <button onclick="closePasswordModal()" class="w-1/2 py-2 bg-slate-200 text-slate-700 rounded-xl font-medium text-xs hover:bg-slate-300">ยกเลิก</button>
+          <button onclick="verifyComparePassword()" class="w-1/2 py-2 bg-purple-700 text-white rounded-xl font-medium text-xs hover:bg-purple-800">ยืนยัน</button>
+        </div>
+      </div>
+    </div>
     <!-- MODAL ตรวจรับพัสดุ & เปรียบเทียบใบวางบิล (<= 10,000 บาท) -->
     <div id="compareModal" class="hidden fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-[60] flex items-center justify-center p-4">
       <div class="bg-white rounded-2xl shadow-2xl max-w-5xl w-full max-h-[90vh] flex flex-col overflow-hidden">
@@ -1275,6 +1282,37 @@
         })
         .catch(err => { tableBody.innerHTML = `<tr><td colspan="8" class="text-center py-4 text-rose-500">ไม่สามารถโหลดข้อมูลได้</td></tr>`; })
         .finally(() => hideLoading());
+    }
+
+    // ฟังก์ชันใหม่สำหรับการเปิดหน้าดูข้อมูลการสั่งซื้อทันที (ไม่ต้องใส่รหัสผ่าน)
+    function openAdminCheckModal() {
+      document.getElementById('adminModal').classList.remove('hidden');
+      fetchAdminOrders();
+    }
+
+    function toggleAdminModal() { 
+      document.getElementById('adminModal').classList.toggle('hidden'); 
+    }
+
+    // ฟังก์ชันป้องกันปุ่ม "ตรวจรับ & ใบวางบิล" ด้วยรหัสผ่าน
+    function promptComparePassword() {
+      document.getElementById('comparePasswordInput').value = '';
+      document.getElementById('passwordModal').classList.remove('hidden');
+    }
+
+    function closePasswordModal() {
+      document.getElementById('passwordModal').classList.add('hidden');
+    }
+
+    function verifyComparePassword() {
+      const pass = document.getElementById('comparePasswordInput').value;
+      if (pass === "1234") { // รหัสผ่าน (สามารถเปลี่ยนเลข "1234" ได้ที่นี่)
+        closePasswordModal();
+        openCompareModal();
+      } else {
+        alert('รหัสผ่านไม่ถูกต้อง');
+        document.getElementById('comparePasswordInput').value = '';
+      }
     }
 
     function populateMonthFilterOptions(orders) {
