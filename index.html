@@ -149,13 +149,14 @@
                 <button onclick="printSummaryReport()" class="px-3 py-1.5 bg-slate-700 text-white text-xs rounded-lg hover:bg-slate-800 font-medium transition shadow-sm">
                   <i class="fa-solid fa-print mr-1"></i> พิมพ์รายงานส่งร้าน
                 </button>
-                <!-- ปุ่มตรวจรับถูกย้ายรหัสผ่านมากั้นตรงนี้ -->
+                <!-- ปุ่มตรวจรับถูกป้องกันด้วยรหัสผ่าน -->
                 <button onclick="promptComparePassword()" class="px-3 py-1.5 bg-indigo-600 text-white text-xs rounded-lg hover:bg-indigo-700 font-medium transition shadow-sm">
                   <i class="fa-solid fa-scale-balanced mr-1"></i> ตรวจรับ & ใบวางบิล
                 </button>
               </div>
             </div>
 
+            <!-- ตารางแสดงข้อมูลการสั่งซื้อแบบ 8 คอลัมน์ปกติ (ไม่มี Checkbox) -->
             <div class="overflow-x-auto border rounded-xl">
               <table class="w-full text-sm text-left text-slate-600">
                 <thead class="text-xs uppercase bg-slate-100 text-slate-700">
@@ -217,7 +218,8 @@
         </div>
       </div>
     </div>
-    <!-- MODAL ตรวจรับพัสดุ & เปรียบเทียบใบวางบิล (<= 10,000 บาท) -->
+
+    <!-- MODAL ตรวจรับพัสดุ & เปรียบเทียบใบวางบิล (<= 10,000 บาท) มี Checkbox เลือกเฉพาะรายการ -->
     <div id="compareModal" class="hidden fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-[60] flex items-center justify-center p-4">
       <div class="bg-white rounded-2xl shadow-2xl max-w-5xl w-full max-h-[90vh] flex flex-col overflow-hidden">
         <div class="p-4 bg-indigo-900 text-white flex justify-between items-center">
@@ -285,7 +287,10 @@
           <table class="w-full text-xs text-left text-slate-600 border border-collapse">
             <thead class="bg-slate-100 text-slate-700 uppercase font-bold border-b">
               <tr>
-                <th class="p-2 border text-center">ลำดับ</th>
+                <th class="p-2 border text-center w-12">
+                  <input type="checkbox" id="selectAllCompare" checked onchange="toggleSelectAllCompare(this.checked)" class="w-4 h-4 text-purple-600 rounded focus:ring-purple-500 cursor-pointer" title="เลือกทั้งหมด">
+                </th>
+                <th class="p-2 border text-center w-12">ลำดับ</th>
                 <th class="p-2 border">รายการพัสดุ</th>
                 <th class="p-2 border text-center">สั่งซื้อ</th>
                 <th class="p-2 border text-center">สถานะตรวจรับ</th>
@@ -296,15 +301,15 @@
               </tr>
             </thead>
             <tbody id="compareTableBody">
-              <tr><td colspan="8" class="text-center py-4 text-slate-400">กรุณาเลือกตัวกรองแผนกหรือรอบเดือน...</td></tr>
+              <tr><td colspan="9" class="text-center py-4 text-slate-400">กรุณาเลือกตัวกรองแผนกหรือรอบเดือน...</td></tr>
             </tbody>
             <tfoot class="bg-slate-50 font-bold border-t">
               <tr>
-                <td colspan="7" class="p-3 text-right">รวมเป็นเงินทั้งสิ้น (บาท):</td>
+                <td colspan="8" class="p-3 text-right">รวมเป็นเงินทั้งสิ้น (บาท):</td>
                 <td class="p-3 text-right text-purple-900 text-sm font-extrabold" id="grandTotalText">0.00</td>
               </tr>
               <tr>
-                <td colspan="8" class="p-2 text-right text-slate-600 font-normal italic" id="bahtTextThai">(-ศูนย์บาทถ้วน-)</td>
+                <td colspan="9" class="p-2 text-right text-slate-600 font-normal italic" id="bahtTextThai">(-ศูนย์บาทถ้วน-)</td>
               </tr>
             </tfoot>
           </table>
@@ -1021,7 +1026,7 @@
         ๒.๑ คณะกรรมการตรวจได้ตรวจรับงานจัดซื้อดังกล่าวเสร็จเรียบร้อยตามเงื่อนไขการซื้อทุกประการเมื่อวันที่ <span class="f4-date">๒ ตุลาคม ๒๕๖๙</span> ผลปรากฏว่า <span class="f4-shop-name">ร้านพัฒน์</span> ได้ส่งมอบพัสดุครบถ้วนตามข้อตกลงการซื้อ
       </p>
       <p style="text-indent: 2.5em; text-align: justify; margin-bottom: 5px;">
-        ๒.๒ ตามคำสั่ง กฟภ. ที่ พ.(ม) ๒๘/๒๕๖๘ ลงวันที่ ๑๗ พฤศจิกายน ๒๕๖๘ ข้อ ๑ ข้อ่อย ๑.๒ (๑) ให้ ผจก.กฟส. ระดับ ๑๑ มีอำนาจในการสั่งจ่ายเงินครั้งหนึ่งมีวงเงินไม่เกิน ๒,๐๐๐,๐๐0 บาท
+        ๒.๒ ตามคำสั่ง กฟภ. ที่ พ.(ม) ๒๘/๒๕๖๘ ลงวันที่ ๑๗ พฤศจิกายน ๒๕๖๘ ข้อ ๑ ข้อ่อย ๑.๒ (๑) ให้ ผจก.กฟส. ระดับ ๑๑ มีอำนาจในการสั่งจ่ายเงินครั้งหนึ่งมีวงเงินไม่เกิน ๒,๐๐๐,๐00 บาท
       </p>
 
       <p style="margin: 0 0 2px 0;"><strong>๓. ข้อพิจารณา</strong></p>
@@ -1218,17 +1223,6 @@
       .finally(() => { hideLoading(); submitBtn.disabled = false; });
     }
 
-    function toggleAdminModal() { document.getElementById('adminModal').classList.toggle('hidden'); }
-
-    function checkAdminAuth() {
-      const pass = document.getElementById('adminPass').value;
-      if (pass === "1234") {
-        document.getElementById('adminLoginArea').classList.add('hidden');
-        document.getElementById('adminPanel').classList.remove('hidden');
-        fetchAdminOrders();
-      } else { alert('รหัสผ่านไม่ถูกต้อง'); }
-    }
-
     function toggleSystemStatus() {
       isSystemOpen = !isSystemOpen;
       const btn = document.getElementById('toggleSystemBtn');
@@ -1284,7 +1278,7 @@
         .finally(() => hideLoading());
     }
 
-    // ฟังก์ชันใหม่สำหรับการเปิดหน้าดูข้อมูลการสั่งซื้อทันที (ไม่ต้องใส่รหัสผ่าน)
+    // ฟังก์ชันเปิดหน้าดูข้อมูลการสั่งซื้อทันทีโดยไม่ต้องใส่รหัสผ่าน
     function openAdminCheckModal() {
       document.getElementById('adminModal').classList.remove('hidden');
       fetchAdminOrders();
@@ -1306,7 +1300,7 @@
 
     function verifyComparePassword() {
       const pass = document.getElementById('comparePasswordInput').value;
-      if (pass === "1234") { // รหัสผ่าน (สามารถเปลี่ยนเลข "1234" ได้ที่นี่)
+      if (pass === "1234") { // รหัสผ่านผู้ดูแลระบบ
         closePasswordModal();
         openCompareModal();
       } else {
@@ -1534,6 +1528,7 @@
         orderedQty: summaryMap[name].orderedQty,
         receivedQty: summaryMap[name].orderedQty,
         isMatch: true,
+        isSelected: true, // ค่าเริ่มต้นให้ติ๊กเลือกทุกรายการ
         unit: summaryMap[name].unit,
         unitPrice: 0,
         totalAmount: 0
@@ -1547,6 +1542,9 @@
         const tr = document.createElement('tr');
         tr.className = "border-b hover:bg-slate-50";
         tr.innerHTML = `
+          <td class="p-2 border text-center">
+            <input type="checkbox" ${item.isSelected !== false ? 'checked' : ''} onchange="handleItemSelect(${index}, this.checked)" class="compare-item-checkbox w-4 h-4 text-purple-600 rounded focus:ring-purple-500 cursor-pointer">
+          </td>
           <td class="p-2 border text-center font-semibold">${index + 1}</td>
           <td class="p-2 border font-medium text-slate-800">${item.name}</td>
           <td class="p-2 border text-center font-bold text-slate-600">${item.orderedQty}</td>
@@ -1569,6 +1567,18 @@
         `;
         tbody.appendChild(tr);
       });
+      calculateCompareTotals();
+    }
+
+    function handleItemSelect(index, isChecked) {
+      compareItemsList[index].isSelected = isChecked;
+      calculateCompareTotals();
+    }
+
+    function toggleSelectAllCompare(isChecked) {
+      compareItemsList.forEach(item => item.isSelected = isChecked);
+      const checkboxes = document.querySelectorAll('.compare-item-checkbox');
+      checkboxes.forEach(cb => cb.checked = isChecked);
       calculateCompareTotals();
     }
 
@@ -1601,7 +1611,12 @@
 
     function calculateCompareTotals() {
       let grandTotal = 0;
-      compareItemsList.forEach(item => grandTotal += (item.totalAmount || 0));
+      // คำนวณเฉพาะรายการที่ถูกติ๊กเลือก (isSelected === true)
+      compareItemsList.forEach(item => {
+        if (item.isSelected) {
+          grandTotal += (item.totalAmount || 0);
+        }
+      });
       document.getElementById('grandTotalText').innerText = grandTotal.toLocaleString('th-TH', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
       document.getElementById('bahtTextThai').innerText = `(${ArabicToThaiBaht(grandTotal)})`;
 
@@ -1668,8 +1683,10 @@
     }
 
     function preparePeaReportData() {
+      // ดึงเฉพาะรายการที่ติ๊กเลือก (activeItems) ไปสร้างฟอร์ม
+      const activeItems = compareItemsList.filter(item => item.isSelected);
       let grandTotal = 0;
-      compareItemsList.forEach(item => grandTotal += (item.totalAmount || 0));
+      activeItems.forEach(item => grandTotal += (item.totalAmount || 0));
 
       const selectedDept = document.getElementById('adminDeptFilter').value;
       const docNo = document.getElementById('docNoInput').value.trim();
@@ -1700,7 +1717,7 @@
       document.getElementById('peaFormDeptText2').innerText = selectedDept !== 'ALL' ? selectedDept : "กฟส.หลังสวนและ กฟส.ในสังกัด";
       document.getElementById('peaFormNo').innerText = docNo ? toThaiDigits(docNo) : "";
       document.getElementById('peaFormDate').innerText = docDate ? toThaiDigits(docDate) : "";
-      document.getElementById('peaFormItemCount').innerText = toThaiDigits(compareItemsList.length);
+      document.getElementById('peaFormItemCount').innerText = toThaiDigits(activeItems.length);
 
       const accountCodeSection = document.getElementById('peaAccountCodeSection');
       accountCodeSection.innerHTML = `จากรหัสบัญชี <span id="peaFormAccountCode">${accountCode}</span> โดยใช้งบทำการ<span id="peaFormCostCenter">${costCenter}</span>`;
@@ -1720,7 +1737,7 @@
 
       const peaTbody = document.getElementById('peaFormTableBody');
       peaTbody.innerHTML = '';
-      compareItemsList.forEach((item, index) => {
+      activeItems.forEach((item, index) => {
         const tr = document.createElement('tr');
         const itemAmtFormatted = (item.totalAmount || 0).toLocaleString('th-TH', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
         const qtyStr = `${toThaiDigits(item.receivedQty)} ${item.unit || ''}`;
@@ -1764,7 +1781,9 @@
     /* --- LOGICS สำหรับ WIZARD MULTI-STEP (> 10,000 บาท) --- */
     function openWizardModal() {
       let total = 0;
-      compareItemsList.forEach(item => total += item.totalAmount);
+      compareItemsList.forEach(item => {
+        if (item.isSelected) total += item.totalAmount;
+      });
       document.getElementById('wzAmountTotal').value = total > 0 ? total.toLocaleString('th-TH', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : "";
       
       document.getElementById('wizardModal').classList.remove('hidden');
@@ -1812,6 +1831,8 @@
     }
 
     function prepareOver10kWizardData() {
+      const activeItems = compareItemsList.filter(item => item.isSelected);
+      
       const wzDate1 = document.getElementById('wzDate1').value.trim() || "๒๑ กันยายน ๒๕๖๙";
       const operator = document.getElementById('wzOperatorName').value.trim() || "นางสาวพรศิริ เมฆสวี";
       const cName1 = document.getElementById('wzCommName1').value.trim();
@@ -1849,7 +1870,7 @@
       if(f1Work) f1Work.innerText = toThaiDigits(1);
       
       const f1Count = document.querySelector('.f1-total-count');
-      if(f1Count) f1Count.innerText = toThaiDigits(compareItemsList.length);
+      if(f1Count) f1Count.innerText = toThaiDigits(activeItems.length);
 
       const f1Grand = document.querySelector('.f1-grand-total-text');
       if(f1Grand) f1Grand.innerText = toThaiDigits(formattedTotal);
@@ -1868,7 +1889,7 @@
 
       document.querySelectorAll('.f1-table-body').forEach(tbody => {
         tbody.innerHTML = '';
-        compareItemsList.forEach((item, idx) => {
+        activeItems.forEach((item, idx) => {
           const tr = document.createElement('tr');
           tr.innerHTML = `
             <td style="border: 1px solid #000; padding: 4px; text-align: center;">${toThaiDigits(idx + 1)}</td>
@@ -1890,7 +1911,7 @@
 
       document.querySelectorAll('.f2-table-body').forEach(tbody => {
         tbody.innerHTML = '';
-        compareItemsList.forEach((item, idx) => {
+        activeItems.forEach((item, idx) => {
           const tr = document.createElement('tr');
           tr.innerHTML = `
             <td style="border: 1px solid #000; padding: 4px; text-align: center;">${toThaiDigits(idx + 1)}</td>
