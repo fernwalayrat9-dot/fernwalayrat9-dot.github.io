@@ -1095,7 +1095,7 @@
       const thaiMonths = ["มกราคม", "กุมภาพันธ์", "มีนาคม", "เมษายน", "พฤษภาคม", "มิถุนายน", "กรกฎาคม", "สิงหาคม", "กันยายน", "ตุลาคม", "พฤศจิกายน", "ธันวาคม"];
       const thaiShortMonths = ["ม.ค.", "ก.พ.", "มี.ค.", "เม.ย.", "พ.ค.", "มิ.ย.", "ก.ค.", "ส.ค.", "ก.ย.", "ต.ค.", "พ.ย.", "ธ.ค."];
       const now = new Date();
-      const formattedText = `ประจำเดือน ${thaiMonths[now.getMonth()]} ${now.getFullYear()} (ตัดรอบ 15 ${thaiShortMonths[now.getMonth()]})`;
+      const formattedText = `ประจำเดือน ${thaiMonths[now.getMonth()]} ${now.getFullYear()}`;
       const monthInput = document.getElementById('orderMonth');
       if (monthInput) monthInput.value = formattedText;
     }
