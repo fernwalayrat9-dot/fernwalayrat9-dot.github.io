@@ -1389,6 +1389,7 @@ function calculateTotals() {
         document.getElementById('adminAddItemTab').classList.remove('hidden');
         document.getElementById('tabAddItemBtn').className = "px-4 py-2 rounded-lg font-medium text-sm bg-purple-100 text-purple-800";
         document.getElementById('tabOrdersBtn').className = "px-4 py-2 rounded-lg font-medium text-sm text-slate-600 hover:bg-slate-100";
+        autoFillNextItemId();
       }
     }
 
@@ -1596,7 +1597,29 @@ function calculateTotals() {
       })
       .finally(() => hideLoading());
     }
+    function getNextAutoItemId() {
+      let maxNum = 0;
+      (materialsList || []).forEach(item => {
+        if (item && item.id !== undefined && item.id !== null) {
+          // ดึงเฉพาะตัวเลขออกจากรหัส เช่น "80" -> 80 หรือ "OFF-080" -> 80
+          const match = String(item.id).match(/\d+/g);
+          if (match) {
+            const num = parseInt(match[match.length - 1], 10);
+            if (!isNaN(num) && num > maxNum) {
+              maxNum = num;
+            }
+          }
+        }
+      });
+      return String(maxNum + 1);
+    }
 
+    function autoFillNextItemId() {
+      const idInput = document.getElementById('newItemId');
+      if (idInput) {
+        idInput.value = getNextAutoItemId();
+      }
+    }
     function printSummaryReport() {
       if (!currentFilteredOrders || currentFilteredOrders.length === 0) { alert("ไม่มีข้อมูลรายการสั่งซื้อในตัวกรองปัจจุบัน"); return; }
       const summaryMap = {};
