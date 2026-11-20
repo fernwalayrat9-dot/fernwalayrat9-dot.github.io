@@ -1205,6 +1205,32 @@
   });
   renderItems(filtered);
 }
+    function updateQty(id, change) {
+  if (!isSystemOpen) { alert("ขณะนี้ระบบปิดรับคำสั่งซื้อชั่วคราว"); return; }
+  let current = selectedCart[id] || 0;
+  current += change;
+  if (current < 0) current = 0;
+  if (current === 0) { delete selectedCart[id]; } else { selectedCart[id] = current; }
+  const qtyInput = document.getElementById(`qty-${id}`);
+  if (qtyInput) qtyInput.value = current;
+  calculateTotals();
+}
+
+function handleDirectInput(id, value) {
+  if (!isSystemOpen) { alert("ขณะนี้ระบบปิดรับคำสั่งซื้อชั่วคราว"); return; }
+  let val = parseInt(value, 10);
+  if (isNaN(val) || val < 0) val = 0;
+  if (val === 0) { delete selectedCart[id]; } else { selectedCart[id] = val; }
+  calculateTotals();
+}
+
+function calculateTotals() {
+  const selectedKeys = Object.keys(selectedCart);
+  let totalQty = 0;
+  selectedKeys.forEach(k => totalQty += selectedCart[k]);
+  document.getElementById('selectedCount').innerText = selectedKeys.length;
+  document.getElementById('totalQuantity').innerText = totalQty;
+}
     function submitOrder() {
       if (!isSystemOpen) { alert("ขณะนี้ระบบปิดรับคำสั่งซื้อชั่วคราว"); return; }
       const department = document.getElementById('userDepartment').value;
