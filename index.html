@@ -606,8 +606,22 @@
           <i class="fa-solid fa-magnifying-glass absolute left-3 top-2.5 text-slate-400 text-sm"></i>
         </div>
       </div>
-      <div id="itemsContainer" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-        <div class="col-span-full text-center py-8 text-slate-400">กำลังโหลดรายการวัสดุจากระบบ...</div>
+     <div class="overflow-x-auto border border-slate-200 rounded-xl">
+        <table class="w-full text-sm text-left border-collapse">
+          <thead>
+            <tr class="bg-purple-50 text-purple-950 border-b border-purple-200">
+              <th class="py-3 px-4 w-28 font-semibold">รหัส</th>
+              <th class="py-3 px-4 font-semibold">รายการวัสดุ</th>
+              <th class="py-3 px-4 w-28 text-center font-semibold">หน่วยนับ</th>
+              <th class="py-3 px-4 w-44 text-center font-semibold">จำนวน</th>
+            </tr>
+          </thead>
+          <tbody id="itemsTableBody" class="divide-y divide-slate-100 bg-white">
+            <tr>
+              <td colspan="4" class="text-center py-8 text-slate-400">กำลังโหลดรายการวัสดุจากระบบ...</td>
+            </tr>
+          </tbody>
+        </table>
       </div>
     </div>
   </main>
@@ -1145,73 +1159,38 @@
             renderItems(materialsList);
           } else { alert("เกิดข้อผิดพลาดในการโหลดข้อมูล: " + res.message); }
         })
-        .catch(err => { document.getElementById('itemsContainer').innerHTML = `<div class="col-span-full text-center py-8 text-rose-500">ไม่สามารถดึงข้อมูลรายการวัสดุได้</div>`; })
+        .catch(err => {
+          const tbody = document.getElementById('itemsTableBody');
+          if (tbody) tbody.innerHTML = `<tr><td colspan="4" class="text-center py-8 text-rose-500">ไม่สามารถดึงข้อมูลรายการวัสดุได้</td></tr>`;
+        })
         .finally(() => hideLoading());
     }
 
     function renderItems(items) {
-      const container = document.getElementById('itemsContainer');
-      container.innerHTML = '';
+      const tbody = document.getElementById('itemsTableBody');
+      tbody.innerHTML = '';
       if (!items || items.length === 0) {
-        container.innerHTML = `<div class="col-span-full text-center py-8 text-slate-400">ไม่พบรายการวัสดุในระบบ</div>`;
+        tbody.innerHTML = `<tr><td colspan="4" class="text-center py-8 text-slate-400">ไม่พบรายการวัสดุในระบบ</td></tr>`;
         return;
       }
       items.forEach(item => {
         const qty = selectedCart[item.id] || 0;
-        const card = document.createElement('div');
-        card.className = "p-4 border border-slate-200 rounded-xl bg-slate-50 hover:bg-white transition flex justify-between items-center gap-3 shadow-sm";
-        card.innerHTML = `
-          <div>
-            <div class="text-xs font-semibold text-purple-600">รหัส #${item.id || '-'}</div>
-            <div class="font-semibold text-sm text-slate-800">${item.name}</div>
-            <div class="text-xs text-slate-500">หน่วยนับ: ${item.unit || '-'}</div>
-          </div>
-          <div class="flex items-center space-x-1">
-            <button onclick="updateQty('${item.id}', -1)" class="w-8 h-8 rounded-lg border bg-white text-slate-600 hover:bg-slate-100 flex items-center justify-center font-bold">-</button>
-            <input type="number" id="qty-${item.id}" value="${qty}" min="0" oninput="handleDirectInput('${item.id}', this.value)" class="w-12 h-8 text-center font-bold text-sm border rounded-lg focus:ring-2 focus:ring-purple-600 outline-none bg-white">
-            <button onclick="updateQty('${item.id}', 1)" class="w-8 h-8 rounded-lg border bg-purple-700 text-white hover:bg-purple-800 flex items-center justify-center font-bold">+</button>
-          </div>
+        const tr = document.createElement('tr');
+        tr.className = qty > 0 ? "bg-purple-50/40 hover:bg-purple-50 transition" : "hover:bg-slate-50 transition";
+        tr.innerHTML = `
+          <td class="py-2.5 px-4 text-xs font-semibold text-purple-700 whitespace-nowrap">#${item.id || '-'}</td>
+          <td class="py-2.5 px-4 font-medium text-slate-800">${item.name}</td>
+          <td class="py-2.5 px-4 text-center text-xs text-slate-600 whitespace-nowrap">${item.unit || '-'}</td>
+          <td class="py-2.5 px-4 text-center whitespace-nowrap">
+            <div class="inline-flex items-center space-x-1">
+              <button type="button" onclick="updateQty('${item.id}', -1)" class="w-8 h-8 rounded-lg border bg-white text-slate-600 hover:bg-slate-100 flex items-center justify-center font-bold">-</button>
+              <input type="number" id="qty-${item.id}" value="${qty}" min="0" oninput="handleDirectInput('${item.id}', this.value)" class="w-14 h-8 text-center font-bold text-sm border rounded-lg focus:ring-2 focus:ring-purple-600 outline-none bg-white">
+              <button type="button" onclick="updateQty('${item.id}', 1)" class="w-8 h-8 rounded-lg border bg-purple-700 text-white hover:bg-purple-800 flex items-center justify-center font-bold">+</button>
+            </div>
+          </td>
         `;
-        container.appendChild(card);
+        tbody.appendChild(tr);
       });
-    }
-
-    function filterItems() {
-      const query = document.getElementById('searchInput').value.trim().toLowerCase();
-      if (!query) { renderItems(materialsList); return; }
-      const filtered = materialsList.filter(item => {
-        const itemName = item.name ? String(item.name).toLowerCase() : "";
-        const itemId = item.id ? String(item.id).toLowerCase() : "";
-        return itemName.includes(query) || itemId.includes(query);
-      });
-      renderItems(filtered);
-    }
-
-    function updateQty(id, change) {
-      if (!isSystemOpen) { alert("ขณะนี้ระบบปิดรับคำสั่งซื้อชั่วคราว"); return; }
-      let current = selectedCart[id] || 0;
-      current += change;
-      if (current < 0) current = 0;
-      if (current === 0) { delete selectedCart[id]; } else { selectedCart[id] = current; }
-      const qtyInput = document.getElementById(`qty-${id}`);
-      if (qtyInput) qtyInput.value = current;
-      calculateTotals();
-    }
-
-    function handleDirectInput(id, value) {
-      if (!isSystemOpen) { alert("ขณะนี้ระบบปิดรับคำสั่งซื้อชั่วคราว"); return; }
-      let val = parseInt(value, 10);
-      if (isNaN(val) || val < 0) val = 0;
-      if (val === 0) { delete selectedCart[id]; } else { selectedCart[id] = val; }
-      calculateTotals();
-    }
-
-    function calculateTotals() {
-      const selectedKeys = Object.keys(selectedCart);
-      let totalQty = 0;
-      selectedKeys.forEach(k => totalQty += selectedCart[k]);
-      document.getElementById('selectedCount').innerText = selectedKeys.length;
-      document.getElementById('totalQuantity').innerText = totalQty;
     }
 
     function submitOrder() {
@@ -1219,8 +1198,88 @@
       const department = document.getElementById('userDepartment').value;
       const month = document.getElementById('orderMonth').value;
       if (!department || !month) { alert('กรุณากรอกแผนกและรอบเดือนให้ครบถ้วน'); return; }
-      const selectedKeys = Object.keys(selectedCart);
+      const selectedKeys = Object.keys(selectedCart).filter(id => (selectedCart[id] || 0) > 0);
       if (selectedKeys.length === 0) { alert('กรุณาเลือกรายการพัสดุอย่างน้อย 1 รายการ'); return; }
+
+      document.getElementById('confirmDeptText').innerText = department;
+      document.getElementById('confirmMonthText').innerText = month;
+      renderConfirmOrderModal();
+      document.getElementById('confirmOrderModal').classList.remove('hidden');
+    }
+
+    function closeConfirmOrderModal() {
+      document.getElementById('confirmOrderModal').classList.add('hidden');
+    }
+
+    function renderConfirmOrderModal() {
+      const tbody = document.getElementById('confirmItemsTableBody');
+      tbody.innerHTML = '';
+
+      const selectedKeys = Object.keys(selectedCart).filter(id => (selectedCart[id] || 0) > 0);
+      let totalQty = 0;
+
+      if (selectedKeys.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="5" class="text-center py-6 text-slate-400">ไม่มีรายการที่เลือก</td></tr>`;
+        document.getElementById('confirmModalItemCount').innerText = 0;
+        document.getElementById('confirmModalTotalQty').innerText = 0;
+        return;
+      }
+
+      selectedKeys.forEach((id, idx) => {
+        const itemObj = materialsList.find(m => String(m.id) === String(id));
+        const qty = selectedCart[id] || 0;
+        totalQty += qty;
+
+        const tr = document.createElement('tr');
+        tr.className = "hover:bg-slate-50";
+        tr.innerHTML = `
+          <td class="py-2.5 px-3 text-center text-slate-500">${idx + 1}</td>
+          <td class="py-2.5 px-3 font-medium text-slate-800">${itemObj ? itemObj.name : id}</td>
+          <td class="py-2.5 px-3 text-center font-bold text-purple-800">${qty}</td>
+          <td class="py-2.5 px-3 text-center text-xs text-slate-600">${itemObj ? (itemObj.unit || '-') : '-'}</td>
+          <td class="py-2.5 px-3 text-center">
+            <button type="button" onclick="removeItemFromConfirmModal('${id}')" class="px-2.5 py-1 bg-rose-50 hover:bg-rose-100 text-rose-600 rounded-lg text-xs font-semibold transition">
+              <i class="fa-solid fa-trash-can mr-1"></i> ลบ
+            </button>
+          </td>
+        `;
+        tbody.appendChild(tr);
+      });
+
+      document.getElementById('confirmModalItemCount').innerText = selectedKeys.length;
+      document.getElementById('confirmModalTotalQty').innerText = totalQty;
+    }
+
+    function removeItemFromConfirmModal(id) {
+      delete selectedCart[id];
+      const qtyInput = document.getElementById(`qty-${id}`);
+      if (qtyInput) qtyInput.value = 0;
+      calculateTotals();
+      renderConfirmOrderModal();
+
+      const remainingKeys = Object.keys(selectedCart).filter(k => (selectedCart[k] || 0) > 0);
+      if (remainingKeys.length === 0) {
+        closeConfirmOrderModal();
+        alert('ลบรายการออกจนหมดแล้ว กรุณาเลือกรายการพัสดุก่อนส่ง');
+      }
+    }
+
+    function confirmAndSendOrder() {
+      if (!isSystemOpen) { alert("ขณะนี้ระบบปิดรับคำสั่งซื้อชั่วคราว"); return; }
+      const department = document.getElementById('userDepartment').value;
+      const month = document.getElementById('orderMonth').value;
+      const selectedKeys = Object.keys(selectedCart).filter(id => (selectedCart[id] || 0) > 0);
+
+      if (!department || !month) {
+        closeConfirmOrderModal();
+        alert('กรุณากรอกแผนกและรอบเดือนให้ครบถ้วน');
+        return;
+      }
+      if (selectedKeys.length === 0) {
+        closeConfirmOrderModal();
+        alert('กรุณาเลือกรายการพัสดุอย่างน้อย 1 รายการ');
+        return;
+      }
 
       let itemsArray = [];
       selectedKeys.forEach(id => {
@@ -1232,7 +1291,9 @@
 
       const payload = { department: department, round: month, items: itemsArray };
       const submitBtn = document.getElementById('submitBtn');
+      const confirmSendBtn = document.getElementById('confirmSendBtn');
       submitBtn.disabled = true;
+      confirmSendBtn.disabled = true;
       showLoading("กำลังส่งข้อมูลรายการสั่งซื้อ...");
 
       fetch(GAS_WEB_APP_URL, {
@@ -1243,6 +1304,7 @@
       .then(res => res.json())
       .then(res => {
         if (res.status === "success") {
+          closeConfirmOrderModal();
           alert('บันทึกความต้องการสั่งซื้อสำเร็จแล้ว!');
           selectedCart = {};
           calculateTotals();
@@ -1250,7 +1312,11 @@
         } else { alert('เกิดข้อผิดพลาด: ' + res.message); }
       })
       .catch(err => alert('เกิดข้อผิดพลาดในการส่งข้อมูล: ' + err))
-      .finally(() => { hideLoading(); submitBtn.disabled = false; });
+      .finally(() => {
+        hideLoading();
+        submitBtn.disabled = false;
+        confirmSendBtn.disabled = false;
+      });
     }
 
     function toggleSystemStatus() {
@@ -2077,5 +2143,59 @@
       printWindow.document.close();
     }
   </script>
+  <!-- ป็อปอัพตรวจสอบรายการก่อนยืนยันส่งข้อมูล -->
+  <div id="confirmOrderModal" class="hidden fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-[85] flex items-center justify-center p-4 no-print">
+    <div class="bg-white rounded-2xl shadow-2xl max-w-2xl w-full max-h-[88vh] flex flex-col overflow-hidden">
+      
+      <!-- หัวป็อปอัพ -->
+      <div class="p-4 bg-purple-800 text-white flex justify-between items-center shrink-0">
+        <h3 class="font-bold text-base md:text-lg flex items-center gap-2">
+          <i class="fa-solid fa-clipboard-check text-amber-300"></i> ตรวจสอบรายการก่อนยืนยันการส่ง
+        </h3>
+        <button type="button" onclick="closeConfirmOrderModal()" class="text-purple-200 hover:text-white">
+          <i class="fa-solid fa-xmark text-xl"></i>
+        </button>
+      </div>
+
+      <!-- เนื้อหาภายในป็อปอัพ -->
+      <div class="p-5 overflow-y-auto flex-1 space-y-4">
+        <div class="bg-slate-50 border border-slate-200 rounded-xl p-3 text-xs md:text-sm space-y-1">
+          <div><span class="font-semibold text-slate-600">แผนก / งานที่ขอเบิก:</span> <span id="confirmDeptText" class="font-bold text-slate-800">-</span></div>
+          <div><span class="font-semibold text-slate-600">ประจำรอบเดือน:</span> <span id="confirmMonthText" class="font-bold text-purple-800">-</span></div>
+        </div>
+
+        <div class="overflow-x-auto border border-slate-200 rounded-xl">
+          <table class="w-full text-sm text-left border-collapse">
+            <thead>
+              <tr class="bg-slate-100 text-slate-700 border-b">
+                <th class="py-2.5 px-3 w-14 text-center">ที่</th>
+                <th class="py-2.5 px-3">รายการวัสดุ</th>
+                <th class="py-2.5 px-3 w-24 text-center">จำนวน</th>
+                <th class="py-2.5 px-3 w-24 text-center">หน่วยนับ</th>
+                <th class="py-2.5 px-3 w-24 text-center">ลบรายการ</th>
+              </tr>
+            </thead>
+            <tbody id="confirmItemsTableBody" class="divide-y divide-slate-100 bg-white">
+            </tbody>
+          </table>
+        </div>
+
+        <div class="text-right text-sm font-bold text-purple-900">
+          รวมทั้งหมด <span id="confirmModalItemCount">0</span> รายการ (<span id="confirmModalTotalQty">0</span> ชิ้น)
+        </div>
+      </div>
+
+      <!-- ปุ่มด้านล่างป็อปอัพ -->
+      <div class="p-4 bg-slate-50 border-t flex justify-end gap-2 shrink-0">
+        <button type="button" onclick="closeConfirmOrderModal()" class="px-4 py-2 bg-white border border-slate-300 hover:bg-slate-100 text-slate-700 font-semibold rounded-xl text-xs md:text-sm transition">
+          กลับไปแก้ไข
+        </button>
+        <button type="button" id="confirmSendBtn" onclick="confirmAndSendOrder()" class="px-5 py-2 bg-purple-800 hover:bg-purple-900 text-white font-semibold rounded-xl text-xs md:text-sm transition shadow flex items-center gap-1.5">
+          <i class="fa-solid fa-paper-plane"></i> ยืนยันและส่งข้อมูล
+        </button>
+      </div>
+
+    </div>
+  </div>
 </body>
 </html>
