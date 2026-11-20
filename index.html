@@ -1192,7 +1192,19 @@
         tbody.appendChild(tr);
       });
     }
-
+    function filterItems() {
+  const query = document.getElementById('searchInput').value.trim().toLowerCase();
+  if (!query) {
+    renderItems(materialsList);
+    return;
+  }
+  const filtered = materialsList.filter(item => {
+    const itemName = item.name ? String(item.name).toLowerCase() : "";
+    const itemId = item.id ? String(item.id).toLowerCase() : "";
+    return itemName.includes(query) || itemId.includes(query);
+  });
+  renderItems(filtered);
+}
     function submitOrder() {
       if (!isSystemOpen) { alert("ขณะนี้ระบบปิดรับคำสั่งซื้อชั่วคราว"); return; }
       const department = document.getElementById('userDepartment').value;
