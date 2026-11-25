@@ -632,7 +632,7 @@
   <!-- AREA สำหรับพิมพ์รายงานขอซื้อขอจ้าง กฟภ. (วงเงินไม่เกิน 10,000 บาท) -->
   <div id="peaFormArea" style="display: none;">
     <div class="pea-document" style="max-width: 750px; margin: 0 auto; padding: 10px 20px; color: #000; line-height: 1.25; font-size: 16pt;">
-      <div style="margin-bottom: 10px; text-align: left;"><img src="logo.jpg" style="width: 3.94cm; height: 2.96cm;" alt="PEA Logo"></div>
+      <div style="margin-bottom: 8px; text-align: left;"><img src="logo.jpg" width="148" height="111" style="width: 148px; height: 111px; max-width: 148px; max-height: 111px;" alt="PEA Logo"></div>
       
       <div style="margin-bottom: 10px;">
         <table style="width: 100%; border: none; border-collapse: collapse; font-size: 16pt; font-family: 'TH Sarabun PSK', sans-serif;">
@@ -1926,12 +1926,18 @@
       preparePeaReportData();
 
       const tempDiv = document.createElement('div');
-      tempDiv.innerHTML = document.getElementById('peaFormArea').innerHTML;
-      const logoBase64 = await getLogoBase64ForWord();
-      if (logoBase64) {
-        const img = tempDiv.querySelector('img');
-        if (img) img.src = logoBase64;
-      }
+   tempDiv.innerHTML = document.getElementById('peaFormArea').innerHTML;
+   const logoBase64 = await getLogoBase64ForWord();
+   const img = tempDiv.querySelector('img');
+   if (img) {
+     if (logoBase64) img.src = logoBase64;
+     img.setAttribute('width', '148');
+     img.setAttribute('height', '111');
+     img.style.width = '148px';
+     img.style.height = '111px';
+     img.style.maxWidth = '148px';
+     img.style.maxHeight = '111px';
+   }
 
       const content = tempDiv.innerHTML;
       const header = `
@@ -1975,6 +1981,12 @@
             p {
               margin-top: 0pt;
               margin-bottom: 4pt;
+            }
+            img {
+           width: 148px !important;
+           height: 111px !important;
+           max-width: 148px !important;
+           max-height: 111px !important;
             }
           </style>
         </head>
