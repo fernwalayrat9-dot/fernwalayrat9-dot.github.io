@@ -707,11 +707,10 @@
     <!-- รายการพัสดุทั้งหมดจะถูกวนลูปมาแสดงตรงนี้ -->
   </tbody>
   <tfoot style="display: table-row-group;">
-    <!-- แถวสรุปยอดจะแสดงต่อท้ายรายการสุดท้ายในหน้าสุดท้ายโดยอัตโนมัติ -->
     <tr>
       <td colspan="3" style="border: 1px solid #000; padding: 4px;">รวมเป็นเงิน (<span id="vatMarkBox">/</span> รวม <span style="display:inline-block; width:10px; height:10px; border:1px solid #000; margin-left:3px;"></span> ไม่รวม ภาษีมูลค่าเพิ่ม)</td>
       <td style="border: 1px solid #000; padding: 4px; text-align: right; font-weight: bold;" id="peaFormSumAmount"></td>
-      <td style="border: 1px solid #000; padding: 4px;" id="peaFormBillInfoCell"></td>
+      <td style="border: 1px solid #000; padding: 4px;"></td>
     </tr>
     <tr>
       <td colspan="5" style="border: 1px solid #000; padding: 4px; text-align: center; font-weight: bold;" id="peaFormSumBahtText"></td>
@@ -1890,23 +1889,52 @@ function calculateTotals() {
       document.getElementById('peaSignAmount').innerText = thaiTotalStr;
       document.getElementById('peaSignBahtText').innerText = bahtTextStr;
       document.getElementById('vatMarkBox').innerText = vatType === 'included' ? '/' : ' ';
-      document.getElementById('peaFormBillInfoCell').innerText = billInfo;
 
-      const peaTbody = document.getElementById('peaFormTableBody');
+     const peaTbody = document.getElementById('peaFormTableBody');
       peaTbody.innerHTML = '';
-      activeItems.forEach((item, index) => {
-        const tr = document.createElement('tr');
-        const itemAmtFormatted = (item.totalAmount || 0).toLocaleString('th-TH', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-        const qtyStr = `${toThaiDigits(item.receivedQty)} ${item.unit || ''}`;
-        tr.innerHTML = `
-          <td style="border: 1px solid #000; padding: 4px; text-align: center;">${toThaiDigits(index + 1)}</td>
-          <td style="border: 1px solid #000; padding: 4px;">${item.name}</td>
-          <td style="border: 1px solid #000; padding: 4px; text-align: center;">${qtyStr}</td>
-          <td style="border: 1px solid #000; padding: 4px; text-align: right;">${toThaiDigits(itemAmtFormatted)}.-</td>
-          <td style="border: 1px solid #000; padding: 4px; text-align: center;">${index === 0 ? billInfo : ''}</td>
-        `;
-        peaTbody.appendChild(tr);
-      });
+
+      const rowsPerPage = 14; // ปรับจำนวนแถวต่อหน้าให้ตรงกับหน้าแรกในรูปที่ 1
+
+      for (let start = 0; start < activeItems.length; start += rowsPerPage) {
+        const chunk = activeItems.slice(start, start + rowsPerPage);
+        const isFirstPage = (start === 0);
+        const chunkLen = chunk.length;
+
+        chunk.forEach((item, idxInChunk) => {
+          const globalIndex = start + idxInChunk;
+          const tr = document.createElement('tr');
+
+          if (!isFirstPage && idxInChunk === 0) {
+            tr.style.pageBreakBefore = 'always';
+            tr.style.breakBefore = 'page';
+          }
+
+          const itemAmtFormatted = (item.totalAmount || 0).toLocaleString('th-TH', {
+            minimumFractionDigits: 2,
+            maximumFractionDigits: 2
+          });
+          const qtyStr = `${toThaiDigits(item.receivedQty)} ${item.unit || ''}`;
+
+          let receiptTd = '';
+          if (idxInChunk === 0) {
+            const cellText = isFirstPage ? billInfo : '';
+            receiptTd = `
+              <td rowspan="${chunkLen}" valign="top" style="border: 1px solid #000; padding: 6px; text-align: left; vertical-align: top; mso-vertical-align: top;">
+                ${cellText}
+              </td>
+            `;
+          }
+
+          tr.innerHTML = `
+            <td style="border: 1px solid #000; padding: 4px; text-align: center; vertical-align: top;">${toThaiDigits(globalIndex + 1)}</td>
+            <td style="border: 1px solid #000; padding: 4px; vertical-align: top;">${item.name}</td>
+            <td style="border: 1px solid #000; padding: 4px; text-align: center; vertical-align: top;">${qtyStr}</td>
+            <td style="border: 1px solid #000; padding: 4px; text-align: right; vertical-align: top;">${toThaiDigits(itemAmtFormatted)}.-</td>
+            ${receiptTd}
+          `;
+          peaTbody.appendChild(tr);
+        });
+      }
     }
 
     function generatePeaReport() {
