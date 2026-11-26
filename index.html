@@ -627,29 +627,38 @@
   </div>
 
   <!-- AREA สำหรับพิมพ์รายงานขอซื้อขอจ้าง กฟภ. (วงเงินไม่เกิน 10,000 บาท) -->
-  <div id="peaFormArea" style="display: none;">
-    <div class="pea-document" style="max-width: 750px; margin: 0 auto; padding: 0 15px; color: #000; line-height: 1.15; font-size: 15pt;">
-      <div style="margin-bottom: 4px; text-align: left;">
-        <img src="logo.jpg" width="132" height="99" style="width: 99pt; height: 74pt; max-width: 99pt; max-height: 74pt;" alt="PEA Logo">
-      </div>
+<div id="peaFormArea" style="display: none;">
+  <div class="pea-document" style="max-width: 750px; margin: 0 auto; padding: 0 15px; color: #000; line-height: 1.15; font-size: 15pt;">
+    <table style="width: 100%; border: none; border-collapse: collapse; font-size: 15pt; font-family: 'TH Sarabun PSK', sans-serif; margin-bottom: 4px;">
+      <tr>
+        <td colspan="2" style="padding: 0 0 6px 0; text-align: left; vertical-align: top;">
+          <img src="logo.jpg" width="132" height="99" style="width: 99pt; height: 74pt; max-width: 99pt; max-height: 74pt; display: block;" alt="PEA Logo">
+        </td>
+      </tr>
+      <tr>
+        <td style="width: 52%; vertical-align: top; padding: 1px 4px 1px 0;">
+          <strong>จาก</strong>&nbsp;&nbsp;&nbsp;<span id="peaFormFrom">ผสน.กฟส.ลส.</span>
+        </td>
+        <td style="width: 48%; vertical-align: top; padding: 1px 0 1px 4px;">
+          <strong>ถึง</strong>&nbsp;&nbsp;&nbsp;<span id="peaFormTo">กฟส.ลส.</span>
+        </td>
+      </tr>
+      <tr>
+        <td style="width: 52%; vertical-align: top; padding: 1px 4px 1px 0;">
+          <strong>เลขที่</strong>&nbsp;&nbsp;<span id="peaFormNo"></span>
+        </td>
+        <td style="width: 48%; vertical-align: top; padding: 1px 0 1px 4px;">
+          <strong>วันที่</strong>&nbsp;&nbsp;<span id="peaFormDate"></span>
+        </td>
+      </tr>
+    </table>
 
-      <div style="margin-bottom: 6px;">
-        <table style="width: 100%; border: none; border-collapse: collapse; font-size: 15pt; font-family: 'TH Sarabun PSK', sans-serif;">
-          <tr>
-            <td style="width: 50%; vertical-align: top; padding: 1px 0;"><strong style="display: inline-block; width: 42px;">จาก</strong> <span id="peaFormFrom">ผสน.กฟส.ลส.</span></td>
-            <td style="width: 50%; vertical-align: top; padding: 1px 0;"><strong style="display: inline-block; width: 42px;">ถึง</strong> <span id="peaFormTo">กฟส.ลส.</span></td>
-          </tr>
-          <tr>
-            <td style="vertical-align: top; padding: 1px 0;"><strong style="display: inline-block; width: 42px;">เลขที่</strong> <span id="peaFormNo"></span></td>
-            <td style="vertical-align: top; padding: 1px 0;"><strong style="display: inline-block; width: 42px;">วันที่</strong> <span id="peaFormDate"></span></td>
-          </tr>
-        </table>
-        <table style="width: 100%; border: none; border-collapse: collapse; margin-top: 2px; font-size: 15pt; font-family: 'TH Sarabun PSK', sans-serif;">
-          <tr>
-            <td style="width: 42px; vertical-align: top; white-space: nowrap; padding: 1px 0;"><strong>เรื่อง</strong></td>
-            <td style="vertical-align: top; text-align: justify; padding: 1px 0 1px 4px;">รายงานขอความเห็นชอบการจัดซื้อจัดจ้างพัสดุ ที่เกี่ยวกับค่าใช้จ่ายในการบริหารงานที่มีวงเงินการจัดซื้อจัดจ้างครั้งหนึ่งไม่เกิน ๑๐,๐๐๐ บาท</td>
-          </tr>
-        </table>
+    <table style="width: 100%; border: none; border-collapse: collapse; margin-top: 2px; margin-bottom: 4px; font-size: 15pt; font-family: 'TH Sarabun PSK', sans-serif;">
+      <tr>
+        <td style="width: 48px; vertical-align: top; white-space: nowrap; padding: 1px 0;"><strong>เรื่อง</strong></td>
+        <td style="vertical-align: top; text-align: justify; padding: 1px 0;">รายงานขอความเห็นชอบการจัดซื้อจัดจ้างพัสดุ ที่เกี่ยวกับค่าใช้จ่ายในการบริหารงานที่มีวงเงินการจัดซื้อจัดจ้างครั้งหนึ่งไม่เกิน ๑๐,๐๐๐ บาท</td>
+      </tr>
+    </table>
       </div>
 
       <p style="margin: 3px 0 6px 0;"><strong>เรียน</strong><span style="display: inline-block; width: 16px;"></span>ผจก.กฟส.ลส. ผ่าน ชจก.(ล) กฟส.ลส.</p>
@@ -2025,15 +2034,19 @@
               mso-table-lspace: 0pt;
               mso-table-rspace: 0pt;
             }
+            td, th {
+              vertical-align: top;
+            }
             p {
               margin-top: 0pt;
               margin-bottom: 4pt;
             }
             img {
-              width: 111pt !important;
-              height: 83.25pt !important;
-              max-width: 111pt !important;
-              max-height: 83.25pt !important;
+              display: block !important;
+              width: 99pt !important;
+              height: 74pt !important;
+              max-width: 99pt !important;
+              max-height: 74pt !important;
             }
           </style>
         </head>
