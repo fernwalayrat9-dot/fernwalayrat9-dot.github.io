@@ -28,36 +28,46 @@
     input[type=number] { -moz-appearance: textfield; }
 
     .pea-document {
-      font-family: 'TH Sarabun PSK', 'TH SarabunIT๙', 'Sarabun', sans-serif !important;
-      font-size: 16pt !important;
-    }
+  font-family: 'Sarabun', 'TH Sarabun PSK', sans-serif !important;
+  font-size: 15.5pt !important;
+}
 
-    @page {
-      size: A4;
-      margin: 15mm;
-    }
+@page {
+  size: A4;
+  margin: 12mm 14mm;
+}
 
-    @media print {
-      header, nav, main, .no-print, #adminModal, #compareModal, #wizardModal, #previewModal, #loadingOverlay, #systemClosedBanner, #confirmOrderModal {
-        display: none !important;
-      }
+@media print {
+  header, nav, main, .no-print, #adminModal, #compareModal, #wizardModal, #previewModal, #loadingOverlay, #systemClosedBanner, #confirmOrderModal {
+    display: none !important;
+  }
 
-      #printArea, #peaFormArea, #over10kFormArea1, #over10kFormArea2, #over10kFormArea3, #over10kFormArea4 {
-        display: none !important;
-      }
+  #printArea, #peaFormArea, #over10kFormArea1, #over10kFormArea2, #over10kFormArea3, #over10kFormArea4 {
+    display: none !important;
+  }
 
-      body.printing-summary #printArea { display: block !important; }
-      body.printing-pea #peaFormArea { display: block !important; }
-      body.printing-over10k-1 #over10kFormArea1 { display: block !important; }
-      body.printing-over10k-2 #over10kFormArea2 { display: block !important; }
-      body.printing-over10k-3 #over10kFormArea3 { display: block !important; }
-      body.printing-over10k-4 #over10kFormArea4 { display: block !important; }
+  body.printing-summary #printArea { display: block !important; }
+  body.printing-pea #peaFormArea { display: block !important; }
+  body.printing-over10k-1 #over10kFormArea1 { display: block !important; }
+  body.printing-over10k-2 #over10kFormArea2 { display: block !important; }
+  body.printing-over10k-3 #over10kFormArea3 { display: block !important; }
+  body.printing-over10k-4 #over10kFormArea4 { display: block !important; }
 
-      table { page-break-inside: auto; }
-      tr { page-break-inside: avoid; page-break-after: auto; }
-      thead { display: table-header-group; }
-      tfoot { display: table-row-group; }
-    }
+  body.printing-pea .pea-document,
+  body.printing-pea .pea-document table,
+  body.printing-pea .pea-document td,
+  body.printing-pea .pea-document th,
+  body.printing-pea .pea-document p {
+    font-family: 'Sarabun', 'TH Sarabun PSK', sans-serif !important;
+    font-size: 15pt !important;
+    line-height: 1.18 !important;
+  }
+
+  table { page-break-inside: auto; }
+  tr { page-break-inside: avoid; page-break-after: auto; }
+  thead { display: table-header-group; }
+  tfoot { display: table-row-group; }
+}
   </style>
 </head>
 <body class="bg-slate-50 min-h-screen text-slate-800 pb-28">
@@ -1869,7 +1879,7 @@
       const rawAccountCode = document.getElementById('inputAccountCode').value.trim() || "53030010";
       const rawCostCenter = document.getElementById('inputCostCenter').value.trim() || "J31310101";
       const accountCode = smartConvertToThaiDigits(rawAccountCode);
-      const costCenter = rawCostCenter;
+      const costCenter = smartConvertToThaiDigits(rawCostCenter);
 
       const signName1 = document.getElementById('inputSignName1').value.trim();
       const signPos1 = document.getElementById('inputSignPos1').value.trim();
